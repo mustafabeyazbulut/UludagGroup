@@ -1,0 +1,22 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+@await Component.InvokeAsync("_Head_UILayout_ComponentPartial")
+<body>
+    <!-- Spinner Start -->
+    <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;"></div>
+    </div>
+    <!-- Spinner End -->
+    @await Component.InvokeAsync("_Navbar_UILayout_ComponentPartial")
+    @RenderBody()
+    @await Component.InvokeAsync("_Footer_UILayout_ComponentPartial")
+    @await Component.InvokeAsync("_Copyright_UILayout_ComponentPartial")
+    <!-- Back to Top -->
+    <a href="#" class="btn btn-lg btn-primary btn-lg-square rounded-circle back-to-top"><i class="bi bi-arrow-up"></i></a>
+    @await Component.InvokeAsync("_Script_UILayout_ComponentPartial")
+</body>
+</html>
+
