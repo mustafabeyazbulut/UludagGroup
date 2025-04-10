@@ -2,6 +2,7 @@
 #Template for AL projects for Dynamics 365 Business Central
 #launch.json folder
 .vscode/
+.vs/
 #Cache folder
 .alcache/
 #Symbols folder
@@ -21,35 +22,6 @@ rad.json
 #Test results file
 TestResults.xml
 
-### AL ###
-#Template for AL projects for Dynamics 365 Business Central
 
-#launch.json folder inside src\UludagGroup
-src/UludagGroup/.vscode/
-
-#Cache folder inside src\UludagGroup
-src/UludagGroup/.alcache/
-
-#Symbols folder inside src\UludagGroup
-src/UludagGroup/.alpackages/
-
-#Snapshots folder inside src\UludagGroup
-src/UludagGroup/.snapshots/
-
-#Testing Output folder inside src\UludagGroup
-src/UludagGroup/.output/
-
-#Extension App-file
-src/UludagGroup/*.app
-
-#Rapid Application Development File
-src/UludagGroup/rad.json
-
-#Translation Base-file
-src/UludagGroup/*.g.xlf
-
-#License-file
-src/UludagGroup/*.flf
-
-#Test results file
-src/UludagGroup/TestResults.xml
+UludagGroup/bin/
+UludagGroup/obj/
