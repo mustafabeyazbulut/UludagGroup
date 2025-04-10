@@ -1,0 +1,38 @@
+[
+  {
+    "outputFileName": "wwwroot/css/zero.min.css",
+    "inputFiles": [
+      "wwwroot/css/zero.css"
+    ],
+    "minify": { "enabled": true }
+  },
+  {
+    "outputFileName": "wwwroot/css/style.min.css",
+    "inputFiles": [
+      "wwwroot/css/style.css"
+    ],
+    "minify": { "enabled": true }
+  },
+  {
+    "outputFileName": "wwwroot/js/main.min.js",
+    "inputFiles": [
+      "wwwroot/js/main.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/js/zero.min.js",
+    "inputFiles": [
+      "wwwroot/js/zero.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  }
+]

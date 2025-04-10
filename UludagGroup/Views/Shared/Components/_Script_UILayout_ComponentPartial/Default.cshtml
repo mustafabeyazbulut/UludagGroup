@@ -1,10 +1,28 @@
-﻿ <!-- JavaScript Libraries -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+﻿
+<script src="@Url.Content("~/lib/bootstrap/js/bootstrap.bundle.min.js")"></script>
+<script src="@Url.Content("~/lib/jquery/jquery.min.js")"></script>
 <script src="@Url.Content("~/lib/wow/wow.min.js")"></script>
 <script src="@Url.Content("~/lib/easing/easing.min.js")"></script>
 <script src="@Url.Content("~/lib/waypoints/waypoints.min.js")"></script>
 <script src="@Url.Content("~/lib/owlcarousel/owl.carousel.min.js")"></script>
 
-<!-- Template Javascript -->
-<script src="@Url.Content("~/js/main.js")"></script>
+<script src="@Url.Content("~/js/sweetalert/sweetalert.min.js")"></script>
+<script src="@Url.Content("~/js/datatables/datatables.min.js")"></script>
+<script src="@Url.Content("~/js/main.min.js")" asp-append-version="true"></script>
+<script src="@Url.Content("~/js/zero.min.js")" asp-append-version="true"></script>
+
+<script>
+        document.addEventListener("DOMContentLoaded", function () {
+        // TempData'dan gelen mesajları JSON formatında al
+        var successMessage = '@Html.Raw(Json.Serialize(TempData["SuccessMessage"]))';
+        var errorMessage = '@Html.Raw(Json.Serialize(TempData["ErrorMessage"]))';
+        // Success mesajı varsa ve null/boş değilse göster
+        if (successMessage && successMessage.trim() !== "null" && successMessage.trim() !== '') {
+            swal("Başarılı!", successMessage, "success");
+        }
+        // Error mesajı varsa ve null/boş değilse göster
+        if (errorMessage && errorMessage.trim() !== "null" && errorMessage.trim() !== '') {
+            swal("Hata!", errorMessage, "error");
+        }
+    });
+</script>
