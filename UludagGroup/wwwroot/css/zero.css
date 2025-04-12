@@ -1,3 +1,6 @@
 .hidden {
     display: none;
 }
+.some-class {
+    text-transform: none; /* uppercase, lowercase veya capitalize yerine none kullanýlabilir */
+}

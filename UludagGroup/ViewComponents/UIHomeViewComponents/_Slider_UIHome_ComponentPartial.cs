@@ -13,7 +13,7 @@ namespace UludagGroup.ViewComponents.UIHomeViewComponents
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            var response =await _sliderRepository.GetAllActiveSliderAsync();
+            var response =await _sliderRepository.GetAllActiveAsync();
             if (!response.Status)
             {
                 TempData["ErrorMessage"] = response.Message;

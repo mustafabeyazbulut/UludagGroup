@@ -1,12 +1,21 @@
-﻿<head>
-    <meta charset="utf-8">
-    <title>Tea House - Tea Shop Website Template</title>
+﻿@model HeadViewModel
+<head>
+    <meta charset="UTF-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="keywords">
     <meta content="" name="description">
 
     <!-- Favicon -->
-    <link href="@Url.Content("~/img/favicon.ico")" rel="icon">
+    @if (Model.faviconModel != null && !string.IsNullOrEmpty(Model.faviconModel.ImageUrl))
+    {
+        <link href="@Url.Content("~/Photos/Favicons/"+Model.faviconModel.ImageUrl)" rel="icon">
+        <title>@Model.faviconModel.Title</title>
+    }
+    else
+    {
+        <link href="@Url.Content("~/img/favicon.ico")" rel="icon">
+        <title>Uludağ Group</title>
+    }
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

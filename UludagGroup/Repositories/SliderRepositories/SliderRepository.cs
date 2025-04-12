@@ -11,13 +11,13 @@ namespace UludagGroup.Repositories.SliderRepositories
         {
         }
 
-        public async Task<ResponseViewModel<bool>> AddSliderAsync(CreateSliderViewModels model)
+        public async Task<ResponseViewModel<bool>> AddAsync(CreateSliderViewModels model)
         {
             var response = new ResponseViewModel<bool>();
             try
             {
-                string query = @"INSERT INTO Slider (StrongText, NormalText, ContentText, ButtonText, ButtonLink, ImageUrl, Active)
-                         VALUES (@StrongText, @NormalText, @ContentText, @ButtonText, @ButtonLink, @ImageUrl, @Active)";
+                string query = @"INSERT INTO Sliders (StrongText, NormalText, ContentText, ButtonText, ButtonLink, ImageUrl, IsFirst)
+                         VALUES (@StrongText, @NormalText, @ContentText, @ButtonText, @ButtonLink, @ImageUrl, @IsFirst)";
                 var parameters = new DynamicParameters();
                 parameters.Add("@StrongText", model.StrongText);
                 parameters.Add("@NormalText", model.NormalText);
@@ -25,7 +25,7 @@ namespace UludagGroup.Repositories.SliderRepositories
                 parameters.Add("@ButtonText", model.ButtonText);
                 parameters.Add("@ButtonLink", model.ButtonLink);
                 parameters.Add("@ImageUrl", model.ImageUrl);
-                parameters.Add("@Active", model.Active);
+                parameters.Add("@IsFirst", model.IsFirst);
                 using (var connection = _context.CreateConnection())
                 {
                     var affectedRows = await connection.ExecuteAsync(query, parameters);
@@ -43,36 +43,13 @@ namespace UludagGroup.Repositories.SliderRepositories
             }
             return response;
         }
-        public async Task<ResponseViewModel<List<SliderViewModel>>> GetAllSliderAsync()
+      
+        public async Task<ResponseViewModel<List<SliderViewModel>>> GetAllActiveAsync()
         {
             var response = new ResponseViewModel<List<SliderViewModel>>();
             try
             {
-                string query = "SELECT * FROM Slider";
-                using (var connection = _context.CreateConnection())
-                {
-                    var values = await connection.QueryAsync<SliderViewModel>(query);
-                    response.Status = true;
-                    response.Title = "Başarılı";
-                    response.Message = "Sliderlar başarıyla getirildi.";
-                    response.Data = values.ToList();
-                }
-            }
-            catch (Exception ex)
-            {
-                response.Status = false;
-                response.Title = "Hata";
-                response.Message = ex.Message;
-                response.Data = new List<SliderViewModel>();  // Boş bir liste döndürülüyor.
-            }
-            return response;
-        }
-        public async Task<ResponseViewModel<List<SliderViewModel>>> GetAllActiveSliderAsync()
-        {
-            var response = new ResponseViewModel<List<SliderViewModel>>();
-            try
-            {
-                string query = "SELECT * FROM Slider WHERE Active = 1";  // Active değeri true olanları getir
+                string query = "SELECT * FROM Sliders WHERE IsActive = 1";  // Active değeri true olanları getir
                 using (var connection = _context.CreateConnection())
                 {
                     var values = await connection.QueryAsync<SliderViewModel>(query);
@@ -91,13 +68,36 @@ namespace UludagGroup.Repositories.SliderRepositories
             }
             return response;
         }
-
-        public async Task<ResponseViewModel<SliderViewModel>> GetSliderAsync(int id)
+        public async Task<ResponseViewModel<List<SliderViewModel>>> GetAllAsync()
+        {
+            var response = new ResponseViewModel<List<SliderViewModel>>();
+            try
+            {
+                string query = "SELECT * FROM Sliders";
+                using (var connection = _context.CreateConnection())
+                {
+                    var values = await connection.QueryAsync<SliderViewModel>(query);
+                    response.Status = true;
+                    response.Title = "Başarılı";
+                    response.Message = "Sliderlar başarıyla getirildi.";
+                    response.Data = values.ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Status = false;
+                response.Title = "Hata";
+                response.Message = ex.Message;
+                response.Data = new List<SliderViewModel>();  // Boş bir liste döndürülüyor.
+            }
+            return response;
+        }
+        public async Task<ResponseViewModel<SliderViewModel>> GetAsync(int id)
         {
             var response = new ResponseViewModel<SliderViewModel>();
             try
             {
-                string query = "SELECT * FROM Slider WHERE Id = @Id";
+                string query = "SELECT * FROM Sliders WHERE Id = @Id";
                 var parameters = new DynamicParameters();
                 parameters.Add("@Id", id);
                 using (var connection = _context.CreateConnection())
@@ -127,12 +127,12 @@ namespace UludagGroup.Repositories.SliderRepositories
             }
             return response;
         }
-        public async Task<ResponseViewModel<bool>> RemoveSliderAsync(int id)
+        public async Task<ResponseViewModel<bool>> RemoveAsync(int id)
         {
             var response = new ResponseViewModel<bool>();
             try
             {
-                string query = "DELETE FROM Slider WHERE Id = @Id";
+                string query = "DELETE FROM Sliders WHERE Id = @Id";
                 var parameters = new DynamicParameters();
                 parameters.Add("@Id", id);
 
@@ -152,14 +152,63 @@ namespace UludagGroup.Repositories.SliderRepositories
             }
             return response;
         }
-        public async Task<ResponseViewModel<bool>> UpdateSliderAsync(UpdateSliderViewModel model)
+        public async Task<ResponseViewModel<bool>> SetFirstAsync(int id)
         {
             var response = new ResponseViewModel<bool>();
             try
             {
-                string query = "Update Slider Set StrongText=@StrongText, NormalText=@NormalText, " +
+                using (var connection = _context.CreateConnection())
+                {
+                    var queryResetAll = "UPDATE Sliders SET IsFirst = 0";
+                    var querySetOne = "UPDATE Sliders SET IsFirst = 1 WHERE Id = @Id";
+                    await connection.ExecuteAsync(queryResetAll);
+                    var affectedRows = await connection.ExecuteAsync(querySetOne, new { Id = id });
+                    response.Status = affectedRows > 0;
+                    response.Title = affectedRows > 0 ? "Başarılı" : "Güncelleme Başarısız";
+                    response.Message = affectedRows > 0 ? "Slider seçildi." : "Belirtilen slider bulunamadı.";
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Status = false;
+                response.Title = "Hata";
+                response.Message = ex.Message;
+            }
+            return response;
+        }
+        public async Task<ResponseViewModel<bool>> SetActiveStatusAsync(int id, bool isActive)
+        {
+            var response = new ResponseViewModel<bool>();
+            try
+            {
+                using (var connection = _context.CreateConnection())
+                {
+                    // Belirtilen slider'ın Active durumunu güncelleme
+                    var querySetActive = "UPDATE Sliders SET IsActive = @IsActive WHERE Id = @Id";
+
+                    var affectedRows = await connection.ExecuteAsync(querySetActive, new { IsActive = isActive ? 1 : 0, Id = id });
+
+                    response.Status = affectedRows > 0;
+                    response.Title = affectedRows > 0 ? "Başarılı" : "Güncelleme Başarısız";
+                    response.Message = affectedRows > 0 ? "Slider durumu güncellendi." : "Belirtilen slider bulunamadı.";
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Status = false;
+                response.Title = "Hata";
+                response.Message = ex.Message;
+            }
+            return response;
+        }
+        public async Task<ResponseViewModel<bool>> UpdateAsync(UpdateSliderViewModel model)
+        {
+            var response = new ResponseViewModel<bool>();
+            try
+            {
+                string query = "Update Sliders Set StrongText=@StrongText, NormalText=@NormalText, " +
                 " ContentText=@ContentText, ButtonText=@ButtonText, ButtonLink=@ButtonLink," +
-                " ImageUrl=@ImageUrl, Active=@Active " +
+                " ImageUrl=@ImageUrl, IsFirst=@IsFirst " +
                 " where Id=@Id";
                 var parameters = new DynamicParameters();
                 parameters.Add("@Id", model.Id);
@@ -169,7 +218,7 @@ namespace UludagGroup.Repositories.SliderRepositories
                 parameters.Add("@ButtonText", model.ButtonText);
                 parameters.Add("@ButtonLink", model.ButtonLink);
                 parameters.Add("@ImageUrl", model.ImageUrl);
-                parameters.Add("@Active", model.Active);
+                parameters.Add("@IsFirst", model.IsFirst);
                 using (var connection = _context.CreateConnection())
                 {
                     var affectedRows = await connection.ExecuteAsync(query, parameters);

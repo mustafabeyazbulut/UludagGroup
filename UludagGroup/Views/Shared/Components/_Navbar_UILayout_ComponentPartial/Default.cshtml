@@ -1,21 +1,32 @@
-﻿<!-- Navbar Start -->
+﻿@model NavBarViewModel
+<!-- Navbar Start -->
 <div class="container-fluid bg-white sticky-top">
     <div class="container">
         <nav class="navbar navbar-expand-lg bg-white navbar-light py-2 py-lg-0">
-            <a href="index.html" class="navbar-brand">
-                <img class="img-thumbnail" src="@Url.Content("~/img/logo.png?v=1.1")" alt="Logo" style="border:0px;">
+            <a href="@Url.Action("Index", "Home")" class="navbar-brand">
 
+                @if (Model.LogoModel != null && !string.IsNullOrEmpty(Model.LogoModel.ImageUrl))
+                {
+                    <img class="img-thumbnail" src="@Url.Content("~/Photos/Logos/"+Model.LogoModel.ImageUrl)" alt="Logo" style="border:0px;">
+                }
+                else
+                {
+                    <img class="img-thumbnail" src="@Url.Content("~/img/logo.png")" alt="Logo" style="border:0px;">
+                }
             </a>
             <button type="button" class="navbar-toggler ms-auto me-0" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <div class="navbar-nav ms-auto">
-                    <a href="index.html" class="nav-item nav-link active">Home</a>
-                    <a href="about.html" class="nav-item nav-link">About</a>
-                    <a href="product.html" class="nav-item nav-link">Products</a>
-                    <a href="store.html" class="nav-item nav-link">Store</a>
-                    <div class="nav-item dropdown">
+                    <a href="@Url.Action("Index", "Home")" class="nav-item nav-link @(ViewData["ActivePage"] != null && ViewData["ActivePage"].ToString() == "Home" ? "active" : "")">Anasayfa</a>
+                    <a href="@Url.Action("Index", "About")" class="nav-item nav-link @(ViewData["ActivePage"] != null && ViewData["ActivePage"].ToString() == "About" ? "active" : "")">Hakkımızda</a>
+                    <a href="@Url.Action("Index", "Product")" class="some-class nav-item nav-link @(ViewData["ActivePage"] != null && ViewData["ActivePage"].ToString() == "Product" ? "active" : "")">ÜRÜNLERİMİZ</a>
+                    <a href="@Url.Action("Index", "OurService")" class="some-class nav-item nav-link @(ViewData["ActivePage"] != null && ViewData["ActivePage"].ToString() == "OurService" ? "active" : "")">HİZMETLERİMİZ</a>
+                    <a href="@Url.Action("Index", "Reference")" class="some-class nav-item nav-link @(ViewData["ActivePage"] != null && ViewData["ActivePage"].ToString() == "Reference" ? "active" : "")">REFERANSLAR</a>
+                    <a href="@Url.Action("Index", "Contact")" class="some-class nav-item nav-link @(ViewData["ActivePage"] != null && ViewData["ActivePage"].ToString() == "Contact" ? "active" : "")">İLETİŞİM</a>
+                   
+                   @*  <div class="nav-item dropdown">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
                         <div class="dropdown-menu bg-light rounded-0 m-0">
                             <a href="feature.html" class="dropdown-item">Features</a>
@@ -23,12 +34,12 @@
                             <a href="testimonial.html" class="dropdown-item">Testimonial</a>
                             <a href="404.html" class="dropdown-item">404 Page</a>
                         </div>
-                    </div>
-                    <a href="contact.html" class="nav-item nav-link">Contact</a>
+                    </div> *@
+
                 </div>
-                <div class="border-start ps-4 d-none d-lg-block">
+                @* <div class="border-start ps-4 d-none d-lg-block">
                     <button type="button" class="btn btn-sm p-0"><i class="fa fa-search"></i></button>
-                </div>
+                </div> *@
             </div>
         </nav>
     </div>

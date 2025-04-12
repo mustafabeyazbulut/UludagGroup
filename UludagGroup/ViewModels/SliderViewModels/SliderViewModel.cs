@@ -9,6 +9,7 @@
         public string ButtonText { get; set; }
         public string ButtonLink { get; set; }
         public string ImageUrl { get; set; }
-        public bool Active { get; set; }
+        public bool IsFirst { get; set; }
+        public bool IsActive { get; set; }
     }
 }
