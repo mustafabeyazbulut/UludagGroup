@@ -22,6 +22,10 @@ namespace AlpayMakina.ViewComponents.UILayoutViewComponents
             {
                 head.faviconModel = responseFavicon.Data;
             }
+            else
+            {
+                TempData["ErrorMessage2"] = responseFavicon.Message;
+            }
             return View(head);
         }
     }

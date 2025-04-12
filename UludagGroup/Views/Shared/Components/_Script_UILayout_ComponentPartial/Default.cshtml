@@ -16,6 +16,7 @@
         // TempData'dan gelen mesajları JSON formatında al
         var successMessage = '@Html.Raw(Json.Serialize(TempData["SuccessMessage"]))';
         var errorMessage = '@Html.Raw(Json.Serialize(TempData["ErrorMessage"]))';
+        var errorMessage2 = '@Html.Raw(Json.Serialize(TempData["ErrorMessage2"]))';
         // Success mesajı varsa ve null/boş değilse göster
         if (successMessage && successMessage.trim() !== "null" && successMessage.trim() !== '') {
             swal("Başarılı!", successMessage, "success");
@@ -23,6 +24,9 @@
         // Error mesajı varsa ve null/boş değilse göster
         if (errorMessage && errorMessage.trim() !== "null" && errorMessage.trim() !== '') {
             swal("Hata!", errorMessage, "error");
+        }
+        if (errorMessage2 && errorMessage2.trim() !== "null" && errorMessage2.trim() !== '') {
+            console.log(errorMessage2);
         }
     });
 </script>

@@ -1,7 +1,5 @@
-﻿
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using UludagGroup.Repositories.LogoRepositories;
-using UludagGroup.ViewModels.HeadViewModels;
 using UludagGroup.ViewModels.NavBarViewModels;
 
 namespace AlpayMakina.ViewComponents.UILayoutViewComponents
@@ -22,6 +20,10 @@ namespace AlpayMakina.ViewComponents.UILayoutViewComponents
             if (responseLogo.Status)
             {
                 head.LogoModel = responseLogo.Data;
+            }
+            else
+            {
+                TempData["ErrorMessage2"] = responseLogo.Message;
             }
             return View(head);
         }

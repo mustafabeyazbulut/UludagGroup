@@ -16,7 +16,7 @@ namespace UludagGroup.ViewComponents.UIHomeViewComponents
             var response =await _sliderRepository.GetAllActiveAsync();
             if (!response.Status)
             {
-                TempData["ErrorMessage"] = response.Message;
+                TempData["ErrorMessage2"] = response.Message;
             }
             return View(response.Data);
         }
