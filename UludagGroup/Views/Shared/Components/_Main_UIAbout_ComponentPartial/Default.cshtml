@@ -1,0 +1,79 @@
+﻿@model AboutViewModel
+<!-- About Start -->
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="row g-5">
+            <div class="col-lg-6">
+                <div class="row g-3">
+                    <div class="col-6 text-end">
+                        @if (!string.IsNullOrEmpty(Model.LeftImage1))
+                        {
+                            <img class="img-fluid bg-white w-100 mb-3 wow fadeIn" data-wow-delay="0.1s" src="@Url.Content("~/Photos/Abouts/"+Model.LeftImage1)" alt="">
+                        };
+                        @if (!string.IsNullOrEmpty(Model.LeftImage3))
+                        {
+                            <img class="img-fluid bg-white w-50 wow fadeIn" data-wow-delay="0.2s" src="@Url.Content("~/Photos/Abouts/"+Model.LeftImage3)" alt="">
+                        }
+                    </div>
+                    <div class="col-6">
+                        @if (!string.IsNullOrEmpty(Model.LeftImage4))
+                        {
+                            <img class="img-fluid bg-white w-50 mb-3 wow fadeIn" data-wow-delay="0.3s" src="@Url.Content("~/Photos/Abouts/"+Model.LeftImage4)" alt="">
+                        }
+                        @if (!string.IsNullOrEmpty(Model.LeftImage2))
+                        {
+                            <img class="img-fluid bg-white w-100 wow fadeIn" data-wow-delay="0.4s" src="@Url.Content("~/Photos/Abouts/"+Model.LeftImage2)" alt="">
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 wow fadeIn" data-wow-delay="0.5s">
+                <div class="section-title">
+                    <p class="fs-5 fw-medium fst-italic text-primary">Hakkımızda</p>
+                    @if (!string.IsNullOrEmpty(Model.MainTitle))
+                    {
+                        <h1 class="display-6">@Model.MainTitle</h1>
+                    }
+                </div>
+                <div class="row g-3 mb-4">
+                    <div class="col-sm-4">
+                        @if (!string.IsNullOrEmpty(Model.Paragraph1Image))
+                        {
+                            <img class="img-fluid bg-white w-100" src="@Url.Content("~/Photos/Abouts/"+Model.Paragraph1Image)" alt="">
+                        }
+                    </div>
+                    <div class="col-sm-8">
+                        @if (!string.IsNullOrEmpty(Model.Paragraph1Title))
+                        {
+                            <h5>@Model.Paragraph1Title</h5>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.Paragraph1Text))
+                        {
+                            <p class="mb-0">@Model.Paragraph1Text</p>
+                        }
+                    </div>
+                </div>
+                <div class="border-top mb-4"></div>
+                <div class="row g-3">
+                    <div class="col-sm-8">
+                        @if (!string.IsNullOrEmpty(Model.Paragraph2Title))
+                        {
+                            <h5>@Model.Paragraph2Title</h5>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.Paragraph2Text))
+                        {
+                            <p class="mb-0">@Model.Paragraph2Text</p>
+                        }
+                    </div>
+                    <div class="col-sm-4">
+                        @if (!string.IsNullOrEmpty(Model.Paragraph2Image))
+                        {
+                            <img class="img-fluid bg-white w-100" src="@Url.Content("~/Photos/Abouts/"+Model.Paragraph2Image)" alt="">
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- About End -->

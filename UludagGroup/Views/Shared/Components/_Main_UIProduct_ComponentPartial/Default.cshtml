@@ -1,0 +1,63 @@
+﻿@model List<ProductViewModel>
+@{
+    int index = 1;
+}
+
+<!-- Store Start -->
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="section-title text-center mx-auto wow fadeInUp" data-wow-delay="0.1s" style="max-width: 500px;">
+            <p class="fs-5 fw-medium fst-italic text-primary">Ürünlerimiz</p>
+        </div>
+        <div class="row g-4">
+            @foreach (var product in Model)
+            {
+                var delay = (index * 0.1).ToString("0.0") + "s";
+                index = index + 2;
+                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="@delay.Replace(",", ".")">
+                    <div class="store-item position-relative text-center">
+                        @if (!string.IsNullOrWhiteSpace(product.ImageUrl))
+                        {
+                            <img class="img-fluid" src="@Url.Content("~/Photos/Products/" + product.ImageUrl)" alt="@product.Name" />
+                        }
+                        else
+                        {
+                            <div class="img-fluid" style="width:100%; aspect-ratio:1/1; background-color:transparent;"></div>
+                        }
+
+                        <div class="p-4">
+                            <div class="text-center mb-3">
+                                @for (int i = 0; i < 5; i++)
+                                {
+                                    if (i < product.Rating)
+                                    {
+                                        <small class="fa fa-star text-primary"></small>
+                                    }
+                                    else
+                                    {
+                                        <small class="fa fa-star text-secondary"></small>
+                                    }
+                                }
+                            </div>
+                            <h4 class="mb-3">
+                                @(string.IsNullOrWhiteSpace(product.Name) ? Html.Raw("&nbsp;") : product.Name)
+                            </h4>
+
+                            <p>@(string.IsNullOrWhiteSpace(product.Description) ? Html.Raw("&nbsp;") : product.Description)</p>
+                            <h4 class="text-primary">
+                                @(product.Price == 0 ? "Fiyat için arayın" : product.Price.ToString("C"))
+                            </h4>
+                        </div>
+                        <div class="store-overlay">
+                            <a href="@Url.Action("Detail", "Product", new { id = product.Id })" class="btn btn-primary rounded-pill py-2 px-4 m-2">
+                                Detaylar <i class="fa fa-arrow-right ms-2"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+<!-- Store End -->

@@ -1,26 +1,16 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using UludagGroup.Repositories.ContactRepositories;
 
 namespace UludagGroup.Controllers
 {
     public class ContactController : Controller
     {
-        private readonly IContactRepository _contactRepository;
-
-        public ContactController(IContactRepository contactRepository)
+        public ContactController( )
         {
-            _contactRepository = contactRepository;
         }
-
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var response =await _contactRepository.GetActiveAsync();
-            if (!response.Status)
-            {
-                TempData["ErrorMessage2"] = response.Message;
-            }
             ViewData["ActivePage"] = "Contact";
-            return View(response.Data);
+            return View();
         }
     }
 }

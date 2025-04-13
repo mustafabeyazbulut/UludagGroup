@@ -1,25 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using UludagGroup.Repositories.OurServiceRepositories;
 
 namespace UludagGroup.Controllers
 {
     public class OurServiceController : Controller
     {
-        private readonly IOurServiceRepository _ourServiceRepository;
 
-        public OurServiceController(IOurServiceRepository ourServiceRepository)
+        public OurServiceController()
         {
-            _ourServiceRepository = ourServiceRepository;
         }
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var response = await _ourServiceRepository.GetAllActiveAsync();
-            if (!response.Status)
-            {
-                TempData["ErrorMessage2"] = response.Message;
-            }
             ViewData["ActivePage"] = "OurService";
-            return View(response.Data);
+            return View();
         }
     }
 }
