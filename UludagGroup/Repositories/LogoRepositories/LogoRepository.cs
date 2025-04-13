@@ -15,8 +15,15 @@ namespace UludagGroup.Repositories.LogoRepositories
             var response = new ResponseViewModel<bool>();
             try
             {
-                string query = @"INSERT INTO Logos (Title, ImageUrl)
-                         VALUES ( @Title, @ImageUrl)";
+                string query = @"
+                                INSERT INTO Logos (
+                                    Title, 
+                                    ImageUrl
+                                ) 
+                                VALUES (
+                                    @Title, 
+                                    @ImageUrl
+                                )";
                 var parameters = new DynamicParameters();
                 parameters.Add("@Title", model.Title);
                 parameters.Add("@ImageUrl", model.ImageUrl);
@@ -206,7 +213,12 @@ namespace UludagGroup.Repositories.LogoRepositories
             var response = new ResponseViewModel<bool>();
             try
             {
-                string query = "Update Logos Set Title=@Title, ImageUrl=@ImageUrl where Id=@Id ";
+                string query = @"
+                                UPDATE Logos 
+                                SET 
+                                    Title = @Title, 
+                                    ImageUrl = @ImageUrl 
+                                WHERE Id = @Id";
                 var parameters = new DynamicParameters();
                 parameters.Add("@Id", model.Id);
                 parameters.Add("@Title", model.Title);

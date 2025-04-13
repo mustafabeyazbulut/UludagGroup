@@ -16,8 +16,25 @@ namespace UludagGroup.Repositories.SliderRepositories
             var response = new ResponseViewModel<bool>();
             try
             {
-                string query = @"INSERT INTO Sliders (StrongText, NormalText, ContentText, ButtonText, ButtonLink, ImageUrl, IsFirst)
-                         VALUES (@StrongText, @NormalText, @ContentText, @ButtonText, @ButtonLink, @ImageUrl, @IsFirst)";
+                string query = @"
+                                INSERT INTO Sliders (
+                                    StrongText, 
+                                    NormalText, 
+                                    ContentText, 
+                                    ButtonText, 
+                                    ButtonLink, 
+                                    ImageUrl, 
+                                    IsFirst
+                                ) 
+                                VALUES (
+                                    @StrongText, 
+                                    @NormalText, 
+                                    @ContentText, 
+                                    @ButtonText, 
+                                    @ButtonLink, 
+                                    @ImageUrl, 
+                                    @IsFirst
+                                )";
                 var parameters = new DynamicParameters();
                 parameters.Add("@StrongText", model.StrongText);
                 parameters.Add("@NormalText", model.NormalText);
@@ -43,7 +60,6 @@ namespace UludagGroup.Repositories.SliderRepositories
             }
             return response;
         }
-      
         public async Task<ResponseViewModel<List<SliderViewModel>>> GetAllActiveAsync()
         {
             var response = new ResponseViewModel<List<SliderViewModel>>();
@@ -206,10 +222,17 @@ namespace UludagGroup.Repositories.SliderRepositories
             var response = new ResponseViewModel<bool>();
             try
             {
-                string query = "Update Sliders Set StrongText=@StrongText, NormalText=@NormalText, " +
-                " ContentText=@ContentText, ButtonText=@ButtonText, ButtonLink=@ButtonLink," +
-                " ImageUrl=@ImageUrl, IsFirst=@IsFirst " +
-                " where Id=@Id";
+                string query = @"
+                                UPDATE Sliders 
+                                SET 
+                                    StrongText = @StrongText, 
+                                    NormalText = @NormalText, 
+                                    ContentText = @ContentText, 
+                                    ButtonText = @ButtonText, 
+                                    ButtonLink = @ButtonLink, 
+                                    ImageUrl = @ImageUrl, 
+                                    IsFirst = @IsFirst 
+                                WHERE Id = @Id";
                 var parameters = new DynamicParameters();
                 parameters.Add("@Id", model.Id);
                 parameters.Add("@StrongText", model.StrongText);

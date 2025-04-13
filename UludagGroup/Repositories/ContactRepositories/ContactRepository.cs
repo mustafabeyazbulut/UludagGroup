@@ -15,8 +15,28 @@ namespace UludagGroup.Repositories.ContactRepositories
             var response = new ResponseViewModel<bool>();
             try
             {
-                string query = @"INSERT INTO Contacts (ContentBody, PrimaryEmail,SecondaryEmail,PrimaryPhone,SecondaryPhone,PrimaryAddress,SecondaryAddress,MapUrl)
-                         VALUES ( @ContentBody, @PrimaryEmail,@SecondaryEmail,@PrimaryPhone,@SecondaryPhone,@PrimaryAddress,@SecondaryAddress,@MapUrl)";
+                string query = @"
+                                INSERT INTO Contacts (
+                                    ContentBody, 
+                                    PrimaryEmail,
+                                    SecondaryEmail,
+                                    PrimaryPhone,
+                                    SecondaryPhone,
+                                    PrimaryAddress,
+                                    SecondaryAddress,
+                                    MapUrl
+                                ) 
+                                VALUES (
+                                    @ContentBody, 
+                                    @PrimaryEmail,
+                                    @SecondaryEmail,
+                                    @PrimaryPhone,
+                                    @SecondaryPhone,
+                                    @PrimaryAddress,
+                                    @SecondaryAddress,
+                                    @MapUrl
+                                )";
+
                 var parameters = new DynamicParameters();
                 parameters.Add("@ContentBody", model.ContentBody);
                 parameters.Add("@PrimaryEmail", model.PrimaryEmail);
@@ -212,12 +232,17 @@ namespace UludagGroup.Repositories.ContactRepositories
             var response = new ResponseViewModel<bool>();
             try
             {
-                string query = "Update Contacts Set ContentBody=@ContentBody, " +
-                    "PrimaryEmail=@PrimaryEmail,SecondaryEmail=@SecondaryEmail," +
-                    "PrimaryPhone=@PrimaryPhone,SecondaryPhone=@SecondaryPhone" +
-                    "PrimaryAddress=@PrimaryAddress,SecondaryAddress=@SecondaryAddress" +
-                    "MapUrl=@MapUrl " +
-                    "where Id=@Id ";
+                string query = "UPDATE Contacts SET " +
+                                 "ContentBody = @ContentBody, " +
+                                 "PrimaryEmail = @PrimaryEmail, " +
+                                 "SecondaryEmail = @SecondaryEmail, " +
+                                 "PrimaryPhone = @PrimaryPhone, " +
+                                 "SecondaryPhone = @SecondaryPhone, " +
+                                 "PrimaryAddress = @PrimaryAddress, " +
+                                 "SecondaryAddress = @SecondaryAddress, " +
+                                 "MapUrl = @MapUrl " +
+                                 "WHERE Id = @Id";
+
                 var parameters = new DynamicParameters();
                 parameters.Add("@Id", model.Id);
                 parameters.Add("@ContentBody", model.ContentBody);

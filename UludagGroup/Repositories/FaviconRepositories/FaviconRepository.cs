@@ -15,8 +15,16 @@ namespace UludagGroup.Repositories.FaviconRepositories
             var response = new ResponseViewModel<bool>();
             try
             {
-                string query = @"INSERT INTO Favicons (Title, ImageUrl)
-                         VALUES ( @Title, @ImageUrl)";
+                string query = @"
+                                INSERT INTO Favicons (
+                                    Title, 
+                                    ImageUrl
+                                ) 
+                                VALUES (
+                                    @Title, 
+                                    @ImageUrl
+                                )";
+
                 var parameters = new DynamicParameters();
                 parameters.Add("@Title", model.Title);
                 parameters.Add("@ImageUrl", model.ImageUrl);
@@ -206,7 +214,13 @@ namespace UludagGroup.Repositories.FaviconRepositories
             var response = new ResponseViewModel<bool>();
             try
             {
-                string query = "Update Favicons Set Title=@Title, ImageUrl=@ImageUrl where Id=@Id ";
+                string query = @"
+                                UPDATE Favicons 
+                                SET 
+                                    Title = @Title, 
+                                    ImageUrl = @ImageUrl 
+                                WHERE Id = @Id";
+
                 var parameters = new DynamicParameters();
                 parameters.Add("@Id", model.Id);
                 parameters.Add("@Title", model.Title);
