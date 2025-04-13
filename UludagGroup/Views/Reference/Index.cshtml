@@ -1,4 +1,4 @@
-﻿
+﻿@model List<ReferenceViewModel>
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/UILayout/Index.cshtml";
@@ -6,3 +6,37 @@
 
 @await Component.InvokeAsync("_PageHeader_Generic_ComponentPartial", new { pageTitle = "Referanslar" })
 
+<!-- Referanslar Başlangıç -->
+<div class="container-fluid py-5 bg-light">
+    <div class="container">
+        <div class="section-title text-center mx-auto wow fadeInUp" data-wow-delay="0.1s" style="max-width: 500px;">
+            <p class="fs-5 fw-medium fst-italic text-primary">Referanslar</p>
+            <h2 class="display-6">Birlikte Çalıştığımız Değerli İş Ortaklarımız</h2>
+        </div>
+        <div class="owl-carousel testimonial-carousel wow fadeInUp" data-wow-delay="0.5s">
+            @foreach (var item in Model)
+            {
+                <div class="testimonial-item bg-white shadow rounded p-4 p-lg-5">
+                    @if (!string.IsNullOrEmpty(item.Description))
+                    {
+                        <p class="mb-4 fst-italic">@item.Description</p>
+                    }
+                    <div class="d-flex align-items-center justify-content-center">
+                        @if (!string.IsNullOrEmpty(item.ImageUrl))
+                        {
+                            <img class="img-fluid flex-shrink-0 rounded-circle" src="@Url.Content("~/Photos/Referances/"+item.ImageUrl)" alt="" style="width: 60px; height: 60px;">
+                        }
+                        <div class="text-start ms-3">
+                            @if (!string.IsNullOrEmpty(item.CompanyName))
+                            {
+                                <h5 class="mb-0">@item.CompanyName</h5>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+            <!-- Diğer referanslar buraya eklenebilir -->
+        </div>
+    </div>
+</div>
+<!-- Referanslar Bitiş -->
