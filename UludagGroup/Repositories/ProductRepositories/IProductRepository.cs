@@ -7,6 +7,7 @@ namespace UludagGroup.Repositories.ProductRepositories
     {
         Task<ResponseViewModel<List<ProductViewModel>>> GetAllAsync();
         Task<ResponseViewModel<List<ProductViewModel>>> GetAllActiveAsync();
+        Task<ResponseViewModel<List<ProductViewModel>>> GetAllActiveFeaturedAsync();
         Task<ResponseViewModel<ProductViewModel>> GetAsync(int id);
         Task<ResponseViewModel<bool>> AddAsync(CreateProductViewModel model);
         Task<ResponseViewModel<bool>> UpdateAsync(UpdateProductViewModel model);

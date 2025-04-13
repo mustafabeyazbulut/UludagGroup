@@ -1,0 +1,35 @@
+﻿@model List<ProductViewModel>
+
+<!-- Products Start -->
+<div class="container-fluid product py-5">
+    <div class="container py-5">
+        <div class="section-title text-center mx-auto wow fadeInUp" data-wow-delay="0.1s" style="max-width: 500px;">
+            <p class="fs-5 fw-medium fst-italic text-primary">Öne Çıkanlar</p>
+        </div>
+        <div class="owl-carousel product-carousel wow fadeInUp" data-wow-delay="0.5s">
+            @foreach (var product in Model)
+            {
+                <a href="@Url.Action("Detail", "Product", new { id = product.Id })" class="d-block product-item rounded">
+                    @if (!string.IsNullOrWhiteSpace(product.ImageUrl))
+                    {
+                        <img src="@Url.Content("~/Photos/Products/" + product.ImageUrl)" alt="">
+                    }
+                    else
+                    {
+                        <div style="width:100%; aspect-ratio:1/1; background-color:transparent;"></div>
+                    }
+                    <div class="bg-white shadow-sm text-center p-4 position-relative mt-n5 mx-4">
+                        <h4 class="text-primary">
+                            @(string.IsNullOrWhiteSpace(product.Name) ? Html.Raw("&nbsp;") : product.Name)
+                        </h4>
+                        <span class="text-body">
+                            @(string.IsNullOrWhiteSpace(product.Description) ? Html.Raw("&nbsp;") : product.Description)
+                        </span>
+                    </div>
+                </a>
+            }
+            
+        </div>
+    </div>
+</div>
+<!-- Products End -->

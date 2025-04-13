@@ -2,9 +2,6 @@
 using UludagGroup.Models.Contexts;
 using UludagGroup.ViewModels;
 using UludagGroup.ViewModels.ProductViewModels;
-using UludagGroup.ViewModels.ProductViewModels;
-using UludagGroup.ViewModels.ProductViewModels;
-using UludagGroup.ViewModels.ProductViewModels;
 
 namespace UludagGroup.Repositories.ProductRepositories
 {
@@ -62,6 +59,30 @@ namespace UludagGroup.Repositories.ProductRepositories
             try
             {
                 string query = "SELECT * FROM Products WHERE IsActive = 1";
+                using (var connection = _context.CreateConnection())
+                {
+                    var values = await connection.QueryAsync<ProductViewModel>(query);
+                    response.Status = true;
+                    response.Title = "Başarılı";
+                    response.Message = "Aktif Productlar başarıyla getirildi.";
+                    response.Data = values.ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Status = false;
+                response.Title = "Hata";
+                response.Message = ex.Message;
+                response.Data = new List<ProductViewModel>();
+            }
+            return response;
+        }
+        public async Task<ResponseViewModel<List<ProductViewModel>>> GetAllActiveFeaturedAsync()
+        {
+            var response = new ResponseViewModel<List<ProductViewModel>>();
+            try
+            {
+                string query = "SELECT * FROM Products WHERE IsActive = 1 and IsFeatured = 1";
                 using (var connection = _context.CreateConnection())
                 {
                     var values = await connection.QueryAsync<ProductViewModel>(query);
