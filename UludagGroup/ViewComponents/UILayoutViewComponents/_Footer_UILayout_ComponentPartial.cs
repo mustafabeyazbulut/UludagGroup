@@ -2,6 +2,7 @@
 using UludagGroup.Repositories.ContactRepositories;
 using UludagGroup.Repositories.FaviconRepositories;
 using UludagGroup.Repositories.SocialMediaRepositories;
+using UludagGroup.Repositories.WorkingHourRepositories;
 using UludagGroup.ViewModels.FooterViewModels;
 
 namespace UludagGroup.ViewComponents.UILayoutViewComponents
@@ -11,11 +12,17 @@ namespace UludagGroup.ViewComponents.UILayoutViewComponents
         private readonly IFaviconRepository _faviconRepository;
         private readonly IContactRepository _contactRepository;
         private readonly ISocialMediaRepository _socialMediaRepository;
-        public _Footer_UILayout_ComponentPartial(IFaviconRepository faviconRepository, IContactRepository contactRepository, ISocialMediaRepository socialMediaRepository)
+        private readonly IWorkingHourRepository _workingHourRepository;
+        public _Footer_UILayout_ComponentPartial(
+            IFaviconRepository faviconRepository,
+            IContactRepository contactRepository,
+            ISocialMediaRepository socialMediaRepository,
+            IWorkingHourRepository workingHourRepository)
         {
             _faviconRepository = faviconRepository;
             _contactRepository = contactRepository;
             _socialMediaRepository = socialMediaRepository;
+            _workingHourRepository = workingHourRepository;
         }
 
         public async Task<IViewComponentResult> InvokeAsync()
@@ -48,6 +55,16 @@ namespace UludagGroup.ViewComponents.UILayoutViewComponents
             else
             {
                 TempData["ErrorMessage2"] = Environment.NewLine + responseSocialMedia.Message;
+            }
+
+            var responseWorkingHour = await _workingHourRepository.GetAllActiveAsync();
+            if (responseWorkingHour.Status)
+            {
+                footer.WorkingHourModel.AddRange(responseWorkingHour.Data);
+            }
+            else
+            {
+                TempData["ErrorMessage2"] = Environment.NewLine + responseWorkingHour.Message;
             }
             return View(footer);
         }

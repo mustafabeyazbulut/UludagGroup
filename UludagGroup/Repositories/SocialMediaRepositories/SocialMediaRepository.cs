@@ -221,7 +221,6 @@ namespace UludagGroup.Repositories.SocialMediaRepositories
             }
             return response;
         }
-
         public async Task<ResponseViewModel<bool>> UpdateAsync(UpdateSocialMediaViewModel model)
         {
             var response = new ResponseViewModel<bool>();
