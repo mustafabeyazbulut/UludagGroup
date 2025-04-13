@@ -2,9 +2,6 @@
 using UludagGroup.Models.Contexts;
 using UludagGroup.ViewModels;
 using UludagGroup.ViewModels.ReferenceViewModels;
-using UludagGroup.ViewModels.ReferenceViewModels;
-using UludagGroup.ViewModels.ReferenceViewModels;
-using UludagGroup.ViewModels.ReferenceViewModels;
 
 namespace UludagGroup.Repositories.ReferenceRepositories
 {
@@ -165,8 +162,8 @@ namespace UludagGroup.Repositories.ReferenceRepositories
             {
                 using (var connection = _context.CreateConnection())
                 {
-                    var querySetOne = "UPDATE BusinessReferences SET IsActive = 1 WHERE Id = @Id";
-                    var affectedRows = await connection.ExecuteAsync(querySetOne, new { Id = id });
+                    var querySetOne = "UPDATE BusinessReferences SET IsActive = @IsActive WHERE Id = @Id";
+                    var affectedRows = await connection.ExecuteAsync(querySetOne, new { IsActive = isActive ? 1 : 0, Id = id });
                     response.Status = affectedRows > 0;
                     response.Title = affectedRows > 0 ? "Başarılı" : "Güncelleme Başarısız";
                     response.Message = affectedRows > 0 ? "Reference seçildi." : "Belirtilen Reference bulunamadı.";

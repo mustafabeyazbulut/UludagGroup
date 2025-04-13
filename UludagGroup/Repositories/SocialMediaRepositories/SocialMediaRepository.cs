@@ -1,39 +1,46 @@
 ﻿using Dapper;
 using UludagGroup.Models.Contexts;
 using UludagGroup.ViewModels;
-using UludagGroup.ViewModels.LogoViewModels;
+using UludagGroup.ViewModels.SocialMediaViewModels;
 
-namespace UludagGroup.Repositories.LogoRepositories
+namespace UludagGroup.Repositories.SocialMediaRepositories
 {
-    public class LogoRepository : BaseRepository, ILogoRepository
+    public class SocialMediaRepository : BaseRepository, ISocialMediaRepository
     {
-        public LogoRepository(Context context) : base(context)
+        public SocialMediaRepository(Context context) : base(context)
         {
         }
-        public async Task<ResponseViewModel<bool>> AddAsync(CreateLogoViewModel model)
+        public async Task<ResponseViewModel<bool>> AddAsync(CreateSocialMediaViewModel model)
         {
             var response = new ResponseViewModel<bool>();
             try
             {
                 string query = @"
-                                INSERT INTO Logos (
-                                    Title, 
-                                    ImageUrl
+                                INSERT INTO SocialMedia (
+                                    Twitter, 
+                                    Facebook,
+                                    Youtube,
+                                    Linkedin
                                 ) 
                                 VALUES (
-                                    @Title, 
-                                    @ImageUrl
+                                    @Twitter, 
+                                    @Facebook,
+                                    @Youtube,
+                                    @Linkedin
                                 )";
+
                 var parameters = new DynamicParameters();
-                parameters.Add("@Title", model.Title);
-                parameters.Add("@ImageUrl", model.ImageUrl);
+                parameters.Add("@Twitter", model.Twitter);
+                parameters.Add("@Facebook", model.Facebook);
+                parameters.Add("@Youtube", model.Youtube);
+                parameters.Add("@Linkedin", model.Linkedin);
                 using (var connection = _context.CreateConnection())
                 {
                     var affectedRows = await connection.ExecuteAsync(query, parameters);
 
                     response.Status = affectedRows > 0;
                     response.Title = affectedRows > 0 ? "Başarılı" : "Ekleme Başarısız";
-                    response.Message = affectedRows > 0 ? "Yeni Logo başarıyla eklendi." : "Logo eklenemedi.";
+                    response.Message = affectedRows > 0 ? "Yeni SocialMedia başarıyla eklendi." : "SocialMedia eklenemedi.";
                 }
             }
             catch (Exception ex)
@@ -44,27 +51,27 @@ namespace UludagGroup.Repositories.LogoRepositories
             }
             return response;
         }
-        public async Task<ResponseViewModel<LogoViewModel>> GetActiveAsync()
+        public async Task<ResponseViewModel<SocialMediaViewModel>> GetActiveAsync()
         {
-            var response = new ResponseViewModel<LogoViewModel>();
+            var response = new ResponseViewModel<SocialMediaViewModel>();
             try
             {
-                string query = "SELECT TOP 1 * FROM Logos WHERE IsActive = 1";  // Aktif olan ilk logoyu getir
+                string query = "SELECT TOP 1 * FROM SocialMedia WHERE IsActive = 1"; 
                 using (var connection = _context.CreateConnection())
                 {
-                    var value = await connection.QueryFirstOrDefaultAsync<LogoViewModel>(query);
+                    var value = await connection.QueryFirstOrDefaultAsync<SocialMediaViewModel>(query);
                     if (value != null)
                     {
                         response.Status = true;
                         response.Title = "Başarılı";
-                        response.Message = "Aktif logo başarıyla getirildi.";
+                        response.Message = "Aktif SocialMedia başarıyla getirildi.";
                         response.Data = value;
                     }
                     else
                     {
                         response.Status = false;
-                        response.Title = "Logo Bulunamadı";
-                        response.Message = "Aktif bir logo bulunamadı.";
+                        response.Title = "SocialMedia Bulunamadı";
+                        response.Message = "Aktif bir SocialMedia bulunamadı.";
                     }
                 }
             }
@@ -76,18 +83,18 @@ namespace UludagGroup.Repositories.LogoRepositories
             }
             return response;
         }
-        public async Task<ResponseViewModel<List<LogoViewModel>>> GetAllActiveAsync()
+        public async Task<ResponseViewModel<List<SocialMediaViewModel>>> GetAllActiveAsync()
         {
-            var response = new ResponseViewModel<List<LogoViewModel>>();
+            var response = new ResponseViewModel<List<SocialMediaViewModel>>();
             try
             {
-                string query = "SELECT * FROM Logos WHERE IsActive = 1";  // Active değeri true olanları getir
+                string query = "SELECT * FROM SocialMedia WHERE IsActive = 1";  // Active değeri true olanları getir
                 using (var connection = _context.CreateConnection())
                 {
-                    var values = await connection.QueryAsync<LogoViewModel>(query);
+                    var values = await connection.QueryAsync<SocialMediaViewModel>(query);
                     response.Status = true;
                     response.Title = "Başarılı";
-                    response.Message = "Aktif logolar başarıyla getirildi.";
+                    response.Message = "Aktif SocialMedialar başarıyla getirildi.";
                     response.Data = values.ToList();
                 }
             }
@@ -96,22 +103,22 @@ namespace UludagGroup.Repositories.LogoRepositories
                 response.Status = false;
                 response.Title = "Hata";
                 response.Message = ex.Message;
-                response.Data = new List<LogoViewModel>();
+                response.Data = new List<SocialMediaViewModel>();
             }
             return response;
         }
-        public async Task<ResponseViewModel<List<LogoViewModel>>> GetAllAsync()
+        public async Task<ResponseViewModel<List<SocialMediaViewModel>>> GetAllAsync()
         {
-            var response = new ResponseViewModel<List<LogoViewModel>>();
+            var response = new ResponseViewModel<List<SocialMediaViewModel>>();
             try
             {
-                string query = "SELECT * FROM Logos";
+                string query = "SELECT * FROM SocialMedia";
                 using (var connection = _context.CreateConnection())
                 {
-                    var values = await connection.QueryAsync<LogoViewModel>(query);
+                    var values = await connection.QueryAsync<SocialMediaViewModel>(query);
                     response.Status = true;
                     response.Title = "Başarılı";
-                    response.Message = "Logolar başarıyla getirildi.";
+                    response.Message = "SocialMedialar başarıyla getirildi.";
                     response.Data = values.ToList();
                 }
             }
@@ -120,34 +127,34 @@ namespace UludagGroup.Repositories.LogoRepositories
                 response.Status = false;
                 response.Title = "Hata";
                 response.Message = ex.Message;
-                response.Data = new List<LogoViewModel>();  // Boş bir liste döndürülüyor.
+                response.Data = new List<SocialMediaViewModel>();  // Boş bir liste döndürülüyor.
             }
             return response;
         }
-        public async Task<ResponseViewModel<LogoViewModel>> GetAsync(int id)
+        public async Task<ResponseViewModel<SocialMediaViewModel>> GetAsync(int id)
         {
-            var response = new ResponseViewModel<LogoViewModel>();
+            var response = new ResponseViewModel<SocialMediaViewModel>();
             try
             {
-                string query = "SELECT * FROM Logos WHERE Id = @Id";
+                string query = "SELECT * FROM SocialMedia WHERE Id = @Id";
                 var parameters = new DynamicParameters();
                 parameters.Add("@Id", id);
                 using (var connection = _context.CreateConnection())
                 {
-                    var values = await connection.QueryFirstOrDefaultAsync<LogoViewModel>(query, parameters);
+                    var values = await connection.QueryFirstOrDefaultAsync<SocialMediaViewModel>(query, parameters);
 
                     if (values != null)
                     {
                         response.Status = true;
                         response.Title = "Başarılı";
-                        response.Message = "Logo başarıyla bulundu.";
+                        response.Message = "SocialMedia başarıyla bulundu.";
                         response.Data = values;
                     }
                     else
                     {
                         response.Status = false;
                         response.Title = "Silinmiş veya Bulunamayan Kayıt";
-                        response.Message = "Veritabanında belirtilen ID ile ilişkili logo bulunamadı.";
+                        response.Message = "Veritabanında belirtilen ID ile ilişkili SocialMedia bulunamadı.";
                     }
                 }
             }
@@ -164,7 +171,7 @@ namespace UludagGroup.Repositories.LogoRepositories
             var response = new ResponseViewModel<bool>();
             try
             {
-                string query = "DELETE FROM Logos WHERE Id = @Id";
+                string query = "DELETE FROM SocialMedias WHERE Id = @Id";
                 var parameters = new DynamicParameters();
                 parameters.Add("@Id", id);
 
@@ -173,7 +180,7 @@ namespace UludagGroup.Repositories.LogoRepositories
                     var affectedRows = await connection.ExecuteAsync(query, parameters);
                     response.Status = affectedRows > 0;
                     response.Title = affectedRows > 0 ? "Başarılı" : "Silme Başarısız";
-                    response.Message = affectedRows > 0 ? "Logo başarıyla silindi." : "Logo silinemedi.";
+                    response.Message = affectedRows > 0 ? "SocialMedia başarıyla silindi." : "SocialMedia silinemedi.";
                 }
             }
             catch (Exception ex)
@@ -191,16 +198,19 @@ namespace UludagGroup.Repositories.LogoRepositories
             {
                 using (var connection = _context.CreateConnection())
                 {
-                    var queryResetAll = "UPDATE Logos SET IsActive = 0";
-                    var querySetOne = "UPDATE Logos SET IsActive = @IsActive WHERE Id = @Id";
+                    var queryResetAll = "UPDATE SocialMedia SET IsActive = 0";
+                    var querySetOne = "UPDATE SocialMedia SET IsActive = @IsActive WHERE Id = @Id";
                     if (isActive)
                     {
                         await connection.ExecuteAsync(queryResetAll);
                     }
-                    var affectedRows = await connection.ExecuteAsync(querySetOne, new { IsActive = isActive ? 1 : 0, Id = id });
+                    var affectedRows = await connection.ExecuteAsync(querySetOne, new { Id = id, IsActive = isActive });
+
                     response.Status = affectedRows > 0;
                     response.Title = affectedRows > 0 ? "Başarılı" : "Güncelleme Başarısız";
-                    response.Message = affectedRows > 0 ? "Logo seçildi." : "Belirtilen Logo bulunamadı.";
+                    response.Message = affectedRows > 0
+                        ? $"SocialMedia {(isActive ? "aktif" : "pasif")} hale getirildi."
+                        : "Belirtilen SocialMedia bulunamadı.";
                 }
             }
             catch (Exception ex)
@@ -211,27 +221,31 @@ namespace UludagGroup.Repositories.LogoRepositories
             }
             return response;
         }
-        public async Task<ResponseViewModel<bool>> UpdateAsync(UpdateLogoViewModel model)
+
+        public async Task<ResponseViewModel<bool>> UpdateAsync(UpdateSocialMediaViewModel model)
         {
             var response = new ResponseViewModel<bool>();
             try
             {
-                string query = @"
-                                UPDATE Logos 
-                                SET 
-                                    Title = @Title, 
-                                    ImageUrl = @ImageUrl 
-                                WHERE Id = @Id";
+                string query = "UPDATE SocialMedia SET " +
+                                 "Twitter = @Twitter, " +
+                                 "Facebook = @Facebook, " +
+                                 "Youtube = @Youtube, " +
+                                 "Linkedin = @Linkedin " +
+                                 "WHERE Id = @Id";
+
                 var parameters = new DynamicParameters();
                 parameters.Add("@Id", model.Id);
-                parameters.Add("@Title", model.Title);
-                parameters.Add("@ImageUrl", model.ImageUrl);
+                parameters.Add("@Twitter", model.Twitter);
+                parameters.Add("@Facebook", model.Facebook);
+                parameters.Add("@Youtube", model.Youtube);
+                parameters.Add("@Linkedin", model.Linkedin);
                 using (var connection = _context.CreateConnection())
                 {
                     var affectedRows = await connection.ExecuteAsync(query, parameters);
                     response.Status = affectedRows > 0;
                     response.Title = affectedRows > 0 ? "Başarılı" : "Güncelleme Başarısız";
-                    response.Message = affectedRows > 0 ? "Logo güncellendi." : "Logo bulunamadı veya güncellenemedi.";
+                    response.Message = affectedRows > 0 ? "SocialMedia güncellendi." : "SocialMedia bulunamadı veya güncellenemedi.";
                 }
             }
             catch (Exception ex)

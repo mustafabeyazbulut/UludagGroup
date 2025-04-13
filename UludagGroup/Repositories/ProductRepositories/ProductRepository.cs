@@ -1,77 +1,73 @@
 ﻿using Dapper;
 using UludagGroup.Models.Contexts;
 using UludagGroup.ViewModels;
-using UludagGroup.ViewModels.SliderViewModels;
+using UludagGroup.ViewModels.ProductViewModels;
+using UludagGroup.ViewModels.ProductViewModels;
+using UludagGroup.ViewModels.ProductViewModels;
+using UludagGroup.ViewModels.ProductViewModels;
 
-namespace UludagGroup.Repositories.SliderRepositories
+namespace UludagGroup.Repositories.ProductRepositories
 {
-    public class SliderRepository : BaseRepository, ISliderRepository
+    public class ProductRepository : BaseRepository, IProductRepository
     {
-        public SliderRepository(Context context) : base(context)
+        public ProductRepository(Context context) : base(context)
         {
         }
-
-        public async Task<ResponseViewModel<bool>> AddAsync(CreateSliderViewModels model)
+        public async Task<ResponseViewModel<bool>> AddAsync(CreateProductViewModel model)
         {
             var response = new ResponseViewModel<bool>();
             try
             {
                 string query = @"
-                                INSERT INTO Sliders (
-                                    StrongText, 
-                                    NormalText, 
-                                    ContentText, 
-                                    ButtonText, 
-                                    ButtonLink, 
-                                    ImageUrl, 
-                                    IsFirst
+                                INSERT INTO Products (
+                                    Name, 
+                                    Description,
+                                    Price,
+                                    ImageUrl,
+                                    Rating
                                 ) 
                                 VALUES (
-                                    @StrongText, 
-                                    @NormalText, 
-                                    @ContentText, 
-                                    @ButtonText, 
-                                    @ButtonLink, 
-                                    @ImageUrl, 
-                                    @IsFirst
+                                    @Name, 
+                                    @Description,
+                                    @Price,
+                                    @ImageUrl,
+                                    @Rating,
                                 )";
                 var parameters = new DynamicParameters();
-                parameters.Add("@StrongText", model.StrongText);
-                parameters.Add("@NormalText", model.NormalText);
-                parameters.Add("@ContentText", model.ContentText);
-                parameters.Add("@ButtonText", model.ButtonText);
-                parameters.Add("@ButtonLink", model.ButtonLink);
+                parameters.Add("@Name", model.Name);
+                parameters.Add("@Description", model.Description);
+                parameters.Add("@Price", model.Price);
                 parameters.Add("@ImageUrl", model.ImageUrl);
-                parameters.Add("@IsFirst", model.IsFirst);
+                parameters.Add("@Rating", model.Rating);
                 using (var connection = _context.CreateConnection())
                 {
                     var affectedRows = await connection.ExecuteAsync(query, parameters);
 
                     response.Status = affectedRows > 0;
                     response.Title = affectedRows > 0 ? "Başarılı" : "Ekleme Başarısız";
-                    response.Message = affectedRows > 0 ? "Yeni slider başarıyla eklendi." : "Slider eklenemedi.";
+                    response.Message = affectedRows > 0 ? "Yeni Product başarıyla eklendi." : "Product eklenemedi.";
                 }
             }
             catch (Exception ex)
             {
                 response.Status = false;
                 response.Title = "Hata";
-                response.Message =  ex.Message;
+                response.Message = ex.Message;
             }
             return response;
         }
-        public async Task<ResponseViewModel<List<SliderViewModel>>> GetAllActiveAsync()
+        public async Task<ResponseViewModel<List<ProductViewModel>>> GetAllActiveAsync()
         {
-            var response = new ResponseViewModel<List<SliderViewModel>>();
+            var response = new ResponseViewModel<List<ProductViewModel>>();
             try
             {
-                string query = "SELECT * FROM Sliders WHERE IsActive = 1";  // Active değeri true olanları getir
+                string query = "SELECT * FROM Products WHERE IsActive = 1";
                 using (var connection = _context.CreateConnection())
                 {
-                    var values = await connection.QueryAsync<SliderViewModel>(query);
+                    var values = await connection.QueryAsync<ProductViewModel>(query);
                     response.Status = true;
                     response.Title = "Başarılı";
-                    response.Message = "Aktif sliderlar başarıyla getirildi.";
+                    response.Message = "Aktif Productlar başarıyla getirildi.";
                     response.Data = values.ToList();
                 }
             }
@@ -80,22 +76,22 @@ namespace UludagGroup.Repositories.SliderRepositories
                 response.Status = false;
                 response.Title = "Hata";
                 response.Message = ex.Message;
-                response.Data = new List<SliderViewModel>();  
+                response.Data = new List<ProductViewModel>();
             }
             return response;
         }
-        public async Task<ResponseViewModel<List<SliderViewModel>>> GetAllAsync()
+        public async Task<ResponseViewModel<List<ProductViewModel>>> GetAllAsync()
         {
-            var response = new ResponseViewModel<List<SliderViewModel>>();
+            var response = new ResponseViewModel<List<ProductViewModel>>();
             try
             {
-                string query = "SELECT * FROM Sliders";
+                string query = "SELECT * FROM Products";
                 using (var connection = _context.CreateConnection())
                 {
-                    var values = await connection.QueryAsync<SliderViewModel>(query);
+                    var values = await connection.QueryAsync<ProductViewModel>(query);
                     response.Status = true;
                     response.Title = "Başarılı";
-                    response.Message = "Sliderlar başarıyla getirildi.";
+                    response.Message = "Productlar başarıyla getirildi.";
                     response.Data = values.ToList();
                 }
             }
@@ -104,34 +100,33 @@ namespace UludagGroup.Repositories.SliderRepositories
                 response.Status = false;
                 response.Title = "Hata";
                 response.Message = ex.Message;
-                response.Data = new List<SliderViewModel>();  // Boş bir liste döndürülüyor.
+                response.Data = new List<ProductViewModel>();  // Boş bir liste döndürülüyor.
             }
             return response;
         }
-        public async Task<ResponseViewModel<SliderViewModel>> GetAsync(int id)
+        public async Task<ResponseViewModel<ProductViewModel>> GetAsync(int id)
         {
-            var response = new ResponseViewModel<SliderViewModel>();
+            var response = new ResponseViewModel<ProductViewModel>();
             try
             {
-                string query = "SELECT * FROM Sliders WHERE Id = @Id";
+                string query = "SELECT * FROM Products WHERE Id = @Id";
                 var parameters = new DynamicParameters();
                 parameters.Add("@Id", id);
                 using (var connection = _context.CreateConnection())
                 {
-                    var values = await connection.QueryFirstOrDefaultAsync<SliderViewModel>(query, parameters);
-
+                    var values = await connection.QueryFirstOrDefaultAsync<ProductViewModel>(query, parameters);
                     if (values != null)
                     {
                         response.Status = true;
                         response.Title = "Başarılı";
-                        response.Message = "Slider başarıyla bulundu.";
+                        response.Message = "Product başarıyla bulundu.";
                         response.Data = values;
                     }
                     else
                     {
                         response.Status = false;
                         response.Title = "Silinmiş veya Bulunamayan Kayıt";
-                        response.Message = "Veritabanında belirtilen ID ile ilişkili slider bulunamadı.";
+                        response.Message = "Veritabanında belirtilen ID ile ilişkili Product bulunamadı.";
                     }
                 }
             }
@@ -139,7 +134,7 @@ namespace UludagGroup.Repositories.SliderRepositories
             {
                 response.Status = false;
                 response.Title = "Hata";
-                response.Message =  ex.Message;
+                response.Message = ex.Message;
             }
             return response;
         }
@@ -148,7 +143,7 @@ namespace UludagGroup.Repositories.SliderRepositories
             var response = new ResponseViewModel<bool>();
             try
             {
-                string query = "DELETE FROM Sliders WHERE Id = @Id";
+                string query = "DELETE FROM BusinessProducts WHERE Id = @Id";
                 var parameters = new DynamicParameters();
                 parameters.Add("@Id", id);
 
@@ -157,31 +152,7 @@ namespace UludagGroup.Repositories.SliderRepositories
                     var affectedRows = await connection.ExecuteAsync(query, parameters);
                     response.Status = affectedRows > 0;
                     response.Title = affectedRows > 0 ? "Başarılı" : "Silme Başarısız";
-                    response.Message = affectedRows > 0 ? "Slider başarıyla silindi." : "Slider silinemedi.";
-                }
-            }
-            catch (Exception ex)
-            {
-                response.Status = false;
-                response.Title = "Hata";
-                response.Message =  ex.Message;
-            }
-            return response;
-        }
-        public async Task<ResponseViewModel<bool>> SetFirstAsync(int id)
-        {
-            var response = new ResponseViewModel<bool>();
-            try
-            {
-                using (var connection = _context.CreateConnection())
-                {
-                    var queryResetAll = "UPDATE Sliders SET IsFirst = 0";
-                    var querySetOne = "UPDATE Sliders SET IsFirst = 1 WHERE Id = @Id";
-                    await connection.ExecuteAsync(queryResetAll);
-                    var affectedRows = await connection.ExecuteAsync(querySetOne, new { Id = id });
-                    response.Status = affectedRows > 0;
-                    response.Title = affectedRows > 0 ? "Başarılı" : "Güncelleme Başarısız";
-                    response.Message = affectedRows > 0 ? "Slider seçildi." : "Belirtilen slider bulunamadı.";
+                    response.Message = affectedRows > 0 ? "Product başarıyla silindi." : "Product silinemedi.";
                 }
             }
             catch (Exception ex)
@@ -199,12 +170,13 @@ namespace UludagGroup.Repositories.SliderRepositories
             {
                 using (var connection = _context.CreateConnection())
                 {
-                    // Belirtilen slider'ın Active durumunu güncelleme
-                    var querySetActive = "UPDATE Sliders SET IsActive = @IsActive WHERE Id = @Id";
-                    var affectedRows = await connection.ExecuteAsync(querySetActive, new { IsActive = isActive ? 1 : 0, Id = id });
+                    var query = "UPDATE Products SET IsActive = @IsActive WHERE Id = @Id";
+                    var affectedRows = await connection.ExecuteAsync(query, new { Id = id, IsActive = isActive });
                     response.Status = affectedRows > 0;
                     response.Title = affectedRows > 0 ? "Başarılı" : "Güncelleme Başarısız";
-                    response.Message = affectedRows > 0 ? "Slider durumu güncellendi." : "Belirtilen slider bulunamadı.";
+                    response.Message = affectedRows > 0
+                        ? (isActive ? "Ürün aktif hale getirildi." : "Ürün pasif hale getirildi.")
+                        : "Belirtilen ürün bulunamadı.";
                 }
             }
             catch (Exception ex)
@@ -215,37 +187,56 @@ namespace UludagGroup.Repositories.SliderRepositories
             }
             return response;
         }
-        public async Task<ResponseViewModel<bool>> UpdateAsync(UpdateSliderViewModel model)
+        public async Task<ResponseViewModel<bool>> SetFeaturedStatusAsync(int id, bool isFeatured)
+        {
+            var response = new ResponseViewModel<bool>();
+            try
+            {
+                using (var connection = _context.CreateConnection())
+                {
+                    var query = "UPDATE BusinessProducts SET IsFeatured = @IsFeatured WHERE Id = @Id";
+                    var affectedRows = await connection.ExecuteAsync(query, new { Id = id, IsFeatured = isFeatured });
+                    response.Status = affectedRows > 0;
+                    response.Title = affectedRows > 0 ? "Başarılı" : "Güncelleme Başarısız";
+                    response.Message = affectedRows > 0
+                        ? (isFeatured ? "Ürün öne çıkarıldı." : "Ürün öne çıkanlardan kaldırıldı.")
+                        : "Belirtilen ürün bulunamadı.";
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Status = false;
+                response.Title = "Hata";
+                response.Message = ex.Message;
+            }
+            return response;
+        }
+        public async Task<ResponseViewModel<bool>> UpdateAsync(UpdateProductViewModel model)
         {
             var response = new ResponseViewModel<bool>();
             try
             {
                 string query = @"
-                                UPDATE Sliders 
+                                UPDATE Products 
                                 SET 
-                                    StrongText = @StrongText, 
-                                    NormalText = @NormalText, 
-                                    ContentText = @ContentText, 
-                                    ButtonText = @ButtonText, 
-                                    ButtonLink = @ButtonLink, 
+                                    Name = @Name, 
+                                    Description = @Description, 
+                                    Price = @Price, 
                                     ImageUrl = @ImageUrl, 
-                                    IsFirst = @IsFirst 
+                                    Rating = @Rating 
                                 WHERE Id = @Id";
                 var parameters = new DynamicParameters();
                 parameters.Add("@Id", model.Id);
-                parameters.Add("@StrongText", model.StrongText);
-                parameters.Add("@NormalText", model.NormalText);
-                parameters.Add("@ContentText", model.ContentText);
-                parameters.Add("@ButtonText", model.ButtonText);
-                parameters.Add("@ButtonLink", model.ButtonLink);
-                parameters.Add("@ImageUrl", model.ImageUrl);
-                parameters.Add("@IsFirst", model.IsFirst);
+                parameters.Add("@Name", model.Name);
+                parameters.Add("@Description", model.Description);
+                parameters.Add("@Price", model.Price);
+                parameters.Add("@Rating", model.Rating);
                 using (var connection = _context.CreateConnection())
                 {
                     var affectedRows = await connection.ExecuteAsync(query, parameters);
                     response.Status = affectedRows > 0;
                     response.Title = affectedRows > 0 ? "Başarılı" : "Güncelleme Başarısız";
-                    response.Message = affectedRows > 0 ? "Slider güncellendi." : "Slider bulunamadı veya güncellenemedi.";
+                    response.Message = affectedRows > 0 ? "Product güncellendi." : "Product bulunamadı veya güncellenemedi.";
                 }
             }
             catch (Exception ex)

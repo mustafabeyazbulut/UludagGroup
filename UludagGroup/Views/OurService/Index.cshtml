@@ -1,4 +1,4 @@
-﻿
+﻿@model List<OurServiceViewModel>
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/UILayout/Index.cshtml";
@@ -6,4 +6,38 @@
 
 @await Component.InvokeAsync("_PageHeader_Generic_ComponentPartial", new { pageTitle = "Hizmetlerimiz" })
 
-
+<!-- Article Start -->
+<div class="container-xxl py-5">
+    <div class="container">
+        @foreach (var item in Model)
+        {
+            <div class="row g-5 mb-5">
+                <div class="col-lg-5 wow fadeIn" data-wow-delay="0.1s">
+                    @if (!string.IsNullOrEmpty(item.ImageUrl))
+                    {
+                        <img class="img-fluid rounded shadow" src="@Url.Content("~/Photos/OurServices/"+item.ImageUrl)" alt="">
+                        @* <img class="img-fluid" src="img/article.jpg" alt=""> *@
+                    }
+                </div>
+                <div class="col-lg-6 wow fadeIn" data-wow-delay="0.5s">
+                    <div class="section-title">
+                        <p class="fs-5 fw-medium fst-italic text-primary">Hizmetlerimiz</p>
+                        @if (!string.IsNullOrEmpty(item.Title))
+                        {
+                            <h1 class="display-6">@item.Title</h1>
+                        }
+                    </div>
+                    @if (!string.IsNullOrEmpty(item.Paragraph1))
+                    {
+                        <p class="mb-4">@item.Paragraph1</p>
+                    }
+                    @if (!string.IsNullOrEmpty(item.Paragraph2))
+                    {
+                        <p class="mb-4">@item.Paragraph2</p>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</div>
+<!-- Article End -->

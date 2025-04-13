@@ -1,39 +1,45 @@
 ﻿using Dapper;
 using UludagGroup.Models.Contexts;
 using UludagGroup.ViewModels;
-using UludagGroup.ViewModels.LogoViewModels;
+using UludagGroup.ViewModels.OurServiceViewModels;
 
-namespace UludagGroup.Repositories.LogoRepositories
+namespace UludagGroup.Repositories.OurServiceRepositories
 {
-    public class LogoRepository : BaseRepository, ILogoRepository
+    public class OurServiceRepository : BaseRepository, IOurServiceRepository
     {
-        public LogoRepository(Context context) : base(context)
+        public OurServiceRepository(Context context) : base(context)
         {
         }
-        public async Task<ResponseViewModel<bool>> AddAsync(CreateLogoViewModel model)
+        public async Task<ResponseViewModel<bool>> AddAsync(CreateOurServiceViewModel model)
         {
             var response = new ResponseViewModel<bool>();
             try
             {
                 string query = @"
-                                INSERT INTO Logos (
+                                INSERT INTO OurServices (
                                     Title, 
-                                    ImageUrl
+                                    Paragraph1,
+                                    Paragraph2,
+                                    Paragraph2
                                 ) 
                                 VALUES (
                                     @Title, 
-                                    @ImageUrl
+                                    @Paragraph1,
+                                    @Paragraph2,
+                                    @Paragraph2
                                 )";
                 var parameters = new DynamicParameters();
                 parameters.Add("@Title", model.Title);
-                parameters.Add("@ImageUrl", model.ImageUrl);
+                parameters.Add("@Paragraph1", model.Paragraph1);
+                parameters.Add("@Paragraph2", model.Paragraph2);
+                parameters.Add("@Paragraph2", model.Paragraph2);
                 using (var connection = _context.CreateConnection())
                 {
                     var affectedRows = await connection.ExecuteAsync(query, parameters);
 
                     response.Status = affectedRows > 0;
                     response.Title = affectedRows > 0 ? "Başarılı" : "Ekleme Başarısız";
-                    response.Message = affectedRows > 0 ? "Yeni Logo başarıyla eklendi." : "Logo eklenemedi.";
+                    response.Message = affectedRows > 0 ? "Yeni OurService başarıyla eklendi." : "OurService eklenemedi.";
                 }
             }
             catch (Exception ex)
@@ -44,50 +50,18 @@ namespace UludagGroup.Repositories.LogoRepositories
             }
             return response;
         }
-        public async Task<ResponseViewModel<LogoViewModel>> GetActiveAsync()
+        public async Task<ResponseViewModel<List<OurServiceViewModel>>> GetAllActiveAsync()
         {
-            var response = new ResponseViewModel<LogoViewModel>();
+            var response = new ResponseViewModel<List<OurServiceViewModel>>();
             try
             {
-                string query = "SELECT TOP 1 * FROM Logos WHERE IsActive = 1";  // Aktif olan ilk logoyu getir
+                string query = "SELECT * FROM OurServices WHERE IsActive = 1";  // Active değeri true olanları getir
                 using (var connection = _context.CreateConnection())
                 {
-                    var value = await connection.QueryFirstOrDefaultAsync<LogoViewModel>(query);
-                    if (value != null)
-                    {
-                        response.Status = true;
-                        response.Title = "Başarılı";
-                        response.Message = "Aktif logo başarıyla getirildi.";
-                        response.Data = value;
-                    }
-                    else
-                    {
-                        response.Status = false;
-                        response.Title = "Logo Bulunamadı";
-                        response.Message = "Aktif bir logo bulunamadı.";
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                response.Status = false;
-                response.Title = "Hata";
-                response.Message = ex.Message;
-            }
-            return response;
-        }
-        public async Task<ResponseViewModel<List<LogoViewModel>>> GetAllActiveAsync()
-        {
-            var response = new ResponseViewModel<List<LogoViewModel>>();
-            try
-            {
-                string query = "SELECT * FROM Logos WHERE IsActive = 1";  // Active değeri true olanları getir
-                using (var connection = _context.CreateConnection())
-                {
-                    var values = await connection.QueryAsync<LogoViewModel>(query);
+                    var values = await connection.QueryAsync<OurServiceViewModel>(query);
                     response.Status = true;
                     response.Title = "Başarılı";
-                    response.Message = "Aktif logolar başarıyla getirildi.";
+                    response.Message = "Aktif OurServicelar başarıyla getirildi.";
                     response.Data = values.ToList();
                 }
             }
@@ -96,22 +70,22 @@ namespace UludagGroup.Repositories.LogoRepositories
                 response.Status = false;
                 response.Title = "Hata";
                 response.Message = ex.Message;
-                response.Data = new List<LogoViewModel>();
+                response.Data = new List<OurServiceViewModel>();
             }
             return response;
         }
-        public async Task<ResponseViewModel<List<LogoViewModel>>> GetAllAsync()
+        public async Task<ResponseViewModel<List<OurServiceViewModel>>> GetAllAsync()
         {
-            var response = new ResponseViewModel<List<LogoViewModel>>();
+            var response = new ResponseViewModel<List<OurServiceViewModel>>();
             try
             {
-                string query = "SELECT * FROM Logos";
+                string query = "SELECT * FROM OurServices";
                 using (var connection = _context.CreateConnection())
                 {
-                    var values = await connection.QueryAsync<LogoViewModel>(query);
+                    var values = await connection.QueryAsync<OurServiceViewModel>(query);
                     response.Status = true;
                     response.Title = "Başarılı";
-                    response.Message = "Logolar başarıyla getirildi.";
+                    response.Message = "OurServicelar başarıyla getirildi.";
                     response.Data = values.ToList();
                 }
             }
@@ -120,34 +94,34 @@ namespace UludagGroup.Repositories.LogoRepositories
                 response.Status = false;
                 response.Title = "Hata";
                 response.Message = ex.Message;
-                response.Data = new List<LogoViewModel>();  // Boş bir liste döndürülüyor.
+                response.Data = new List<OurServiceViewModel>();  // Boş bir liste döndürülüyor.
             }
             return response;
         }
-        public async Task<ResponseViewModel<LogoViewModel>> GetAsync(int id)
+        public async Task<ResponseViewModel<OurServiceViewModel>> GetAsync(int id)
         {
-            var response = new ResponseViewModel<LogoViewModel>();
+            var response = new ResponseViewModel<OurServiceViewModel>();
             try
             {
-                string query = "SELECT * FROM Logos WHERE Id = @Id";
+                string query = "SELECT * FROM OurServices WHERE Id = @Id";
                 var parameters = new DynamicParameters();
                 parameters.Add("@Id", id);
                 using (var connection = _context.CreateConnection())
                 {
-                    var values = await connection.QueryFirstOrDefaultAsync<LogoViewModel>(query, parameters);
+                    var values = await connection.QueryFirstOrDefaultAsync<OurServiceViewModel>(query, parameters);
 
                     if (values != null)
                     {
                         response.Status = true;
                         response.Title = "Başarılı";
-                        response.Message = "Logo başarıyla bulundu.";
+                        response.Message = "OurService başarıyla bulundu.";
                         response.Data = values;
                     }
                     else
                     {
                         response.Status = false;
                         response.Title = "Silinmiş veya Bulunamayan Kayıt";
-                        response.Message = "Veritabanında belirtilen ID ile ilişkili logo bulunamadı.";
+                        response.Message = "Veritabanında belirtilen ID ile ilişkili OurService bulunamadı.";
                     }
                 }
             }
@@ -164,7 +138,7 @@ namespace UludagGroup.Repositories.LogoRepositories
             var response = new ResponseViewModel<bool>();
             try
             {
-                string query = "DELETE FROM Logos WHERE Id = @Id";
+                string query = "DELETE FROM OurServices WHERE Id = @Id";
                 var parameters = new DynamicParameters();
                 parameters.Add("@Id", id);
 
@@ -173,7 +147,7 @@ namespace UludagGroup.Repositories.LogoRepositories
                     var affectedRows = await connection.ExecuteAsync(query, parameters);
                     response.Status = affectedRows > 0;
                     response.Title = affectedRows > 0 ? "Başarılı" : "Silme Başarısız";
-                    response.Message = affectedRows > 0 ? "Logo başarıyla silindi." : "Logo silinemedi.";
+                    response.Message = affectedRows > 0 ? "OurService başarıyla silindi." : "OurService silinemedi.";
                 }
             }
             catch (Exception ex)
@@ -191,16 +165,11 @@ namespace UludagGroup.Repositories.LogoRepositories
             {
                 using (var connection = _context.CreateConnection())
                 {
-                    var queryResetAll = "UPDATE Logos SET IsActive = 0";
-                    var querySetOne = "UPDATE Logos SET IsActive = @IsActive WHERE Id = @Id";
-                    if (isActive)
-                    {
-                        await connection.ExecuteAsync(queryResetAll);
-                    }
+                    var querySetOne = "UPDATE OurServices SET IsActive = @IsActive WHERE Id = @Id";
                     var affectedRows = await connection.ExecuteAsync(querySetOne, new { IsActive = isActive ? 1 : 0, Id = id });
                     response.Status = affectedRows > 0;
                     response.Title = affectedRows > 0 ? "Başarılı" : "Güncelleme Başarısız";
-                    response.Message = affectedRows > 0 ? "Logo seçildi." : "Belirtilen Logo bulunamadı.";
+                    response.Message = affectedRows > 0 ? "OurService seçildi." : "Belirtilen OurService bulunamadı.";
                 }
             }
             catch (Exception ex)
@@ -211,27 +180,31 @@ namespace UludagGroup.Repositories.LogoRepositories
             }
             return response;
         }
-        public async Task<ResponseViewModel<bool>> UpdateAsync(UpdateLogoViewModel model)
+        public async Task<ResponseViewModel<bool>> UpdateAsync(UpdateOurServiceViewModel model)
         {
             var response = new ResponseViewModel<bool>();
             try
             {
                 string query = @"
-                                UPDATE Logos 
+                                UPDATE OurServices 
                                 SET 
                                     Title = @Title, 
-                                    ImageUrl = @ImageUrl 
+                                    Paragraph1 = @Paragraph1,
+                                    Paragraph2 = @Paragraph2, 
+                                    ImageUrl = @ImageUrl  
                                 WHERE Id = @Id";
                 var parameters = new DynamicParameters();
                 parameters.Add("@Id", model.Id);
                 parameters.Add("@Title", model.Title);
+                parameters.Add("@Paragraph1", model.Paragraph1);
+                parameters.Add("@Paragraph2", model.Paragraph2);
                 parameters.Add("@ImageUrl", model.ImageUrl);
                 using (var connection = _context.CreateConnection())
                 {
                     var affectedRows = await connection.ExecuteAsync(query, parameters);
                     response.Status = affectedRows > 0;
                     response.Title = affectedRows > 0 ? "Başarılı" : "Güncelleme Başarısız";
-                    response.Message = affectedRows > 0 ? "Logo güncellendi." : "Logo bulunamadı veya güncellenemedi.";
+                    response.Message = affectedRows > 0 ? "OurService güncellendi." : "OurService bulunamadı veya güncellenemedi.";
                 }
             }
             catch (Exception ex)

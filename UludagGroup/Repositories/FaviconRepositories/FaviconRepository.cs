@@ -193,9 +193,13 @@ namespace UludagGroup.Repositories.FaviconRepositories
                 using (var connection = _context.CreateConnection())
                 {
                     var queryResetAll = "UPDATE Favicons SET IsActive = 0";
-                    var querySetOne = "UPDATE Favicons SET IsActive = 1 WHERE Id = @Id";
-                    await connection.ExecuteAsync(queryResetAll);
-                    var affectedRows = await connection.ExecuteAsync(querySetOne, new { Id = id });
+                    var querySetOne = "UPDATE Favicons SET IsActive = @IsActive WHERE Id = @Id";
+                    if (isActive)
+                    {
+                        await connection.ExecuteAsync(queryResetAll);
+                    }
+                    var affectedRows = await connection.ExecuteAsync(querySetOne, new { IsActive = isActive ? 1 : 0, Id = id });
+
                     response.Status = affectedRows > 0;
                     response.Title = affectedRows > 0 ? "Başarılı" : "Güncelleme Başarısız";
                     response.Message = affectedRows > 0 ? "Favicon seçildi." : "Belirtilen Favicon bulunamadı.";
