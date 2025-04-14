@@ -18,21 +18,24 @@ namespace UludagGroup.Repositories.ProductRepositories
                 string query = @"
                                 INSERT INTO Products (
                                     Name, 
-                                    Description,
+                                    ShortDescription,
+                                    LongDescription,
                                     Price,
                                     ImageUrl,
                                     Rating
                                 ) 
                                 VALUES (
                                     @Name, 
-                                    @Description,
+                                    @ShortDescription,
+                                    @LongDescription,
                                     @Price,
                                     @ImageUrl,
                                     @Rating,
                                 )";
                 var parameters = new DynamicParameters();
                 parameters.Add("@Name", model.Name);
-                parameters.Add("@Description", model.Description);
+                parameters.Add("@ShortDescription", model.ShortDescription);
+                parameters.Add("@LongDescription", model.LongDescription);
                 parameters.Add("@Price", model.Price);
                 parameters.Add("@ImageUrl", model.ImageUrl);
                 parameters.Add("@Rating", model.Rating);
@@ -241,7 +244,8 @@ namespace UludagGroup.Repositories.ProductRepositories
                                 UPDATE Products 
                                 SET 
                                     Name = @Name, 
-                                    Description = @Description, 
+                                    ShortDescription = @ShortDescription, 
+                                    LongDescription = @LongDescription, 
                                     Price = @Price, 
                                     ImageUrl = @ImageUrl, 
                                     Rating = @Rating 
@@ -249,7 +253,8 @@ namespace UludagGroup.Repositories.ProductRepositories
                 var parameters = new DynamicParameters();
                 parameters.Add("@Id", model.Id);
                 parameters.Add("@Name", model.Name);
-                parameters.Add("@Description", model.Description);
+                parameters.Add("@ShortDescription", model.ShortDescription);
+                parameters.Add("@LongDescription", model.LongDescription);
                 parameters.Add("@Price", model.Price);
                 parameters.Add("@Rating", model.Rating);
                 using (var connection = _context.CreateConnection())

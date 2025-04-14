@@ -3,6 +3,8 @@
     int index = 1;
 }
 
+
+
 <!-- Store Start -->
 <div class="container-xxl py-5">
     <div class="container">
@@ -43,13 +45,13 @@
                                 @(string.IsNullOrWhiteSpace(product.Name) ? Html.Raw("&nbsp;") : product.Name)
                             </h4>
 
-                            <p>@(string.IsNullOrWhiteSpace(product.Description) ? Html.Raw("&nbsp;") : product.Description)</p>
+                            <p>@(string.IsNullOrWhiteSpace(product.ShortDescription) ? Html.Raw("&nbsp;") : product.ShortDescription)</p>
                             <h4 class="text-primary">
                                 @(product.Price == 0 ? "Fiyat için arayın" : product.Price.ToString("C"))
                             </h4>
                         </div>
                         <div class="store-overlay">
-                            <a href="@Url.Action("Detail", "Product", new { id = product.Id })" class="btn btn-primary rounded-pill py-2 px-4 m-2">
+                            <a href="@Url.Action("Detail", "Product", new { id = product.Id, area = "" })" class="btn btn-primary rounded-pill py-2 px-4 m-2">
                                 Detaylar <i class="fa fa-arrow-right ms-2"></i>
                             </a>
                         </div>

@@ -9,7 +9,7 @@
         <div class="owl-carousel product-carousel wow fadeInUp" data-wow-delay="0.5s">
             @foreach (var product in Model)
             {
-                <a href="@Url.Action("Detail", "Product", new { id = product.Id })" class="d-block product-item rounded">
+                <a href="@Url.Action("Detail", "Product", new { id = product.Id, area = "" })" class="d-block product-item rounded">
                     @if (!string.IsNullOrWhiteSpace(product.ImageUrl))
                     {
                         <img src="@Url.Content("~/Photos/Products/" + product.ImageUrl)" alt="">
@@ -23,7 +23,7 @@
                             @(string.IsNullOrWhiteSpace(product.Name) ? Html.Raw("&nbsp;") : product.Name)
                         </h4>
                         <span class="text-body">
-                            @(string.IsNullOrWhiteSpace(product.Description) ? Html.Raw("&nbsp;") : product.Description)
+                            @(string.IsNullOrWhiteSpace(product.ShortDescription) ? Html.Raw("&nbsp;") : product.ShortDescription)
                         </span>
                     </div>
                 </a>

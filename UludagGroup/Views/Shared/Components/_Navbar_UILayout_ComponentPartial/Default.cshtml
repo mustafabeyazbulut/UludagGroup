@@ -3,7 +3,7 @@
 <div class="container-fluid bg-white sticky-top">
     <div class="container">
         <nav class="navbar navbar-expand-lg bg-white navbar-light py-2 py-lg-0">
-            <a href="@Url.Action("Index", "Home")" class="navbar-brand">
+            <a href="@Url.Action("Index", "Home", new { area = "" })" class="navbar-brand">
 
                 @if (Model.LogoModel != null && !string.IsNullOrEmpty(Model.LogoModel.ImageUrl))
                 {
@@ -19,12 +19,12 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <div class="navbar-nav ms-auto">
-                    <a href="@Url.Action("Index", "Home")" class="nav-item nav-link @(ViewData["ActivePage"] != null && ViewData["ActivePage"].ToString() == "Home" ? "active" : "")">Anasayfa</a>
-                    <a href="@Url.Action("Index", "About")" class="nav-item nav-link @(ViewData["ActivePage"] != null && ViewData["ActivePage"].ToString() == "About" ? "active" : "")">Hakkımızda</a>
-                    <a href="@Url.Action("Index", "Product")" class="some-class nav-item nav-link @(ViewData["ActivePage"] != null && ViewData["ActivePage"].ToString() == "Product" ? "active" : "")">ÜRÜNLERİMİZ</a>
-                    <a href="@Url.Action("Index", "OurService")" class="some-class nav-item nav-link @(ViewData["ActivePage"] != null && ViewData["ActivePage"].ToString() == "OurService" ? "active" : "")">HİZMETLERİMİZ</a>
-                    <a href="@Url.Action("Index", "Reference")" class="some-class nav-item nav-link @(ViewData["ActivePage"] != null && ViewData["ActivePage"].ToString() == "Reference" ? "active" : "")">REFERANSLAR</a>
-                    <a href="@Url.Action("Index", "Contact")" class="some-class nav-item nav-link @(ViewData["ActivePage"] != null && ViewData["ActivePage"].ToString() == "Contact" ? "active" : "")">İLETİŞİM</a>
+                    <a href="@Url.Action("Index", "Home", new { area = "" })" class="nav-item nav-link @(ViewData["ActivePage"] != null && ViewData["ActivePage"].ToString() == "Home" ? "active" : "")">Anasayfa</a>
+                    <a href="@Url.Action("Index", "About", new { area = "" })" class="nav-item nav-link @(ViewData["ActivePage"] != null && ViewData["ActivePage"].ToString() == "About" ? "active" : "")">Hakkımızda</a>
+                    <a href="@Url.Action("Index", "Product", new { area = "" })" class="some-class nav-item nav-link @(ViewData["ActivePage"] != null && ViewData["ActivePage"].ToString() == "Product" ? "active" : "")">ÜRÜNLERİMİZ</a>
+                    <a href="@Url.Action("Index", "OurService", new { area = "" })" class="some-class nav-item nav-link @(ViewData["ActivePage"] != null && ViewData["ActivePage"].ToString() == "OurService" ? "active" : "")">HİZMETLERİMİZ</a>
+                    <a href="@Url.Action("Index", "Reference", new { area = "" })" class="some-class nav-item nav-link @(ViewData["ActivePage"] != null && ViewData["ActivePage"].ToString() == "Reference" ? "active" : "")">REFERANSLAR</a>
+                    <a href="@Url.Action("Index", "Contact", new { area = "" })" class="some-class nav-item nav-link @(ViewData["ActivePage"] != null && ViewData["ActivePage"].ToString() == "Contact" ? "active" : "")">İLETİŞİM</a>
                 </div>
             </div>
         </nav>
