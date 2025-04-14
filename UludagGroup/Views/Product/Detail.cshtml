@@ -13,14 +13,14 @@
         <div class="row g-4">
             <div class="col-lg-6">
                 <div class="product__details__pic">
-                    <div class="product__details__pic__item mb-3">
+                    <div class="product__details__pic__item mb-3 justify-content-center align-content-center align-items-center">
                         @if (!string.IsNullOrWhiteSpace(Model.ImageUrl))
                         {
-                            <img class="img-fluid" src="@Url.Content("~/Photos/Products/" + Model.ImageUrl)" alt="@Model.Name" />
+                            <img class="img-fluid " src="@Url.Content("~/Photos/Products/" + Model.ImageUrl)" alt="@Model.Name" />
                         }
                         else
                         {
-                            <div class="img-fluid" style="width:100%; aspect-ratio:1/1; background-color:transparent;"></div>
+                            <div class="img-fluid" style="width:50%; aspect-ratio:1/1; background-color:transparent;"></div>
                         }
                     </div>
                 </div>
@@ -48,11 +48,11 @@
                         @(Model.Price == 0 ? "Fiyat için arayın" : Model.Price.ToString("C"))
                     </div>
                     <p>@(string.IsNullOrWhiteSpace(Model.ShortDescription) ? Html.Raw("&nbsp;") : Model.ShortDescription)</p>
-                    <ul class="list-unstyled">
+                    @* <ul class="list-unstyled">
                         <li><strong>Stok Durumu:</strong> <span class="text-success">Stokta</span></li>
                         <li><strong>Kargo:</strong> <span>1 günde teslimat. <samp>Bugün ücretsiz teslim alın</samp></span></li>
                         <li><strong>Ağırlık:</strong> <span>0.5 kg</span></li>
-                    </ul>
+                    </ul> *@
                 </div>
             </div>
 

@@ -6,7 +6,7 @@
         <nav aria-label="breadcrumb animated slideInDown">
             <ol class="breadcrumb justify-content-center mb-0">
                 <li class="breadcrumb-item">
-                    <a href="@Url.Action("Index", "Home")">Anasayfa</a>
+                    <a href="@Url.Action("Index", "Home", new { area = "" })">Anasayfa</a>
                 </li>
 
                 @if (Model.Breadcrumb.Count >= 2)
@@ -16,7 +16,7 @@
                     string pageName = Model.Breadcrumb[2];
 
                     <li class="breadcrumb-item text-dark">
-                        <a href="@Url.Action(action, controller)">
+                        <a href="@Url.Action(action, controller, new { area = "" })">
                             @pageName
                         </a>
                     </li>
