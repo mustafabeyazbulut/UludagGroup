@@ -1,4 +1,5 @@
 using System.Reflection;
+using UludagGroup.Commons;
 using UludagGroup.Models.Contexts;
 using UludagGroup.Repositories;
 
@@ -9,6 +10,10 @@ builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 builder.Services.AddRazorPages();
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 builder.Services.AddTransient<Context>();
+builder.Services.AddControllersWithViews(options =>
+{
+    options.Conventions.Add(new AreaRoutingConvention());
+});
 
 // tüm repositoriler için tanýmlama
 var repositoryTypes = Assembly.GetExecutingAssembly()
@@ -30,6 +35,8 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;  // cookie'nin gerekli olduðunu belirt
 });
 var app = builder.Build();
+
+
 IWebHostEnvironment environment = app.Environment;
 environment.ContentRootPath = AppDomain.CurrentDomain.BaseDirectory;
 // Configure the HTTP request pipeline.
@@ -58,9 +65,21 @@ app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
 
+
 app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    name: "admin",
+    pattern: "Admin/{controller=Home}/{action=Index}/{id?}",
+    defaults: new { area = "Admin" }
+);
+app.MapControllerRoute(
+        name: "default",
+        pattern: "{controller=Home}/{action=Index}/{id?}"
+    );
+app.MapControllerRoute(
+        name: "error",
+        pattern: "Error/{action=Index}/{id?}",
+        defaults: new { controller = "Error" }
+    );
 
 app.MapControllers();
 app.UseStaticFiles();

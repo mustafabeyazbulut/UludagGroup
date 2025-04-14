@@ -16,6 +16,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Areas\Admin\Models\" />
+    <Folder Include="Areas\Finance\Models\" />
     <Folder Include="wwwroot\Photos\Reference\" />
   </ItemGroup>
 

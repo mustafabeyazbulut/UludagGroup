@@ -1,0 +1,21 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+@await Component.InvokeAsync("_Head_AdminLayout_ComponentPartial")
+<body>
+    <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
+         data-sidebar-position="fixed" data-header-position="fixed">
+        @await Component.InvokeAsync("_LeftSideBar_AdminLayout_ComponentPartial")
+        <div class="body-wrapper">
+            @await Component.InvokeAsync("_Header_AdminLayout_ComponentPartial")
+            <div class="container-fluid">
+            </div>
+            <div class="col-12" style="padding-left:2%;padding-right:2%;">
+                @RenderBody()
+                @await Component.InvokeAsync("_Footer_AdminLayout_ComponentPartial")
+            </div>
+        </div>
+        @await Component.InvokeAsync("_Script_AdminLayout_ComponentPartial")
+    </div>
+
+</body>
+</html>
