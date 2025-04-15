@@ -5,9 +5,11 @@ namespace UludagGroup.Repositories
     public class BaseRepository
     {
         protected readonly Context _context;
-        public BaseRepository(Context context)
+        protected readonly IHttpContextAccessor _httpContextAccessor;
+        public BaseRepository(Context context, IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
+            _httpContextAccessor = httpContextAccessor;
         }
     }
 }

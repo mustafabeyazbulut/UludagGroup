@@ -7,7 +7,7 @@ namespace UludagGroup.Repositories.ProductRepositories
 {
     public class ProductRepository : BaseRepository, IProductRepository
     {
-        public ProductRepository(Context context) : base(context)
+        public ProductRepository(Context context, IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
         {
         }
         public async Task<ResponseViewModel<bool>> AddAsync(CreateProductViewModel model)

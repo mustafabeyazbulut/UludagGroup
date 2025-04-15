@@ -7,7 +7,7 @@ namespace UludagGroup.Repositories.FaviconRepositories
 {
     public class FaviconRepository : BaseRepository, IFaviconRepository
     {
-        public FaviconRepository(Context context) : base(context)
+        public FaviconRepository(Context context, IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
         {
         }
         public async Task<ResponseViewModel<bool>> AddAsync(CreateFaviconViewModel model)

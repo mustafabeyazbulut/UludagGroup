@@ -2,13 +2,12 @@
 using UludagGroup.Models.Contexts;
 using UludagGroup.ViewModels;
 using UludagGroup.ViewModels.AboutViewModels;
-using UludagGroup.ViewModels.AboutViewModels;
 
 namespace UludagGroup.Repositories.AboutRepositories
 {
     public class AboutRepository : BaseRepository, IAboutRepository
     {
-        public AboutRepository(Context context) : base(context)
+        public AboutRepository(Context context, IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
         {
         }
         public async Task<ResponseViewModel<bool>> AddAsync(CreateAboutViewModel model)

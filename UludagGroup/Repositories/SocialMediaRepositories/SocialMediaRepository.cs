@@ -7,7 +7,7 @@ namespace UludagGroup.Repositories.SocialMediaRepositories
 {
     public class SocialMediaRepository : BaseRepository, ISocialMediaRepository
     {
-        public SocialMediaRepository(Context context) : base(context)
+        public SocialMediaRepository(Context context, IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
         {
         }
         public async Task<ResponseViewModel<bool>> AddAsync(CreateSocialMediaViewModel model)

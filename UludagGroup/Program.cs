@@ -9,10 +9,43 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 builder.Services.AddRazorPages();
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<Context>();
+builder.Services.AddScoped<ImageOperations>();
+builder.Services.AddScoped<HashHelper>();
 builder.Services.AddControllersWithViews(options =>
 {
     options.Conventions.Add(new AreaRoutingConvention());
+});
+builder.Services.AddAuthentication()
+    .AddCookie("AdminScheme", options =>
+    {
+        options.LoginPath = "/Admin/Auth/Login";
+        options.LogoutPath = "/Admin/Auth/Logout";
+        options.AccessDeniedPath = "/Admin/Auth/AccessDenied";
+        options.Cookie.Name = "AdminAuth";
+    })
+    .AddCookie("FinanceScheme", options =>
+    {
+        options.LoginPath = "/Finance/Auth/Login";
+        options.LogoutPath = "/Finance/Auth/Logout";
+        options.AccessDeniedPath = "/Finance/Auth/AccessDenied";
+        options.Cookie.Name = "FinanceAuth";
+    });
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminPolicy", policy =>
+    {
+        policy.AuthenticationSchemes.Add("AdminScheme");
+        policy.RequireAuthenticatedUser();
+    });
+
+    options.AddPolicy("FinancePolicy", policy =>
+    {
+        policy.AuthenticationSchemes.Add("FinanceScheme");
+        policy.RequireAuthenticatedUser();
+    });
 });
 
 // tüm repositoriler için tanýmlama
@@ -65,11 +98,15 @@ app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
 
-
 app.MapControllerRoute(
     name: "admin",
-    pattern: "Admin/{controller=Home}/{action=Index}/{id?}",
+    pattern: "Admin/{controller=Auth}/{action=Login}/{id?}",
     defaults: new { area = "Admin" }
+);
+app.MapControllerRoute(
+    name: "finance",
+    pattern: "finance/{controller=Auth}/{action=Login}/{id?}",
+    defaults: new { area = "finance" }
 );
 app.MapControllerRoute(
         name: "default",

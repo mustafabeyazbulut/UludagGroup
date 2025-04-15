@@ -7,7 +7,7 @@ namespace UludagGroup.Repositories.ReferenceRepositories
 {
     public class ReferenceRepository : BaseRepository, IReferenceRepository
     {
-        public ReferenceRepository(Context context) : base(context)
+        public ReferenceRepository(Context context, IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
         {
         }
         public async Task<ResponseViewModel<bool>> AddAsync(CreateReferenceViewModel model)

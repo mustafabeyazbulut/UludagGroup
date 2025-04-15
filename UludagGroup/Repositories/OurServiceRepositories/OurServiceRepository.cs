@@ -7,7 +7,7 @@ namespace UludagGroup.Repositories.OurServiceRepositories
 {
     public class OurServiceRepository : BaseRepository, IOurServiceRepository
     {
-        public OurServiceRepository(Context context) : base(context)
+        public OurServiceRepository(Context context, IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
         {
         }
         public async Task<ResponseViewModel<bool>> AddAsync(CreateOurServiceViewModel model)

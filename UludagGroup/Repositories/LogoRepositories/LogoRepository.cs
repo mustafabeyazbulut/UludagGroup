@@ -7,7 +7,7 @@ namespace UludagGroup.Repositories.LogoRepositories
 {
     public class LogoRepository : BaseRepository, ILogoRepository
     {
-        public LogoRepository(Context context) : base(context)
+        public LogoRepository(Context context, IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
         {
         }
         public async Task<ResponseViewModel<bool>> AddAsync(CreateLogoViewModel model)

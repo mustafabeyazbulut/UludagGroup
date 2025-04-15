@@ -7,7 +7,7 @@ namespace UludagGroup.Repositories.ContactRepositories
 {
     public class ContactRepository : BaseRepository, IContactRepository
     {
-        public ContactRepository(Context context) : base(context)
+        public ContactRepository(Context context, IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
         {
         }
         public async Task<ResponseViewModel<bool>> AddAsync(CreateContactViewModel model)

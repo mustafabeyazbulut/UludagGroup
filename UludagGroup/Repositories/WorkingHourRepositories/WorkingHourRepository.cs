@@ -7,7 +7,7 @@ namespace UludagGroup.Repositories.WorkingHourRepositories
 {
     public class WorkingHourRepository : BaseRepository, IWorkingHourRepository
     {
-        public WorkingHourRepository(Context context) : base(context)
+        public WorkingHourRepository(Context context, IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
         {
         }
         public async Task<ResponseViewModel<bool>> AddAsync(CreateWorkingHourViewModel model)
