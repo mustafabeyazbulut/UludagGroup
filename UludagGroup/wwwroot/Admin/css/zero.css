@@ -1,3 +1,6 @@
 .hidden {
     display: none;
 }
+.dropdown, .dropdown-center, .dropend, .dropstart, .dropup, .dropup-center {
+    position: absolute !important;
+}

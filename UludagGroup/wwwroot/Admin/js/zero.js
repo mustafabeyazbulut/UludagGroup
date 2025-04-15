@@ -39,7 +39,7 @@ WebFont.load({
             "Font Awesome 5 Brands",
             "simple-line-icons",
         ],
-        urls: [window.location.origin + "/css/fonts.min.css"],
+        urls: [window.location.origin + "/Admin/css/fonts.min.css"],
     },
     active: function () {
         sessionStorage.fonts = true;

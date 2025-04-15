@@ -1,0 +1,51 @@
+﻿@model UserViewModel
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+<div class="row justify-content-center">
+
+    <div class="col-lg-8">
+
+        <div class="card">
+            <div class="card-body">
+                <h1 class="mb-4 card-title">Şirket Bilgilerini Güncelleyebilirsiniz.</h1>
+                @using (Html.BeginForm(
+                actionName: "SaveEdit",
+                controllerName: "User",
+                routeValues: new { area = "Admin" },
+                method: FormMethod.Post,
+                antiforgery:false,
+                htmlAttributes: new { @class = "" }))
+                {
+                    <div class="row mb-3">
+                        <label for="Name" class="col-sm-2 col-form-label">Şirket Adı</label>
+                        <div class="col-sm-10">
+                            <input type="hidden" asp-for="Id" />
+                            <label class="form-control" id="Id" asp-for="Id">@Model.Id </label>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="Name" class="col-sm-2 col-form-label">Şirket Adı</label>
+                        <div class="col-sm-10">
+                            @Html.TextBoxFor(model => model.Email, new { @class = "form-control", type = "text", placeholder = "Mail adresiniz giriniz" })
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="Name" class="col-sm-2 col-form-label">Şirket Adı</label>
+                        <div class="col-sm-10">
+                            @Html.TextBoxFor(model => model.FullName, new { @class = "form-control", type = "text", placeholder = "İsim ve Soyisim giriniz" })
+                        </div>
+                    </div>
+                    <div class="row mb-3 mt-4">
+                        <div class="col-12 text-center">
+                            <button type="submit" class="btn btn-lg btn-primary me-2">Kaydet</button>
+                            <button type="button" class="btn btn-lg btn-secondary" onclick="history.back();">Geri Dön</button>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+

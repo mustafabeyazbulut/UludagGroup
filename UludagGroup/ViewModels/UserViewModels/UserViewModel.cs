@@ -8,6 +8,6 @@
         public string FullName { get; set; }
         public bool IsAdminPage { get; set; }
         public bool IsFinancePage { get; set; }
-        public bool IActive { get; set; }
+        public bool IsActive { get; set; }
     }
 }

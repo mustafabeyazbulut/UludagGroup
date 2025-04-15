@@ -14,6 +14,20 @@
     "minify": { "enabled": true }
   },
   {
+    "outputFileName": "wwwroot/admin/css/zero.min.css",
+    "inputFiles": [
+      "wwwroot/admin/css/zero.css"
+    ],
+    "minify": { "enabled": true }
+  },
+  {
+    "outputFileName": "wwwroot/admin/css/style.min.css",
+    "inputFiles": [
+      "wwwroot/admin/css/style.css"
+    ],
+    "minify": { "enabled": true }
+  },
+  {
     "outputFileName": "wwwroot/js/main.min.js",
     "inputFiles": [
       "wwwroot/js/main.js"
@@ -28,6 +42,17 @@
     "outputFileName": "wwwroot/js/zero.min.js",
     "inputFiles": [
       "wwwroot/js/zero.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/admin/js/zero.min.js",
+    "inputFiles": [
+      "wwwroot/admin/js/zero.js"
     ],
     "minify": {
       "enabled": true,
