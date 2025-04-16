@@ -1,0 +1,146 @@
+﻿@model CreateAboutViewModel
+@{
+    ViewData["Title"] = "Add";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+
+<div class="row justify-content-center">
+
+    <div class="col-lg-8">
+
+        <div class="card">
+            <div class="card-body">
+                <h1 class="mb-4 card-title">Yeni Hakkımızda Bilgilerini Giriniz.</h1>
+                @using (Html.BeginForm(
+                actionName: "SaveAdd",
+                controllerName: "About",
+                routeValues: new { area = "Admin" },
+                method: FormMethod.Post,
+                antiforgery: false,
+                htmlAttributes: new { @class = "", enctype = "multipart/form-data" }))
+                {
+                    <div class="row mb-3">
+                        <label for="Name" class="col-sm-2 col-form-label">Ana Başlık</label>
+                        <div class="col-sm-10">
+                            @Html.TextBoxFor(model => model.MainTitle, new { @class = "form-control", type = "text", placeholder = "Ana Başlık" })
+
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="Name" class="col-sm-2 col-form-label">Paragraph 1 Fotoğraf</label>
+                        <div class="col-sm-10">
+                            <input type="file" class="form-control" id="ImageFile" asp-for="Paragraph1ImageFile" accept=".jpg, .jpeg, .png" onchange="previewImage(this, 'Paragraph1Image')">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="Name" class="col-sm-2 col-form-label">Paragraph 1 Fotoğraf</label>
+                        <div class="col-sm-10">
+                            <img id="Paragraph1Image"  class="form-control" style="width:200px;height:200px">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="Name" class="col-sm-2 col-form-label">Paragraf 1 Başlık</label>
+                        <div class="col-sm-10">
+                            @Html.TextBoxFor(model => model.Paragraph1Title, new { @class = "form-control", type = "text", placeholder = "Paragraf 1 Başlık" })
+
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="Name" class="col-sm-2 col-form-label">Paragraf 1 Text</label>
+                        <div class="col-sm-10">
+                            @Html.TextBoxFor(model => model.Paragraph1Text, null, new { @class = "form-control", type = "text", placeholder = "Paragraf 1 Text" })
+                        </div>
+                    </div>
+                    <br />
+                    <br />
+
+                    <div class="row mb-3">
+                        <label for="Name" class="col-sm-2 col-form-label">Paragraph 2 Fotoğraf</label>
+                        <div class="col-sm-10">
+                            <input type="file" class="form-control" id="ImageFile" asp-for="Paragraph2ImageFile" accept=".jpg, .jpeg, .png" onchange="previewImage(this, 'Paragraph2Image')">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="Name" class="col-sm-2 col-form-label">Paragraph 2 Fotoğraf</label>
+                        <div class="col-sm-10">
+                            <img id="Paragraph2Image"  class="form-control" style="width:200px;height:200px">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="Name" class="col-sm-2 col-form-label">Paragraf 2 Başlık</label>
+                        <div class="col-sm-10">
+                            @Html.TextBoxFor(model => model.Paragraph2Title, new { @class = "form-control", type = "text", placeholder = "Paragraf 2 Başlık" })
+
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="Name" class="col-sm-2 col-form-label">Paragraf 2 Text</label>
+                        <div class="col-sm-10">
+                            @Html.TextBoxFor(model => model.Paragraph2Text, null, new { @class = "form-control", type = "text", placeholder = "Paragraf 2 Text" })
+                        </div>
+                    </div>
+                    <br />
+                    <br />
+
+                    <div class="row mb-3">
+                        <label for="Name" class="col-sm-2 col-form-label">Fotoğraf 1</label>
+                        <div class="col-sm-10">
+                            <input type="file" class="form-control" id="ImageFile" asp-for="LeftImage1File" accept=".jpg, .jpeg, .png" onchange="previewImage(this, 'LeftImage1')">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="Name" class="col-sm-2 col-form-label">Fotoğraf 1</label>
+                        <div class="col-sm-10">
+                            <img id="LeftImage1"  class="form-control" style="width:200px;height:200px">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="Name" class="col-sm-2 col-form-label">Fotoğraf 2</label>
+                        <div class="col-sm-10">
+                            <input type="file" class="form-control" id="ImageFile" asp-for="LeftImage2File" accept=".jpg, .jpeg, .png" onchange="previewImage(this, 'LeftImage2')">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="Name" class="col-sm-2 col-form-label">Fotoğraf 2</label>
+                        <div class="col-sm-10">
+                            <img id="LeftImage2"  class="form-control" style="width:200px;height:200px">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="Name" class="col-sm-2 col-form-label">Fotoğraf 3</label>
+                        <div class="col-sm-10">
+                            <input type="file" class="form-control" id="ImageFile" asp-for="LeftImage3File" accept=".jpg, .jpeg, .png" onchange="previewImage(this, 'LeftImage3')">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="Name" class="col-sm-2 col-form-label">Fotoğraf 3</label>
+                        <div class="col-sm-10">
+                            <img id="LeftImage3"  class="form-control" style="width:200px;height:200px">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="Name" class="col-sm-2 col-form-label">Fotoğraf 4</label>
+                        <div class="col-sm-10">
+                            <input type="file" class="form-control" id="ImageFile" asp-for="LeftImage4File" accept=".jpg, .jpeg, .png" onchange="previewImage(this, 'LeftImage4')">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="Name" class="col-sm-2 col-form-label">Fotoğraf 4</label>
+                        <div class="col-sm-10">
+                            <img id="LeftImage4"  class="form-control" style="width:200px;height:200px">
+                        </div>
+                    </div> 
+                    <div class="row mb-3 mt-4">
+                        <div class="col-12 text-center">
+                            <button type="submit" class="btn btn-lg btn-primary me-2">Kaydet</button>
+                            <a href="@Url.Action("Index", "About", new { area = "Admin" })" class="btn btn-lg btn-secondary">Geri Dön</a>
+
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+

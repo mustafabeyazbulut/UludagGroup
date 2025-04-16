@@ -1,0 +1,98 @@
+﻿@model List<AboutViewModel>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+
+<div class="col-md-12">
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex align-items-center">
+                <h4 class="card-title">Hakkımızda Listesi</h4>
+                <button class="btn btn-primary btn-round ms-auto" onclick="window.location.href='/admin/About/Add';">
+                    <i class="fa fa-plus"></i>
+                    Yeni Hakkımızda
+                </button>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="multi-filter-select"
+                       class="display table table-striped table-hover text-center justify-content-center ">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>MainTitle</th>
+                            <th>Paragraph1Title</th>
+                            <th>Paragraph2Title</th>
+                            <th>LeftImage1</th>
+                            <th>LeftImage2</th>
+                            <th>LeftImage3</th>
+                            <th>LeftImage4</th>
+                            <th style="width: 15%">İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>Id</th>
+                            <th>MainTitle</th>
+                            <th>Paragraph1Title</th>
+                            <th>Paragraph2Title</th>
+                            <th>LeftImage1</th>
+                            <th>LeftImage2</th>
+                            <th>LeftImage3</th>
+                            <th>LeftImage4</th>
+                            <th style="display:none;">İşlemler</th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+
+                                <td>@item.Id</td>
+                                <td>@item.MainTitle</td>
+                                <td>@(string.IsNullOrEmpty(item.Paragraph1Title) ? "" : (item.Paragraph1Title.Length > 10 ? item.Paragraph1Title.Substring(0, 10) + "..." : item.Paragraph1Title))</td>
+                                <td>@(string.IsNullOrEmpty(item.Paragraph2Title) ? "" : (item.Paragraph2Title.Length > 10 ? item.Paragraph2Title.Substring(0, 10) + "..." : item.Paragraph2Title))</td>
+                                <td>@item.LeftImage1</td>
+                                <td>@item.LeftImage2</td>
+                                <td>@item.LeftImage3</td>
+                                <td>@item.LeftImage4</td>
+                                <td>
+                                    <div class="d-flex justify-content-center">
+                                        <div class="dropdown justify-content-center" style="z-index:9999;">
+                                            <button class="btn btn-link text-dark p-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="fa fa-ellipsis-v"></i>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end">
+                                                <li>
+                                                    <a class="dropdown-item" href="@Url.Content("~/admin/About/Edit/" + item.Id)">
+                                                        <i class="fa fa-edit text-primary me-2"></i> Düzenle
+                                                    </a>
+                                                </li>
+                                               
+                                                <li>
+                                                    <a class="dropdown-item confirm-btn"
+                                                       href="#"
+                                                       data-url="@Url.Content("~/admin/About/Active")?id=@item.Id&isActive=@item.IsActive">
+                                                        <i class="fa fa-check text-success me-2"></i> @(item.IsActive ? "Pasif Et" : "Aktif Et")
+                                                    </a>
+                                                </li>
+                                                 <li>
+                                                    <a class="dropdown-item confirm-btn" href="#" data-url="@Url.Content("~/admin/About/Remove/" + item.Id)">
+                                                        <i class="fa fa-times text-danger me-2"></i> Sil
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+

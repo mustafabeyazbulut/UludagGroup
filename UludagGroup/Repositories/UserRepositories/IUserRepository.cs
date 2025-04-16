@@ -11,7 +11,7 @@ namespace UludagGroup.Repositories.UserRepositories
         Task<ResponseViewModel<UserViewModel>> GetAsync(string email);
         Task<ResponseViewModel<bool>> AddAsync(CreateUserViewModel model);
         Task<ResponseViewModel<bool>> UpdateAsync(UpdateUserViewModel model);
-        Task<ResponseViewModel<bool>> UpdatePasswordAsync(int id, string password);
+        Task<ResponseViewModel<bool>> UpdatePasswordAsync(ResetPasswordViewModel model);
         Task<ResponseViewModel<bool>> RemoveAsync(int id);
         Task<ResponseViewModel<bool>> SetActiveStatusAsync(int id, bool isActive);
         Task<ResponseViewModel<bool>> SetAdminPageAsync(int id, bool isAdmin);

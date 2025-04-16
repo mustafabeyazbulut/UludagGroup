@@ -17,13 +17,16 @@
         // Success mesajı varsa ve null/boş değilse göster
         if (successMessage && successMessage.trim() !== "null" && successMessage.trim() !== '') {
             swal("Başarılı!", successMessage, "success");
+            successMessage=null;
         }
         // Error mesajı varsa ve null/boş değilse göster
         if (errorMessage && errorMessage.trim() !== "null" && errorMessage.trim() !== '') {
             swal("Hata!", errorMessage, "error");
+            errorMessage=null;
         }
         if (errorMessage2 && errorMessage2.trim() !== "null" && errorMessage2.trim() !== '') {
             console.log(errorMessage2);
+            errorMessage2=null;
         }
     });
 </script>

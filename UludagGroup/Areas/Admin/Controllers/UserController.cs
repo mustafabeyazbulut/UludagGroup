@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 using UludagGroup.Repositories.UserRepositories;
 using UludagGroup.ViewModels.UserViewModels;
 
@@ -34,13 +33,17 @@ namespace UludagGroup.Areas.Admin.Controllers
             if (checkMail.Status)
             {
                 TempData["ErrorMessage"] = $"Eklemeye çalıştığınız kullanıcı bulunuyor. Lütfen başka bir kullanıcı ekleyiniz.";
-                return RedirectToAction("Add", "User", model);
+                return View("Add", model);
             }
             var response = await _userRepository.AddAsync(model);
             if (!response.Status)
             {
                 TempData["ErrorMessage"] = $"{response.Message}";
-                return RedirectToAction("Add", "User", model);
+                return View("Add", model);
+            }
+            else
+            {
+                TempData["SuccessMessage"] = $"{response.Message}";
             }
             return RedirectToAction("Index", "User");
         }
@@ -52,7 +55,12 @@ namespace UludagGroup.Areas.Admin.Controllers
                 TempData["ErrorMessage"] = $"{response.Message}";
                 return RedirectToAction("Index", "User");
             }
-            return View(response.Data);
+            return View(new UpdateUserViewModel
+            {
+                Email = response.Data.Email,
+                FullName = response.Data.FullName,
+                Id = response.Data.Id
+            });
         }
         public async Task<IActionResult> SaveEdit(UpdateUserViewModel model)
         {
@@ -60,6 +68,11 @@ namespace UludagGroup.Areas.Admin.Controllers
             if (!response.Status)
             {
                 TempData["ErrorMessage"] = $"{response.Message}";
+                return View("Edit", model);
+            }
+            else
+            {
+                TempData["SuccessMessage"] = $"{response.Message}";
             }
             return RedirectToAction("Index", "User");
         }
@@ -96,6 +109,34 @@ namespace UludagGroup.Areas.Admin.Controllers
             if (!response.Status)
             {
                 TempData["ErrorMessage"] = $"{response.Message}";
+            }
+            return RedirectToAction("Index", "User");
+        }
+        public async Task<IActionResult> ChangePassword(int id)
+        {
+            var response = await _userRepository.GetAsync(id);
+            if (!response.Status)
+            {
+                TempData["ErrorMessage"] = $"{response.Message}";
+                return RedirectToAction("Index", "User");
+            }
+            return View(new ResetPasswordViewModel
+            {
+                Id= response.Data.Id,
+                Email=response.Data.Email
+            });
+        }
+        public async Task<IActionResult> SavePassword(ResetPasswordViewModel model)
+        {
+            var response = await _userRepository.UpdatePasswordAsync(model);
+            if (!response.Status)
+            {
+                TempData["ErrorMessage"] = $"{response.Message}";
+                return RedirectToAction("ChangePassword", "User", new { id = model.Id });
+            }
+            else
+            {
+                TempData["SuccessMessage"] = $"{response.Message}";
             }
             return RedirectToAction("Index", "User");
         }

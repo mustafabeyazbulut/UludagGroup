@@ -70,7 +70,7 @@ WebFont.load({
 $(document).ready(function () {
     // Sayfa yüklendiğinde, ve her sayfa geçişinde aşağıdaki kod çalışacak
     $(document).on("click", ".confirm-btn", function (e) {
-        console.log("selam");
+        console.log("selam2");
         e.preventDefault();
         var url = $(this).data("url");  // jQuery ile data-url'yi alıyoruz
 
@@ -87,5 +87,17 @@ $(document).ready(function () {
         });
     });
 });
+window.previewImage = function (input, imageUrlPreview) {
+    console.log("previewImage fonksiyonu çağrıldı.");
+    var previewElement = "#" + imageUrlPreview; // '#' ekliyoruz
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function (e) {
+            // '#imagePreview' gibi bir seçici olarak çalışacak
+            $(previewElement).attr('src', e.target.result);
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
 
 

@@ -1,7 +1,7 @@
 ﻿using Dapper;
 using Microsoft.AspNetCore.Authentication;
-using System.Reflection;
 using System.Security.Claims;
+using System.Text.RegularExpressions;
 using UludagGroup.Commons;
 using UludagGroup.Models.Contexts;
 using UludagGroup.ViewModels;
@@ -12,6 +12,7 @@ namespace UludagGroup.Repositories.UserRepositories
     public class UserRepository : BaseRepository, IUserRepository
     {
         private readonly HashHelper _hashHelper;
+        string emailRegex = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
         public UserRepository(Context context, IHttpContextAccessor httpContextAccessor, HashHelper hashHelper) : base(context, httpContextAccessor)
         {
             _hashHelper = hashHelper;
@@ -21,6 +22,10 @@ namespace UludagGroup.Repositories.UserRepositories
             var response = new ResponseViewModel<bool>();
             try
             {
+                if (!Regex.IsMatch(model.Email, emailRegex))
+                {
+                    throw new ArgumentException("Geçersiz email formatı. Lütfen geçerli bir email adresi giriniz.");
+                }
                 string query = @"
                                 INSERT INTO Users (
                                     Email, 
@@ -375,6 +380,10 @@ namespace UludagGroup.Repositories.UserRepositories
             var response = new ResponseViewModel<bool>();
             try
             {
+                if (!Regex.IsMatch(model.Email, emailRegex))
+                {
+                    throw new ArgumentException("Geçersiz email formatı. Lütfen geçerli bir email adresi giriniz.");
+                }
                 string query = "UPDATE Users SET " +
                                  "Email = @Email, " +
                                  "FullName = @FullName " +
@@ -400,17 +409,25 @@ namespace UludagGroup.Repositories.UserRepositories
             }
             return response;
         }
-        public async Task<ResponseViewModel<bool>> UpdatePasswordAsync(int id, string password)
+        public async Task<ResponseViewModel<bool>> UpdatePasswordAsync(ResetPasswordViewModel model)
         {
             var response = new ResponseViewModel<bool>();
             try
             {
+                if (!Regex.IsMatch(model.Email, emailRegex))
+                {
+                    throw new ArgumentException("Geçersiz email formatı. Lütfen geçerli bir email adresi giriniz.");
+                }
+                if (model.Password != model.ConfirmPassword)
+                {
+                    throw new Exception("Şifre ve şifre tekrarı aynı değil. Lütfen kontrol ediniz.");
+                }
                 string query = "UPDATE Users SET " +
                                  "Password = @Password " +
-                                 "WHERE Id = @Id";
+                                 "WHERE Email = @Email";
                 var parameters = new DynamicParameters();
-                parameters.Add("@Id", id);
-                parameters.Add("@Password", _hashHelper.HashPassword(password));
+                parameters.Add("@Email", model.Email);
+                parameters.Add("@Password", _hashHelper.HashPassword(model.Password));
                 using (var connection = _context.CreateConnection())
                 {
                     var affectedRows = await connection.ExecuteAsync(query, parameters);

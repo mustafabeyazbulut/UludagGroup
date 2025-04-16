@@ -10,7 +10,7 @@
 
         <div class="card">
             <div class="card-body">
-                <h1 class="mb-4 card-title">Yeni Şirket Bilgilerini Giriniz.</h1>
+                <h1 class="mb-4 card-title">Yeni Kullanıcı Bilgilerini Giriniz.</h1>
                 @using (Html.BeginForm(
                 actionName: "SaveAdd",
                 controllerName: "User",
@@ -28,7 +28,8 @@
                     <div class="row mb-3">
                         <label for="Name" class="col-sm-2 col-form-label">E-mail</label>
                         <div class="col-sm-10">
-                            @Html.TextBox("Email", null, new { @class = "form-control", type = "text", placeholder = "Mail giriniz." })
+                            @Html.TextBoxFor(model => model.Email, new { @class = "form-control", type = "email", placeholder = "Mail giriniz." })
+
                         </div>
                     </div>
                     <div class="row mb-3">
@@ -40,7 +41,7 @@
                     <div class="row mb-3 mt-4">
                         <div class="col-12 text-center">
                             <button type="submit" class="btn btn-lg btn-primary me-2">Kaydet</button>
-                            <button type="button" class="btn btn-lg btn-secondary" onclick="history.back();">Geri Dön</button>
+                            <a href="@Url.Action("Index", "User", new { area = "Admin" })" class="btn btn-lg btn-secondary">Geri Dön</a>
                         </div>
                     </div>
                 }

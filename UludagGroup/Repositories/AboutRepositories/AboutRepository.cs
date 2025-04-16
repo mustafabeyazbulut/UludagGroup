@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using UludagGroup.Commons;
 using UludagGroup.Models.Contexts;
 using UludagGroup.ViewModels;
 using UludagGroup.ViewModels.AboutViewModels;
@@ -7,8 +8,11 @@ namespace UludagGroup.Repositories.AboutRepositories
 {
     public class AboutRepository : BaseRepository, IAboutRepository
     {
-        public AboutRepository(Context context, IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
+        private readonly ImageOperations _imageOperations;
+        public AboutRepository(Context context, IHttpContextAccessor httpContextAccessor, ImageOperations imageOperations) : base(context, httpContextAccessor)
         {
+            _imageOperations = imageOperations;
+            _imageOperations.FilePath = "Photos/Abouts";
         }
         public async Task<ResponseViewModel<bool>> AddAsync(CreateAboutViewModel model)
         {

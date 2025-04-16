@@ -1,7 +1,7 @@
 ﻿$(document).ready(function () {
     // Sayfa yüklendiğinde, ve her sayfa geçişinde aşağıdaki kod çalışacak
     $(document).on("click", ".confirm-btn", function (e) {
-        console.log("selam");
+        console.log("selam2");
         e.preventDefault();
         var url = $(this).data("url");  // jQuery ile data-url'yi alıyoruz
 
@@ -18,3 +18,6 @@
         });
     });
 });
+
+
+

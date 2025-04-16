@@ -8,7 +8,7 @@
     <div class="card">
         <div class="card-header">
             <div class="d-flex align-items-center">
-                <h4 class="card-title">Şirket Listesi</h4>
+                <h4 class="card-title">Kullanıcı Listesi</h4>
                 <button class="btn btn-primary btn-round ms-auto" onclick="window.location.href='/admin/User/Add';">
                     <i class="fa fa-plus"></i>
                     Yeni Kullanıcı
@@ -92,15 +92,17 @@
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a class="dropdown-item confirm-btn" href="#" data-url="@Url.Content("~/admin/User/Remove/" + item.Id)">
-                                                        <i class="fa fa-times text-danger me-2"></i> Sil
+                                                    <a class="dropdown-item confirm-btn"
+                                                       href="#"
+                                                       data-url="@Url.Content("~/admin/User/Active")?id=@item.Id&isActive=@item.IsActive">
+                                                        <i class="fa fa-check text-success me-2"></i> @(item.IsActive ? "Pasif Et" : "Aktif Et")
                                                     </a>
                                                 </li>
                                                 <li>
                                                     <a class="dropdown-item confirm-btn"
                                                        href="#"
-                                                       data-url="@Url.Content("~/admin/User/Active")?id=@item.Id&isActive=@item.IsActive">
-                                                        <i class="fa fa-check text-success me-2"></i> @(item.IsActive ? "Pasif Et" : "Aktif Et")
+                                                       data-url="@Url.Content("~/admin/User/ChangePassword")?id=@item.Id">
+                                                        <i class="fa fa-key text-warning me-2"></i> Parolayı Değiştir
                                                     </a>
                                                 </li>
                                                 <li>
@@ -115,6 +117,11 @@
                                                        href="#"
                                                        data-url="@Url.Content("~/admin/User/Finance")?id=@item.Id&isFinance=@item.IsFinancePage">
                                                         <i class="fa fa-coins text-warning me-2"></i> @(item.IsFinancePage ? "Finans Yetkisini Kapat" : "Finans Yetkisini Aç")
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item confirm-btn" href="#" data-url="@Url.Content("~/admin/User/Remove/" + item.Id)">
+                                                        <i class="fa fa-times text-danger me-2"></i> Sil
                                                     </a>
                                                 </li>
                                             </ul>
