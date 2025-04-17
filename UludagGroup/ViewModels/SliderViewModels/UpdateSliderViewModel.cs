@@ -10,5 +10,6 @@
         public string ButtonLink { get; set; }
         public string ImageUrl { get; set; }
         public bool IsFirst { get; set; }
+        public IFormFile ImageFile { get; set; }
     }
 }

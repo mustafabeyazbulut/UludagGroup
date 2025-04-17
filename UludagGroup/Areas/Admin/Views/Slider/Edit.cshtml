@@ -1,0 +1,80 @@
+﻿@model UpdateSliderViewModel
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-body">
+                <h1 class="mb-4 card-title">Hakkımızda Bilgilerini Güncelleyebilirsiniz.</h1>
+                @using (Html.BeginForm(
+                actionName: "SaveEdit",
+                controllerName: "Slider",
+                routeValues: new { area = "Admin" },
+                method: FormMethod.Post,
+                antiforgery: false,
+                htmlAttributes: new { @class = "", enctype = "multipart/form-data" }))
+                {
+                    <div class="row mb-3">
+                        <label for="Name" class="col-sm-2 col-form-label">Id</label>
+                        <div class="col-sm-10">
+                            <input type="hidden" asp-for="Id" />
+                            <label class="form-control" id="Id" asp-for="Id">@Model.Id </label>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="Name" class="col-sm-2 col-form-label">NormalText</label>
+                        <div class="col-sm-10">
+                            @Html.TextBoxFor(model => model.NormalText, new { @class = "form-control", type = "text", placeholder = "NormalText" })
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="Name" class="col-sm-2 col-form-label">StrongText</label>
+                        <div class="col-sm-10">
+                            @Html.TextBoxFor(model => model.StrongText, new { @class = "form-control", type = "text", placeholder = "StrongText" })
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="LongDescription" class="col-sm-2 col-form-label">ContentText</label>
+                        <div class="col-sm-10">
+                            @Html.TextAreaFor(model => model.ContentText, new { @class = "form-control", id = "text", placeholder = "ContentText" })
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="LongDescription" class="col-sm-2 col-form-label">ButtonText</label>
+                        <div class="col-sm-10">
+                            @Html.TextAreaFor(model => model.ButtonText, new { @class = "form-control", id = "text", placeholder = "ButtonText" })
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="LongDescription" class="col-sm-2 col-form-label">ButtonLink</label>
+                        <div class="col-sm-10">
+                            @Html.TextAreaFor(model => model.ButtonLink, new { @class = "form-control", id = "text", placeholder = "ButtonLink" })
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="Name" class="col-sm-2 col-form-label">Fotoğraf Seç</label>
+                        <div class="col-sm-10">
+                            <input type="file" class="form-control" id="ImageFile" asp-for="ImageFile" accept=".jpg, .jpeg, .png" onchange="previewImage(this, 'ImageUrl')">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="Name" class="col-sm-2 col-form-label">Fotoğraf</label>
+                        <div class="col-sm-10">
+                            <img id="ImageUrl" src="~/Photos/Sliders/@Model.ImageUrl" class="form-control" style="width:200px;height:200px">
+                        </div>
+                    </div>
+
+                    <div class="row mb-3 mt-4">
+                        <div class="col-12 text-center">
+                            <button type="submit" class="btn btn-lg btn-primary me-2">Kaydet</button>
+                            <a href="@Url.Action("Index", "Slider", new { area = "Admin" })" class="btn btn-lg btn-secondary">Geri Dön</a>
+
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

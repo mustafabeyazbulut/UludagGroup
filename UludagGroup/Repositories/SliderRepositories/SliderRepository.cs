@@ -10,7 +10,7 @@ namespace UludagGroup.Repositories.SliderRepositories
         public SliderRepository(Context context, IHttpContextAccessor httpContextAccessor) : base(context, httpContextAccessor)
         {
         }
-        public async Task<ResponseViewModel<bool>> AddAsync(CreateSliderViewModels model)
+        public async Task<ResponseViewModel<bool>> AddAsync(CreateSliderViewModel model)
         {
             var response = new ResponseViewModel<bool>();
             try

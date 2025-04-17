@@ -8,7 +8,7 @@ namespace UludagGroup.Repositories.SliderRepositories
         Task<ResponseViewModel<List<SliderViewModel>>> GetAllAsync();
         Task<ResponseViewModel<List<SliderViewModel>>> GetAllActiveAsync();
         Task<ResponseViewModel<SliderViewModel>> GetAsync(int id);
-        Task<ResponseViewModel<bool>> AddAsync(CreateSliderViewModels model);
+        Task<ResponseViewModel<bool>> AddAsync(CreateSliderViewModel model);
         Task<ResponseViewModel<bool>> UpdateAsync(UpdateSliderViewModel model);
         Task<ResponseViewModel<bool>> RemoveAsync(int id);
         Task<ResponseViewModel<bool>> SetFirstAsync(int id);
