@@ -174,7 +174,7 @@ namespace UludagGroup.Repositories.SocialMediaRepositories
             var response = new ResponseViewModel<bool>();
             try
             {
-                string query = "DELETE FROM SocialMedias WHERE Id = @Id";
+                string query = "DELETE FROM SocialMedia WHERE Id = @Id";
                 var parameters = new DynamicParameters();
                 parameters.Add("@Id", id);
 
