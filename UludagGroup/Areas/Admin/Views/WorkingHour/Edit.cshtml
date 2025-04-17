@@ -1,0 +1,52 @@
+﻿@model UpdateWorkingHourViewModel
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-body">
+                <h1 class="mb-4 card-title">Hakkımızda Bilgilerini Güncelleyebilirsiniz.</h1>
+                @using (Html.BeginForm(
+                actionName: "SaveEdit",
+                controllerName: "WorkingHour",
+                routeValues: new { area = "Admin" },
+                method: FormMethod.Post,
+                antiforgery: false,
+                htmlAttributes: new { @class = "", enctype = "multipart/form-data" }))
+                {
+                    <div class="row mb-3">
+                        <label for="Name" class="col-sm-2 col-form-label">Id</label>
+                        <div class="col-sm-10">
+                            <input type="hidden" asp-for="Id" />
+                            <label class="form-control" id="Id" asp-for="Id">@Model.Id </label>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="Name" class="col-sm-2 col-form-label">DayOfWeek</label>
+                        <div class="col-sm-10">
+                            @Html.TextBoxFor(model => model.DayOfWeek, new { @class = "form-control", type = "text", placeholder = "DayOfWeek" })
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="Name" class="col-sm-2 col-form-label">TimeRange</label>
+                        <div class="col-sm-10">
+                            @Html.TextBoxFor(model => model.TimeRange, new { @class = "form-control", type = "text", placeholder = "TimeRange" })
+                        </div>
+                    </div>
+
+                    <div class="row mb-3 mt-4">
+                        <div class="col-12 text-center">
+                            <button type="submit" class="btn btn-lg btn-primary me-2">Kaydet</button>
+                            <a href="@Url.Action("Index", "WorkingHour", new { area = "Admin" })" class="btn btn-lg btn-secondary">Geri Dön</a>
+
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+
+</div>

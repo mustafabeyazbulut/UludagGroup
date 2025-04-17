@@ -38,6 +38,11 @@
                     {
                         <a class="btn btn-square btn-primary rounded-circle me-2" href="@Model.SocialMediaModel.Linkedin"><i class="fab fa-linkedin-in"></i></a>
                     }
+                    @if (Model.SocialMediaModel != null && !string.IsNullOrEmpty(Model.SocialMediaModel.Instagram))
+                    {
+                        <a class="btn btn-square btn-danger rounded-circle me-2" href="@Model.SocialMediaModel.Instagram"><i class="fab fa-instagram"></i></a>
+                    }
+
                 </div>
             </div>
             <div class="col-lg-4 col-md-6">

@@ -20,13 +20,15 @@ namespace UludagGroup.Repositories.SocialMediaRepositories
                                     Twitter, 
                                     Facebook,
                                     Youtube,
-                                    Linkedin
+                                    Linkedin,
+                                    Instagram
                                 ) 
                                 VALUES (
                                     @Twitter, 
                                     @Facebook,
                                     @Youtube,
-                                    @Linkedin
+                                    @Linkedin,
+                                    @Instagram
                                 )";
 
                 var parameters = new DynamicParameters();
@@ -34,6 +36,7 @@ namespace UludagGroup.Repositories.SocialMediaRepositories
                 parameters.Add("@Facebook", model.Facebook);
                 parameters.Add("@Youtube", model.Youtube);
                 parameters.Add("@Linkedin", model.Linkedin);
+                parameters.Add("@Instagram", model.Instagram);
                 using (var connection = _context.CreateConnection())
                 {
                     var affectedRows = await connection.ExecuteAsync(query, parameters);
@@ -230,7 +233,8 @@ namespace UludagGroup.Repositories.SocialMediaRepositories
                                  "Twitter = @Twitter, " +
                                  "Facebook = @Facebook, " +
                                  "Youtube = @Youtube, " +
-                                 "Linkedin = @Linkedin " +
+                                 "Linkedin = @Linkedin, " +
+                                 "Instagram = @Instagram " +
                                  "WHERE Id = @Id";
 
                 var parameters = new DynamicParameters();
@@ -239,6 +243,7 @@ namespace UludagGroup.Repositories.SocialMediaRepositories
                 parameters.Add("@Facebook", model.Facebook);
                 parameters.Add("@Youtube", model.Youtube);
                 parameters.Add("@Linkedin", model.Linkedin);
+                parameters.Add("@Instagram", model.Instagram);
                 using (var connection = _context.CreateConnection())
                 {
                     var affectedRows = await connection.ExecuteAsync(query, parameters);
