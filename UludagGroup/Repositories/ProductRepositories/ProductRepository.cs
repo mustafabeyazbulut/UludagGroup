@@ -167,7 +167,7 @@ namespace UludagGroup.Repositories.ProductRepositories
             var response = new ResponseViewModel<bool>();
             try
             {
-                string query = "DELETE FROM BusinessProducts WHERE Id = @Id";
+                string query = "DELETE FROM Products WHERE Id = @Id";
                 var parameters = new DynamicParameters();
                 parameters.Add("@Id", id);
 
@@ -218,7 +218,7 @@ namespace UludagGroup.Repositories.ProductRepositories
             {
                 using (var connection = _context.CreateConnection())
                 {
-                    var query = "UPDATE BusinessProducts SET IsFeatured = @IsFeatured WHERE Id = @Id";
+                    var query = "UPDATE Products SET IsFeatured = @IsFeatured WHERE Id = @Id";
                     var affectedRows = await connection.ExecuteAsync(query, new { Id = id, IsFeatured = isFeatured });
                     response.Status = affectedRows > 0;
                     response.Title = affectedRows > 0 ? "Başarılı" : "Güncelleme Başarısız";
@@ -255,6 +255,7 @@ namespace UludagGroup.Repositories.ProductRepositories
                 parameters.Add("@Name", model.Name);
                 parameters.Add("@ShortDescription", model.ShortDescription);
                 parameters.Add("@LongDescription", model.LongDescription);
+                parameters.Add("@ImageUrl", model.ImageUrl);
                 parameters.Add("@Price", model.Price);
                 parameters.Add("@Rating", model.Rating);
                 using (var connection = _context.CreateConnection())

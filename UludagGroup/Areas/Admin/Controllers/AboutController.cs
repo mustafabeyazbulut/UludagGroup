@@ -95,6 +95,7 @@ namespace UludagGroup.Areas.Admin.Controllers
         }
         public async Task<IActionResult> SaveEdit(UpdateAboutViewModel model)
         {
+            _imageOperations.FilePath = "Photos/Abouts";
             var current = await _aboutRepository.GetAsync(model.Id);
             if (!current.Status)
             {

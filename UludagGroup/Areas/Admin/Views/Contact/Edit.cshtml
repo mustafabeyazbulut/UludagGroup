@@ -1,0 +1,89 @@
+﻿@model UpdateContactViewModel
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-body">
+                <h1 class="mb-4 card-title">Hakkımızda Bilgilerini Güncelleyebilirsiniz.</h1>
+                @using (Html.BeginForm(
+                actionName: "SaveEdit",
+                controllerName: "Contact",
+                routeValues: new { area = "Admin" },
+                method: FormMethod.Post,
+                antiforgery: false,
+                htmlAttributes: new { @class = "", enctype = "multipart/form-data" }))
+                {
+                    <div class="row mb-3">
+                        <label for="Name" class="col-sm-2 col-form-label">Id</label>
+                        <div class="col-sm-10">
+                            <input type="hidden" asp-for="Id" />
+                            <label class="form-control" id="Id" asp-for="Id">@Model.Id </label>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="Name" class="col-sm-2 col-form-label">İçerik</label>
+                        <div class="col-sm-10">
+                            @Html.TextBoxFor(model => model.ContentBody, new { @class = "form-control", type = "text", placeholder = "İçerik" })
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="Name" class="col-sm-2 col-form-label">Birincil E-posta</label>
+                        <div class="col-sm-10">
+                            @Html.TextBoxFor(model => model.PrimaryEmail, new { @class = "form-control", type = "text", placeholder = "Birincil E-posta" })
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="Name" class="col-sm-2 col-form-label">İkincil E-posta</label>
+                        <div class="col-sm-10">
+                            @Html.TextBoxFor(model => model.SecondaryEmail, new { @class = "form-control", type = "text", placeholder = "İkincil E-posta" })
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="Name" class="col-sm-2 col-form-label">Birincil Telefon</label>
+                        <div class="col-sm-10">
+                            @Html.TextBoxFor(model => model.PrimaryPhone, new { @class = "form-control", type = "text", placeholder = "Birincil Telefon" })
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="Name" class="col-sm-2 col-form-label">İkincil Telefon</label>
+                        <div class="col-sm-10">
+                            @Html.TextBoxFor(model => model.SecondaryPhone, new { @class = "form-control", type = "text", placeholder = "İkincil Telefon" })
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="Name" class="col-sm-2 col-form-label">Birincil Adres</label>
+                        <div class="col-sm-10">
+                            @Html.TextBoxFor(model => model.PrimaryAddress, new { @class = "form-control", type = "text", placeholder = "Birincil Adres" })
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="Name" class="col-sm-2 col-form-label">İkincil Adres</label>
+                        <div class="col-sm-10">
+                            @Html.TextBoxFor(model => model.SecondaryAddress, new { @class = "form-control", type = "text", placeholder = "İkincil Adres" })
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="Name" class="col-sm-2 col-form-label">Harita URL</label>
+                        <div class="col-sm-10">
+                            @Html.TextBoxFor(model => model.MapUrl, new { @class = "form-control", type = "text", placeholder = "Harita URL" })
+                        </div>
+                    </div>
+
+
+                    <div class="row mb-3 mt-4">
+                        <div class="col-12 text-center">
+                            <button type="submit" class="btn btn-lg btn-primary me-2">Kaydet</button>
+                            <a href="@Url.Action("Index", "Contact", new { area = "Admin" })" class="btn btn-lg btn-secondary">Geri Dön</a>
+
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+
+</div>

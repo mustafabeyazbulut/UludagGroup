@@ -1,0 +1,51 @@
+﻿@model CreateLogoViewModel
+@{
+    ViewData["Title"] = "Add";
+    Layout = "~/Areas/Admin/Views/AdminLayout/Index.cshtml";
+}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-body">
+                <h1 class="mb-4 card-title">Yeni Hakkımızda Bilgilerini Giriniz.</h1>
+                @using (Html.BeginForm(
+                actionName: "SaveAdd",
+                controllerName: "Logo",
+                routeValues: new { area = "Admin" },
+                method: FormMethod.Post,
+                antiforgery: false,
+                htmlAttributes: new { @class = "", enctype = "multipart/form-data" }))
+                {
+                    <div class="row mb-3">
+                        <label for="Name" class="col-sm-2 col-form-label">Sayfa Başlığı</label>
+                        <div class="col-sm-10">
+                            @Html.TextBoxFor(model => model.Title, new { @class = "form-control", type = "text", placeholder = "Sayfa Başlığı" })
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="Name" class="col-sm-2 col-form-label">Sayfa Logosu seç</label>
+                        <div class="col-sm-10">
+                            <input type="file" class="form-control" id="ImageFile" asp-for="ImageFile" accept=".jpg, .jpeg, .png" onchange="previewImage(this, 'ImageUrl')">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="Name" class="col-sm-2 col-form-label">Sayfa Logosu</label>
+                        <div class="col-sm-10">
+                            <img id="ImageUrl" class="form-control" style="width:200px;height:200px">
+                        </div>
+                    </div>
+
+
+                    <div class="row mb-3 mt-4">
+                        <div class="col-12 text-center">
+                            <button type="submit" class="btn btn-lg btn-primary me-2">Kaydet</button>
+                            <a href="@Url.Action("Index", "Logo", new { area = "Admin" })" class="btn btn-lg btn-secondary">Geri Dön</a>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+

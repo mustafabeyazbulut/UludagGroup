@@ -20,19 +20,19 @@ namespace UludagGroup.Repositories.OurServiceRepositories
                                     Title, 
                                     Paragraph1,
                                     Paragraph2,
-                                    Paragraph2
+                                    ImageUrl
                                 ) 
                                 VALUES (
                                     @Title, 
                                     @Paragraph1,
                                     @Paragraph2,
-                                    @Paragraph2
+                                    @ImageUrl
                                 )";
                 var parameters = new DynamicParameters();
                 parameters.Add("@Title", model.Title);
                 parameters.Add("@Paragraph1", model.Paragraph1);
                 parameters.Add("@Paragraph2", model.Paragraph2);
-                parameters.Add("@Paragraph2", model.Paragraph2);
+                parameters.Add("@ImageUrl", model.ImageUrl);
                 using (var connection = _context.CreateConnection())
                 {
                     var affectedRows = await connection.ExecuteAsync(query, parameters);

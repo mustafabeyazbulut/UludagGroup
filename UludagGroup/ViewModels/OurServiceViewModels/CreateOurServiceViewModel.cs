@@ -6,5 +6,6 @@
         public string Paragraph1 { get; set; }
         public string Paragraph2 { get; set; }
         public string ImageUrl { get; set; }
+        public IFormFile ImageFile { get; set; }
     }
 }
