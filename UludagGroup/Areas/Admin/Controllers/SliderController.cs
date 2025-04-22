@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using UludagGroup.Commons;
 using UludagGroup.Repositories.SliderRepositories;
 using UludagGroup.ViewModels.SliderViewModels;
 
 namespace UludagGroup.Areas.Admin.Controllers
 {
+    [Authorize(AuthenticationSchemes = "AdminScheme", Policy = "AdminPolicy")]
     public class SliderController : Controller
     {
         private readonly ISliderRepository _SliderRepo;

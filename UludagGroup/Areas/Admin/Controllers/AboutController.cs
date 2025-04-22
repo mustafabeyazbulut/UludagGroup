@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using UludagGroup.Commons;
 using UludagGroup.Repositories.AboutRepositories;
 using UludagGroup.ViewModels.AboutViewModels;
 
 namespace UludagGroup.Areas.Admin.Controllers
 {
+    [Authorize(AuthenticationSchemes = "AdminScheme", Policy = "AdminPolicy")]
     public class AboutController : Controller
     {
         private readonly IAboutRepository _aboutRepository;

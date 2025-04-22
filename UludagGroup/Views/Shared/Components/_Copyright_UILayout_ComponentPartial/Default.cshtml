@@ -7,7 +7,7 @@
                 &copy;
                 @if (Model.FaviconModel != null && !string.IsNullOrEmpty(Model.FaviconModel.Title))
                 {
-                    <a class="fw-medium" href="@Url.Action("Index", "Home")">@Model.FaviconModel.Title</a>
+                    <a class="fw-medium" href="@Url.Action("Index", "Home", new { area = "" })">@Model.FaviconModel.Title</a>
                 }
                 , All Right Reserved.
             </div>

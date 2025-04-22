@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using UludagGroup.Repositories.SocialMediaRepositories;
 using UludagGroup.ViewModels.SocialMediaViewModels;
 
 namespace UludagGroup.Areas.Admin.Controllers
 {
+    [Authorize(AuthenticationSchemes = "AdminScheme", Policy = "AdminPolicy")]
     public class SocialMediaController : Controller
     {
         private readonly ISocialMediaRepository _SocialMediaRepo;

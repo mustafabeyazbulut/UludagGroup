@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using UludagGroup.Commons;
 using UludagGroup.Repositories.ReferenceRepositories;
 using UludagGroup.ViewModels.ReferenceViewModels;
 
 namespace UludagGroup.Areas.Admin.Controllers
 {
+    [Authorize(AuthenticationSchemes = "AdminScheme", Policy = "AdminPolicy")]
     public class ReferenceController : Controller
     {
         private readonly IReferenceRepository _referenceRepo;

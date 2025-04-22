@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using UludagGroup.Repositories.WorkingHourRepositories;
 using UludagGroup.ViewModels.WorkingHourViewModels;
 
 namespace UludagGroup.Areas.Admin.Controllers
 {
+    [Authorize(AuthenticationSchemes = "AdminScheme", Policy = "AdminPolicy")]
     public class WorkingHourController : Controller
     {
         private readonly IWorkingHourRepository _WorkingHourRepo;

@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using UludagGroup.Commons;
 using UludagGroup.Repositories.ProductRepositories;
 using UludagGroup.ViewModels.ProductViewModels;
 
 namespace UludagGroup.Areas.Admin.Controllers
 {
+    [Authorize(AuthenticationSchemes = "AdminScheme", Policy = "AdminPolicy")]
     public class ProductController : Controller
     {
         private readonly IProductRepository _ProductRepo;

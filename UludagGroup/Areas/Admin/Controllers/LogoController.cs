@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using UludagGroup.Commons;
 using UludagGroup.Repositories.LogoRepositories;
 using UludagGroup.ViewModels.LogoViewModels;
 
 namespace UludagGroup.Areas.Admin.Controllers
 {
+    [Authorize(AuthenticationSchemes = "AdminScheme", Policy = "AdminPolicy")]
     public class LogoController : Controller
     {
         private readonly ILogoRepository _logoRepo;

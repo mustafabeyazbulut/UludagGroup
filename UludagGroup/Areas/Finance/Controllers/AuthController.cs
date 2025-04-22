@@ -31,7 +31,7 @@ namespace UludagGroup.Areas.Finance.Controllers
                 ViewBag.ErrorMessage = response.Message;
                 return View();
             }
-            return RedirectToAction("Dashboard", "Auth");
+            return RedirectToAction("Index", "Auth");
         }
         [HttpPost]
         public async Task<IActionResult> Logout()

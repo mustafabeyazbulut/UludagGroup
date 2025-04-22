@@ -4,6 +4,7 @@ using UludagGroup.Repositories.UserRepositories;
 
 namespace UludagGroup.Areas.Admin.Controllers
 {
+
     public class AuthController : Controller
     {
         private readonly IUserRepository _userRepository;
@@ -30,7 +31,7 @@ namespace UludagGroup.Areas.Admin.Controllers
                 ViewBag.ErrorMessage = response.Message;
                 return View();
             }
-            return RedirectToAction("Dashboard", "Home");
+            return RedirectToAction("Index", "Home");
         }
         [HttpPost]
         public async Task<IActionResult> Logout()
