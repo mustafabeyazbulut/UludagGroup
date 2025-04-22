@@ -30,7 +30,7 @@ namespace UludagGroup.Repositories.ProductRepositories
                                     @LongDescription,
                                     @Price,
                                     @ImageUrl,
-                                    @Rating,
+                                    @Rating
                                 )";
                 var parameters = new DynamicParameters();
                 parameters.Add("@Name", model.Name);
