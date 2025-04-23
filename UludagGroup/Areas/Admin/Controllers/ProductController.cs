@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using UludagGroup.Commons;
+using UludagGroup.Repositories.ProductGroupRepositories;
 using UludagGroup.Repositories.ProductRepositories;
 using UludagGroup.ViewModels.ProductViewModels;
 
@@ -10,12 +12,14 @@ namespace UludagGroup.Areas.Admin.Controllers
     public class ProductController : Controller
     {
         private readonly IProductRepository _ProductRepo;
+        private readonly IProductGroupRepository _productGroupRepo;
         private readonly ImageOperations _imageOperations;
 
-        public ProductController(IProductRepository ProductRepo, ImageOperations imageOperations)
+        public ProductController(IProductRepository ProductRepo, ImageOperations imageOperations, IProductGroupRepository productGroupRepo)
         {
             _ProductRepo = ProductRepo;
             _imageOperations = imageOperations;
+            _productGroupRepo = productGroupRepo;
         }
 
         public async Task<IActionResult> Index()
@@ -29,6 +33,20 @@ namespace UludagGroup.Areas.Admin.Controllers
         }
         public async Task<IActionResult> Add()
         {
+            var valuesCategory = await _productGroupRepo.GetAllActiveAsync();
+            List<SelectListItem> category = (from x in valuesCategory.Data
+                                             select new SelectListItem
+                                             {
+                                                 Text = x.Name,
+                                                 Value = x.Id.ToString()
+                                             }).ToList();
+            category.Insert(0, new SelectListItem
+            {
+                Text = "Kategori Seçebilirsiniz",
+                Value = "0"
+            });
+            ViewBag.Category = category;
+
             return View();
         }
         public async Task<IActionResult> SaveAdd(CreateProductViewModel model)
@@ -52,6 +70,20 @@ namespace UludagGroup.Areas.Admin.Controllers
         }
         public async Task<IActionResult> Edit(int id)
         {
+            var valuesCategory = await _productGroupRepo.GetAllActiveAsync();
+            List<SelectListItem> category = (from x in valuesCategory.Data
+                                             select new SelectListItem
+                                             {
+                                                 Text = x.Name,
+                                                 Value = x.Id.ToString()
+                                             }).ToList();
+            category.Insert(0, new SelectListItem
+            {
+                Text = "Kategori Seçebilirsiniz",
+                Value = "0"
+            });
+            ViewBag.Category = category;
+
             var response = await _ProductRepo.GetAsync(id);
             if (!response.Status)
             {
@@ -65,6 +97,7 @@ namespace UludagGroup.Areas.Admin.Controllers
                 ShortDescription = response.Data.ShortDescription,
                 LongDescription = response.Data.LongDescription,
                 Price = response.Data.Price,
+                PGroup=response.Data.PGroup,
                 ImageUrl = response.Data.ImageUrl,
                 Rating = response.Data.Rating,
             });

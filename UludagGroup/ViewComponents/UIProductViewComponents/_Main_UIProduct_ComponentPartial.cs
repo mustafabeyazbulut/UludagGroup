@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using UludagGroup.Repositories.ProductRepositories;
+using UludagGroup.ViewModels.ProductViewModels;
 
 namespace UludagGroup.ViewComponents.UIProductViewComponents
 {
@@ -11,13 +12,32 @@ namespace UludagGroup.ViewComponents.UIProductViewComponents
         {
             _productRepository = productRepository;
         }
-        public async Task<IViewComponentResult> InvokeAsync()
+        public async Task<IViewComponentResult> InvokeAsync(SearchProductViewModel model)
         {
-            var response = await _productRepository.GetAllActiveAsync();
+            var response = await _productRepository.SearchProductsAsync(model);
             if (!response.Status)
             {
                 TempData["ErrorMessage2"] = response.Message;
+                return View(response.Data); // hata olsa da boş liste dönecek
             }
+
+            var wwwRootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Photos", "Products");
+
+            foreach (var product in response.Data)
+            {
+                if (string.IsNullOrWhiteSpace(product.ImageUrl))
+                {
+                    continue;
+                }
+
+                var imagePath = Path.Combine(wwwRootPath, product.ImageUrl);
+
+                if (!System.IO.File.Exists(imagePath))
+                {
+                    product.ImageUrl = string.Empty;
+                }
+            }
+
             return View(response.Data);
         }
     }

@@ -1,6 +1,7 @@
 ﻿$("#multi-filter-select").DataTable({
-    pageLength: 5,
+    pageLength: 20,
     order: [],
+    lengthMenu: [10, 25, 50, 100],
     initComplete: function () {
         this.api()
             .columns()

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 using UludagGroup.Repositories.ProductRepositories;
+using UludagGroup.ViewModels.ProductViewModels;
 
 namespace UludagGroup.Controllers
 {
@@ -11,10 +11,10 @@ namespace UludagGroup.Controllers
         {
             _productRepository = productRepository;
         }
-        public IActionResult Index()
+        public IActionResult Index(SearchProductViewModel model)
         {
             ViewData["ActivePage"] = "Product";
-            return View();
+            return View(model);
         }
         
         public async Task<IActionResult> Detail(int id)

@@ -55,6 +55,12 @@
                         </div>
                     </div>
                     <div class="row mb-3">
+                        <label for="Name" class="col-sm-2 col-form-label">Kategori</label>
+                        <div class="col-sm-10">
+                            @Html.DropDownListFor(x => x.PGroup, (List<SelectListItem>)ViewBag.Category, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="row mb-3">
                         <label for="Name" class="col-sm-2 col-form-label">Fotoğraf Seç</label>
                         <div class="col-sm-10">
                             <input type="file" class="form-control" id="ImageFile" asp-for="ImageFile" accept=".jpg, .jpeg, .png" onchange="previewImage(this, 'ImageUrl')">

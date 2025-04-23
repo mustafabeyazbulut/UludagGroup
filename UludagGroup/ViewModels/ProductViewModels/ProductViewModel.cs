@@ -9,6 +9,8 @@
         public decimal Price { get; set; }
         public string ImageUrl { get; set; }
         public int Rating { get; set; }
+        public int PGroup { get; set; }
+        public string PGroupText { get; set; }
         public bool IsFeatured { get; set; }
         public bool IsActive { get; set; }
     }

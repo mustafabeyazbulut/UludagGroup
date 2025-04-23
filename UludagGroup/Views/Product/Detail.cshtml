@@ -48,11 +48,9 @@
                         @(Model.Price == 0 ? "Fiyat için arayın" : Model.Price.ToString("C"))
                     </div>
                     <p>@(string.IsNullOrWhiteSpace(Model.ShortDescription) ? Html.Raw("&nbsp;") : Model.ShortDescription)</p>
-                    @* <ul class="list-unstyled">
-                        <li><strong>Stok Durumu:</strong> <span class="text-success">Stokta</span></li>
-                        <li><strong>Kargo:</strong> <span>1 günde teslimat. <samp>Bugün ücretsiz teslim alın</samp></span></li>
-                        <li><strong>Ağırlık:</strong> <span>0.5 kg</span></li>
-                    </ul> *@
+                    <ul class="list-unstyled">
+                        <li><strong>Kategori:</strong> <span class="text-success">@(string.IsNullOrWhiteSpace(Model.PGroupText) ? Html.Raw("&nbsp;") : Model.PGroupText)</span></li>
+                    </ul>
                 </div>
             </div>
 
@@ -69,7 +67,7 @@
 
                     <div class="tab-content p-lg-3" id="productTabContent">
                         <div class="tab-pane fade show active" id="features" role="tabpanel" aria-labelledby="features-tab">
-                            <p>@(string.IsNullOrWhiteSpace(Model.LongDescription) ? Html.Raw("&nbsp;") : Model.LongDescription)</p>
+                            <p>@(string.IsNullOrWhiteSpace(Model.LongDescription) ? Html.Raw("&nbsp;") : Html.Raw(Model.LongDescription))</p>
                         </div>
                     </div>
                 </div>

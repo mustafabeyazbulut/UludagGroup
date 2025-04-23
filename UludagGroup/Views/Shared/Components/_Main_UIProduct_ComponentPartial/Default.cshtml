@@ -2,15 +2,10 @@
 @{
     int index = 1;
 }
-
-
-
 <!-- Store Start -->
 <div class="container-xxl py-5">
     <div class="container">
-        <div class="section-title text-center mx-auto wow fadeInUp" data-wow-delay="0.1s" style="max-width: 500px;">
-            <p class="fs-5 fw-medium fst-italic text-primary">Ürünlerimiz</p>
-        </div>
+       
         <div class="row g-4">
             @foreach (var product in Model)
             {
@@ -42,10 +37,10 @@
                                 }
                             </div>
                             <h4 class="mb-3">
-                                @(string.IsNullOrWhiteSpace(product.Name) ? Html.Raw("&nbsp;") : product.Name)
+                                @(string.IsNullOrWhiteSpace(product.Name) ? Html.Raw("</br>") : product.Name)
                             </h4>
 
-                            <p>@(string.IsNullOrWhiteSpace(product.ShortDescription) ? Html.Raw("&nbsp;") : product.ShortDescription)</p>
+                            <p>@(string.IsNullOrWhiteSpace(product.ShortDescription) ? Html.Raw("</br>") : product.ShortDescription)</p>
                             <h4 class="text-primary">
                                 @(product.Price == 0 ? "Fiyat için arayın" : product.Price.ToString("C"))
                             </h4>

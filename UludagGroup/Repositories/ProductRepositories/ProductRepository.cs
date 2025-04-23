@@ -22,7 +22,8 @@ namespace UludagGroup.Repositories.ProductRepositories
                                     LongDescription,
                                     Price,
                                     ImageUrl,
-                                    Rating
+                                    Rating,
+                                    PGroup
                                 ) 
                                 VALUES (
                                     @Name, 
@@ -30,7 +31,8 @@ namespace UludagGroup.Repositories.ProductRepositories
                                     @LongDescription,
                                     @Price,
                                     @ImageUrl,
-                                    @Rating
+                                    @Rating,
+                                    @PGroup     
                                 )";
                 var parameters = new DynamicParameters();
                 parameters.Add("@Name", model.Name);
@@ -39,6 +41,7 @@ namespace UludagGroup.Repositories.ProductRepositories
                 parameters.Add("@Price", model.Price);
                 parameters.Add("@ImageUrl", model.ImageUrl);
                 parameters.Add("@Rating", model.Rating);
+                parameters.Add("@PGroup", model.PGroup);
                 using (var connection = _context.CreateConnection())
                 {
                     var affectedRows = await connection.ExecuteAsync(query, parameters);
@@ -61,7 +64,11 @@ namespace UludagGroup.Repositories.ProductRepositories
             var response = new ResponseViewModel<List<ProductViewModel>>();
             try
             {
-                string query = "SELECT * FROM Products WHERE IsActive = 1";
+                string query = @"
+                                SELECT p.*, pg.Name as PGroupText  
+                                FROM Products p
+                                JOIN ProductGroups pg ON p.PGroup = pg.Id
+                                WHERE p.IsActive = 1";
                 using (var connection = _context.CreateConnection())
                 {
                     var values = await connection.QueryAsync<ProductViewModel>(query);
@@ -85,7 +92,10 @@ namespace UludagGroup.Repositories.ProductRepositories
             var response = new ResponseViewModel<List<ProductViewModel>>();
             try
             {
-                string query = "SELECT * FROM Products WHERE IsActive = 1 and IsFeatured = 1";
+                string query = @"SELECT p.*, pg.Name as PGroupText  
+                                FROM Products p
+                                JOIN ProductGroups pg ON p.PGroup = pg.Id
+                                WHERE p.IsActive = 1 AND p.IsFeatured = 1";
                 using (var connection = _context.CreateConnection())
                 {
                     var values = await connection.QueryAsync<ProductViewModel>(query);
@@ -109,7 +119,9 @@ namespace UludagGroup.Repositories.ProductRepositories
             var response = new ResponseViewModel<List<ProductViewModel>>();
             try
             {
-                string query = "SELECT * FROM Products";
+                string query = @"SELECT p.*, pg.Name as PGroupText  
+                                FROM Products p
+                                JOIN ProductGroups pg ON p.PGroup = pg.Id";
                 using (var connection = _context.CreateConnection())
                 {
                     var values = await connection.QueryAsync<ProductViewModel>(query);
@@ -133,7 +145,11 @@ namespace UludagGroup.Repositories.ProductRepositories
             var response = new ResponseViewModel<ProductViewModel>();
             try
             {
-                string query = "SELECT * FROM Products WHERE Id = @Id";
+                string query = @"SELECT p.*, pg.Name as PGroupText  
+                                FROM Products p
+                                JOIN ProductGroups pg ON p.PGroup = pg.Id
+                                WHERE p.Id = @Id
+                                ";
                 var parameters = new DynamicParameters();
                 parameters.Add("@Id", id);
                 using (var connection = _context.CreateConnection())
@@ -152,6 +168,51 @@ namespace UludagGroup.Repositories.ProductRepositories
                         response.Title = "Silinmiş veya Bulunamayan Kayıt";
                         response.Message = "Veritabanında belirtilen ID ile ilişkili Product bulunamadı.";
                     }
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Status = false;
+                response.Title = "Hata";
+                response.Message = ex.Message;
+            }
+            return response;
+        }
+
+        public async Task<ResponseViewModel<List<CategoryWithProductViewModel>>> GetProductsGroupedByCategoryAsync()
+        {
+            var response = new ResponseViewModel<List<CategoryWithProductViewModel>>();
+            try
+            {
+                string query = @"
+                                SELECT DISTINCT pg.Id AS PGroup, pg.Name as PGroupText
+                                FROM Products p
+                                JOIN ProductGroups pg ON p.PGroup = pg.Id
+                                WHERE p.IsActive = 1
+                                ORDER BY pg.Name";  // Ürün gruplarına göre sıralama
+
+                using (var connection = _context.CreateConnection())
+                {
+                    var values = await connection.QueryAsync<CategoryWithProductViewModel>(query);
+
+
+                    // values boşsa, yeni bir liste oluşturuyoruz. Eğer boş değilse gelen veriyi kullanıyoruz.
+                    var categoryList = values?.ToList() ?? new List<CategoryWithProductViewModel>();
+
+                    // Her durumda "Tüm Kategoriler" ekliyoruz.
+                    var allCategories = new CategoryWithProductViewModel
+                    {
+                        PGroup = 0,
+                        PGroupText = "Tüm Kategoriler",
+                    };
+
+                    // "Tüm Kategoriler" kategorisini listenin başına ekliyoruz
+                    categoryList.Insert(0, allCategories);
+
+                    response.Data = categoryList;
+                    response.Status = true;
+                    response.Title = "Başarılı";
+                    response.Message = "Ürünler başarıyla kategorilere göre gruplanarak getirildi.";
                 }
             }
             catch (Exception ex)
@@ -185,6 +246,57 @@ namespace UludagGroup.Repositories.ProductRepositories
                 response.Title = "Hata";
                 response.Message = ex.Message;
             }
+            return response;
+        }
+        public async Task<ResponseViewModel<List<ProductViewModel>>> SearchProductsAsync(SearchProductViewModel model)
+        {
+            var response = new ResponseViewModel<List<ProductViewModel>>();
+
+            try
+            {
+                string query = @"
+                        SELECT p.*, pg.Name as PGroupText  
+                        FROM Products p
+                        JOIN ProductGroups pg ON p.PGroup = pg.Id
+                        WHERE p.IsActive = 1";
+
+                // Eğer CategoryId sıfır değilse, sorguyu kategorize ediyoruz
+                if (model.CategoryId != 0)
+                {
+                    query += " AND p.PGroup = @CategoryId";
+                }
+
+                // Eğer ProductName verilmişse, adı içeriyorsa sorguya ekliyoruz
+                if (!string.IsNullOrEmpty(model.ProductName))
+                {
+                    query += " AND p.Name LIKE @ProductName";
+                }
+
+                // Veritabanı bağlantısını oluşturuyoruz
+                using (var connection = _context.CreateConnection())
+                {
+                    var values = await connection.QueryAsync<ProductViewModel>(query, new
+                    {
+                        CategoryId = model.CategoryId,
+                        ProductName = "%" + model.ProductName + "%"
+                    });
+
+                    // Gelen veriyi listeliyoruz. Eğer sonuç yoksa, boş bir liste dönecek.
+                    var productList = values?.ToList() ?? new List<ProductViewModel>();
+
+                    response.Data = productList;
+                    response.Status = true;
+                    response.Title = "Başarılı";
+                    response.Message = "Ürünler başarıyla filtrelenerek getirildi.";
+                }
+            }
+            catch (Exception ex)
+            {
+                response.Status = false;
+                response.Title = "Hata";
+                response.Message = ex.Message;
+            }
+
             return response;
         }
         public async Task<ResponseViewModel<bool>> SetActiveStatusAsync(int id, bool isActive)
@@ -248,7 +360,8 @@ namespace UludagGroup.Repositories.ProductRepositories
                                     LongDescription = @LongDescription, 
                                     Price = @Price, 
                                     ImageUrl = @ImageUrl, 
-                                    Rating = @Rating 
+                                    Rating = @Rating,
+                                    PGroup = @PGroup
                                 WHERE Id = @Id";
                 var parameters = new DynamicParameters();
                 parameters.Add("@Id", model.Id);
@@ -258,6 +371,7 @@ namespace UludagGroup.Repositories.ProductRepositories
                 parameters.Add("@ImageUrl", model.ImageUrl);
                 parameters.Add("@Price", model.Price);
                 parameters.Add("@Rating", model.Rating);
+                parameters.Add("@PGroup", model.PGroup);
                 using (var connection = _context.CreateConnection())
                 {
                     var affectedRows = await connection.ExecuteAsync(query, parameters);

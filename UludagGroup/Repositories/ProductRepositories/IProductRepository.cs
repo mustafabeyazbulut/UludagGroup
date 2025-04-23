@@ -14,5 +14,7 @@ namespace UludagGroup.Repositories.ProductRepositories
         Task<ResponseViewModel<bool>> RemoveAsync(int id);
         Task<ResponseViewModel<bool>> SetActiveStatusAsync(int id, bool isActive);
         Task<ResponseViewModel<bool>> SetFeaturedStatusAsync(int id, bool isFeatured);
+        Task<ResponseViewModel<List<CategoryWithProductViewModel>>> GetProductsGroupedByCategoryAsync();
+        Task<ResponseViewModel<List<ProductViewModel>>> SearchProductsAsync(SearchProductViewModel model);
     }
 }

@@ -1,0 +1,42 @@
+﻿@model List<CategoryWithProductViewModel>
+
+<div class="left-sidebar">
+    <h5 class="mb-3">Kategoriler</h5>
+    <div class="list-group">
+        @foreach (var item in Model)
+        {
+            var isActiveClass = item.IsActive ? "active-category" : "text-muted";
+            <a href="@Url.Action("Index", "Product", new { CategoryId = @item.PGroup, area = "" })"
+               class="list-group-item list-group-item-action @isActiveClass"
+               style="font-size: 0.9rem;">
+                @item.PGroupText
+            </a>
+        }
+    </div>
+</div>
+
+<style>
+    .active-category {
+        font-weight: 600;
+        color: #198754 !important; /* Bootstrap success color */
+        background-color: #e6f4ea !important;
+        border-left: 4px solid #198754;
+    }
+
+    .left-sidebar {
+        padding: 1rem;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+    }
+
+    .list-group-item {
+        border: none;
+        padding: 0.5rem 0.75rem;
+        background-color: #f9f9f9;
+    }
+
+        .list-group-item:hover {
+            background-color: #f1f1f1;
+        }
+</style>
