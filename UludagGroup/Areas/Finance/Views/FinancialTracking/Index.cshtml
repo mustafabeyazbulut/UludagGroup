@@ -43,24 +43,21 @@
        data-animation="true"
        data-check-on-init="true"
        data-show-columns="true"
-       data-show-columns-toggle-all="true"
        data-detail-view="true"
        data-show-export="true"
+       data-show-footer="true"
        data-export-types="['excel']"
        data-detail-formatter="detailFormatter"
        data-minimum-count-columns="2"
        data-id-field="id"
-       data-page-list="[10, 25, 50, 100, all]"
-       data-show-footer="true"
-       data-side-pagination="server"
-       data-response-handler="responseHandler">
+       data-page-list="[10, 25, 50, 100, all]">
     <thead class="table-dark">
         <tr>
             <th data-field="actions">İşlemler</th>
-            <th data-field="Name">Firma Adı</th>
+            <th data-field="Name" data-footer-formatter="total">Firma Adı</th>
             <th data-field="TotalDebt" data-visible="false">Toplam Borç</th>
             <th data-field="TotalPaid" data-visible="false">Ödenen Tutar</th>
-            <th data-field="RemainingBalance">Kalan Bakiye</th>
+            <th data-field="RemainingBalance" data-footer-formatter="sumFormatter">Kalan Bakiye</th>
             <th data-field="Address" data-visible="false">Address</th>
             <th data-field="Phone" data-visible="false">Phone</th>
             <th data-field="Email" data-visible="false">Email</th>
@@ -70,7 +67,7 @@
         @foreach (var customer in Model)
         {
             <tr>
-                <td class="text-center" >
+                <td class="text-center">
                     <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         ...
                     </button>
@@ -119,4 +116,14 @@
 
         return html.join('');
     }
+
+    function sumFormatter(data) {
+        var field = this.field; // Bu kolonun adı: RemainingBalance
+        var total = data.map(row => parseFloat(row[field]) || 0).reduce((sum, i) => sum + i, 0);
+        return total.toLocaleString('tr-TR', { style: 'currency', currency: 'TRY' });
+    }
+         function total() {
+        return "Toplam";
+    }
+
 </script>
