@@ -1,0 +1,122 @@
+﻿@model List<CustomerDebtViewModel>
+@{
+    ViewData["Title"] = "Müşteri Listesi";
+    Layout = "~/Areas/Finance/Views/FinanceLayout/Index.cshtml";
+}
+
+<style>
+    /* Alternatif satır renkleri için */
+    .table-striped tbody tr:nth-of-type(odd) {
+        background-color: #f8f9fa;
+    }
+
+    .table-striped tbody tr:nth-of-type(even) {
+        background-color: #e9ecef;
+    }
+
+    .btn-action {
+        width: 100px;
+        margin-right: 5px;
+    }
+
+    .table th, .table td {
+        vertical-align: middle;
+    }
+</style>
+
+<div id="toolbar">
+    <a href="@Url.Action("Create", "Customer")" class="btn btn-success">
+        <i class="fa fa-plus"></i> Yeni Müşteri Ekle
+    </a>
+</div>
+
+<table id="xTable"
+       class="table table-striped"
+       data-toolbar="#toolbar"
+       data-locale="tr-TR"
+       data-toggle="table"
+       data-show-fullscreen="true"
+       data-search="true"
+       data-pagination="true"
+       data-page-size="10"
+       data-mobile-responsive="true"
+       data-animation="true"
+       data-check-on-init="true"
+       data-show-columns="true"
+       data-show-columns-toggle-all="true"
+       data-detail-view="true"
+       data-show-export="true"
+       data-export-types="['excel']"
+       data-detail-formatter="detailFormatter"
+       data-minimum-count-columns="2"
+       data-id-field="id"
+       data-page-list="[10, 25, 50, 100, all]"
+       data-show-footer="true"
+       data-side-pagination="server"
+       data-response-handler="responseHandler">
+    <thead class="table-dark">
+        <tr>
+            <th data-field="actions">İşlemler</th>
+            <th data-field="Name">Firma Adı</th>
+            <th data-field="TotalDebt" data-visible="false">Toplam Borç</th>
+            <th data-field="TotalPaid" data-visible="false">Ödenen Tutar</th>
+            <th data-field="RemainingBalance">Kalan Bakiye</th>
+            <th data-field="Address" data-visible="false">Address</th>
+            <th data-field="Phone" data-visible="false">Phone</th>
+            <th data-field="Email" data-visible="false">Email</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var customer in Model)
+        {
+            <tr>
+                <td class="text-center" >
+                    <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        ...
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="dropdown-item" href="@Url.Action("Details", "FinancialTracking", new { area="finance", id = customer.Id })">
+                                <i class="fa fa-eye"></i> Detay
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="@Url.Action("Edit", "FinancialTracking", new { area="finance", id = customer.Id })">
+                                <i class="fa fa-edit"></i> Düzenle
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item text-danger" href="@Url.Action("Delete", "FinancialTracking", new {area="finance", id = customer.Id })" onclick="return confirm('Bu müşteriyi silmek istediğinizden emin misiniz?')">
+                                <i class="fa fa-trash"></i> Sil
+                            </a>
+                        </li>
+                    </ul>
+                </td>
+
+                <td>@customer.Name</td>
+                <td>@customer.TotalDebt ₺</td>
+                <td>@customer.TotalPaid ₺</td>
+                <td>@customer.RemainingBalance ₺</td>
+                <td>@customer.Address</td>
+                <td>@customer.Phone</td>
+                <td>@customer.Email</td>
+            </tr>
+        }
+    </tbody>
+</table>
+<script>
+        function detailFormatter(index, row) {
+        var html = [];
+        html.push('<p><strong>Adı:</strong> ' + row.Name + '</p>');
+        html.push('<p><strong>Adres:</strong> ' + row.Address + '</p>');
+        html.push('<p><strong>Telefon:</strong> ' + row.Phone + '</p>');
+        html.push('<p><strong>Email:</strong> ' + row.Email + '</p>');
+        html.push('<p><strong>Toplam Borç:</strong> ' + row.TotalDebt + '</p>');
+        html.push('<p><strong>Ödenen Tutar:</strong> ' + row.TotalPaid + '</p>');
+        html.push('<p><strong>Kalan Bakiye:</strong> ' + row.RemainingBalance + '</p>');
+
+        // Burada siparişler ve ödemeler gibi diğer detayları da ekleyebilirsiniz.
+
+        return html.join('');
+    }
+</script>

@@ -15,20 +15,37 @@
             <ul id="sidebarnav">
                 <li class="nav-small-cap">
                     <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
-                    <span class="hide-menu">Home</span>
+                    <span class="hide-menu">Anasayfa</span>
                 </li>
                 <li class="sidebar-item">
                     <a class="sidebar-link" href="@Url.Action("Index", "Home", new { area = "Finance" })" aria-expanded="false">
                         <span>
                             <i class="ti ti-layout-dashboard"></i>
                         </span>
-                        <span class="hide-menu">Dashboard</span>
+                        <span class="hide-menu">Özet</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link" href="@Url.Action("Index", "FinancialTracking", new { area = "Finance" })" aria-expanded="false">
+                        <span>
+                            <i class="bi bi-wallet"></i>
+                        </span>
+                        <span class="hide-menu">Finans Takibi</span>
                     </a>
                 </li>
                 <li class="nav-small-cap">
                     <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
                     <span class="hide-menu">Ayarlar</span>
                 </li>
+                <li class="sidebar-item">
+                    <a class="sidebar-link" href="@Url.Action("Index", "Customer", new { area = "Finance" })" aria-expanded="false">
+                        <span>
+                            <i class="bi bi-person"></i>
+                        </span>
+                        <span class="hide-menu">Müşteriler</span>
+                    </a>
+                </li>
+
                
             </ul>
 

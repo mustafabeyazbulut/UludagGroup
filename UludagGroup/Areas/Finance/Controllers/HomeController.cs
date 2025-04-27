@@ -17,11 +17,6 @@ namespace UludagGroup.Areas.Finance.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var response = await _customerRepo.GetAllActiveAsync();
-            if (!response.Status)
-            {
-                TempData["ErrorMessage2"] = response.Message;
-            }
             return View();
         }
     }
