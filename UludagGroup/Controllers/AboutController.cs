@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using UludagGroup.Repositories.AboutRepositories;
 
 namespace UludagGroup.Controllers
 {

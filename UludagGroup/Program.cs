@@ -1,4 +1,5 @@
 using System.Reflection;
+using UludagGroup.Areas.Finance.Repositories.GenericRepositories;
 using UludagGroup.Commons;
 using UludagGroup.Models.Contexts;
 using UludagGroup.Repositories;
@@ -14,6 +15,8 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<Context>();
 builder.Services.AddScoped<ImageOperations>();
 builder.Services.AddScoped<HashHelper>();
+builder.Services.AddScoped(typeof(IGenericRepository<,,,>), typeof(GenericRepository<,,,>));
+
 builder.Services.AddControllersWithViews(options =>
 {
     options.Conventions.Add(new AreaRoutingConvention());
@@ -48,10 +51,12 @@ builder.Services.AddAuthorization(options =>
     });
 });
 
+
 // tüm repositoriler için tanýmlama
+// Tüm repositoriler için tanýmlama
 var repositoryTypes = Assembly.GetExecutingAssembly()
     .GetTypes()
-    .Where(t => t.IsClass && !t.IsAbstract && t.BaseType == typeof(BaseRepository));
+    .Where(t => t.IsClass && !t.IsAbstract && t.BaseType == typeof(BaseRepository) && !t.IsGenericType); // Generic olmayanlarý filtrele
 foreach (var implementation in repositoryTypes)
 {
     var serviceInterface = implementation.GetInterfaces().FirstOrDefault();
@@ -60,6 +65,26 @@ foreach (var implementation in repositoryTypes)
         builder.Services.AddScoped(serviceInterface, implementation);
     }
 }
+var gRepositoryTypes = Assembly.GetExecutingAssembly()
+    .GetTypes()
+    .Where(t => t.IsClass && !t.IsAbstract && t.BaseType != null &&
+                t.BaseType.IsGenericType &&
+                t.BaseType.GetGenericTypeDefinition() == typeof(GenericRepository<,,,>)); // 5 parametreli GenericRepository'yi filtrele
+
+foreach (var implementation in gRepositoryTypes)
+{
+    // Tüm interface'ler arasýnda, sadece GenericRepository ile iliþkili olaný seçmek için
+    var serviceInterface = implementation.GetInterfaces()
+                                         .FirstOrDefault(i => !i.IsGenericType );
+
+    if (serviceInterface != null)
+    {
+        builder.Services.AddScoped(serviceInterface, implementation);
+    }
+}
+
+
+
 // Session servisini ekleyin
 builder.Services.AddSession(options =>
 {
