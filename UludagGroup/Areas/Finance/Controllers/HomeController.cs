@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using UludagGroup.Areas.Finance.Repositories.CustomerRepositories;
 using UludagGroup.Areas.Finance.Repositories.ProductRepositories;
 
 namespace UludagGroup.Areas.Finance.Controllers

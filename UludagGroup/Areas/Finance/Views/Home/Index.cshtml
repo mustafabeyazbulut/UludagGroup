@@ -3,5 +3,90 @@
     Layout = "~/Areas/Finance/Views/FinanceLayout/Index.cshtml";
 }
 
-<h1>Index</h1>
+<style>
+    /* Alternatif satır renkleri için */
+    .table-striped tbody tr:nth-of-type(odd) {
+        background-color: #0000;
+    }
 
+    .table-striped tbody tr:nth-of-type(even) {
+        background-color: #e9ecef;
+    }
+
+   
+</style>
+
+<div id="toolbar">
+    <button id="remove"
+            class="btn btn-danger"
+            disabled>
+        <i class="fa fa-trash"></i> Delete
+    </button>
+</div>
+<table id="xTable"
+       class="table table-striped"
+       data-toolbar="#toolbar"
+       data-toggle="table"
+       data-show-refresh="true"
+       data-show-toggle="true"
+       data-show-fullscreen="true"
+       data-search="true"
+       data-pagination="true"
+       data-page-size="10"
+       data-mobile-responsive="true"
+       data-animation="true"
+       data-check-on-init="true"
+       data-show-columns="true"
+       data-show-columns-toggle-all="true"
+       data-detail-view="true"
+       data-show-export="true"
+       data-click-to-select="true"
+       data-detail-formatter="detailFormatter"
+       data-minimum-count-columns="2"
+       data-show-pagination-switch="true"
+       data-id-field="id"
+       data-page-list="[10, 25, 50, 100, all]"
+       data-show-footer="true"
+       data-side-pagination="server"
+       data-response-handler="responseHandler">
+    <thead class="table-dark">
+        <tr>
+            <th data-field="urun">Ürün Adı</th>
+            <th data-field="adet">Adet</th>
+            <th data-field="aciklama">Açıklama</th>
+            <th data-field="fiyat1">Fiyat</th>
+            <th data-field="fiyat2">Fiyat</th>
+            <th data-field="fiyat3">Fiyat</th>
+            <th data-field="fiyat4">Fiyat</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Çaydanlık</td>
+            <td>2</td>
+            <td>Mutfak ürünü, paslanmaz çelik</td>
+            <td>500 ₺</td>
+            <td>500 ₺</td>
+            <td>500 ₺</td>
+            <td>500 ₺</td>
+        </tr>
+        <tr>
+            <td>Bahçe Makası</td>
+            <td>1</td>
+            <td>Profesyonel kullanım için</td>
+            <td>300 ₺</td>
+            <td>300 ₺</td>
+            <td>300 ₺</td>
+            <td>300 ₺</td>
+        </tr>
+        <tr>
+            <td>Elektrikli Süpürge</td>
+            <td>1</td>
+            <td>Yüksek emiş gücü, 2 yıl garanti</td>
+            <td>2500 ₺</td>
+            <td>2500 ₺</td>
+            <td>2500 ₺</td>
+            <td>2500 ₺</td>
+        </tr>
+    </tbody>
+</table>
