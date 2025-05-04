@@ -1,0 +1,177 @@
+﻿@model OrderDetailViewModel
+@{
+    ViewData["Title"] = "EditOrder";
+    Layout = "~/Areas/Finance/Views/FinanceLayout/Index.cshtml";
+    var productsHtml = string.Join("", ((List<SelectListItem>)ViewBag.Products).Select(p => $"<option value='{p.Value}'>{p.Text}</option>"));
+    var servicesHtml = string.Join("", ((List<SelectListItem>)ViewBag.Services).Select(s => $"<option value='{s.Value}'>{s.Text}</option>"));
+    var initialItemCount = Model.OrderItems?.Count ?? 0;
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-body">
+                <h1 class="mb-4 card-title">Sipariş Bilgilerini Güncelleyebilirsiniz.</h1>
+                @using (Html.BeginForm(
+                actionName: "SaveEditOrder",
+                controllerName: "FinancialTracking",
+                routeValues: new { area = "Finance" },
+                method: FormMethod.Post,
+                antiforgery: false,
+                htmlAttributes: new { @class = "", enctype = "multipart/form-data" }))
+                {
+                    <div class="row mb-3">
+                        @* <label for="Name" class="col-sm-2 col-form-label">Id</label> *@
+                        <div class="col-sm-10">
+                            <input type="hidden" asp-for="Id" />
+                            <input type="hidden" asp-for="CustomerId" />
+                            @* <label class="form-control" id="Id" asp-for="Id">@Model.Id </label> *@
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="Name" class="col-sm-2 col-form-label">Firma Adı</label>
+                        <div class="col-sm-10">
+                            <label class="form-control" for="CustomerName">@Model.CustomerName</label>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="Name" class="col-sm-2 col-form-label">Not</label>
+                        <div class="col-sm-10">
+                            @Html.TextBoxFor(model => model.Notes, new { @class = "form-control", type = "text", placeholder = "Not" })
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-success mb-3" id="btn-add-item">+ Yeni Ürün/Hizmet Ekle</button>
+                    <h4>Ürün / Hizmetler</h4>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Tip</th>
+                                <th>Ürün / Hizmet</th>
+                                <th>Birim Fiyat</th>
+                                <th>Miktar</th>
+                                <th>Not</th>
+                                <th>İşlem</th>
+                            </tr>
+                        </thead>
+                        <tbody id="order-items-container">
+                            @for (int i = 0; i < Model.OrderItems.Count; i++)
+                            {
+                                <tr class="order-item">
+                                    <td>
+                                        <input type="hidden" asp-for="OrderItems[i].Id" />
+
+                                        @Html.DropDownList(
+                                                 $"OrderItems[{i}].ItemType",
+                                                 new SelectList(new[]
+                                                 {
+                                new { Text = "Ürün", Value = "Product" },
+                                new { Text = "Servis", Value = "Service" }
+                                }, "Value", "Text", Model.OrderItems[i].ItemType),
+                                                 "Tip Seçin",
+                                                 new { @class = "form-select item-type-select" }
+                                                 )
+
+                                    </td>
+                                    <td>
+                                        @if (Model.OrderItems[i].ItemType == "Product")
+                                        {
+                                            @Html.DropDownListFor(m => m.OrderItems[i].ItemId,
+                                                     new SelectList(ViewBag.Products, "Value", "Text", Model.OrderItems[i].ItemId),
+                                                     "Ürün Seçin", new { @class = "form-select product-select" })
+                                        }
+                                        else
+                                        {
+                                            @Html.DropDownListFor(m => m.OrderItems[i].ItemId,
+                                                     new SelectList(ViewBag.Services, "Value", "Text", Model.OrderItems[i].ItemId),
+                                                     "Ürün Seçin", new { @class = "form-select product-select" })
+                                        }
+                                    </td>
+                                    <td>
+                                        @Html.TextBox($"OrderItems[{i}].UnitPrice", Model.OrderItems[i].UnitPrice, new { @class = "form-control", type = "number", placeholder = "Fiyat" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBox($"OrderItems[{i}].Quantity", Model.OrderItems[i].Quantity, new { @class = "form-control", type = "number", placeholder = "Miktar" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBox($"OrderItems[{i}].Note", Model.OrderItems[i].Note, new { @class = "form-control", type = "text", placeholder = "Not" })
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-danger btn-remove-item">Sil</button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                    <div class="row mb-3 mt-4">
+                        <div class="col-12 text-center">
+                            <button type="submit" class="btn btn-lg btn-primary me-2">Kaydet</button>
+                            <a href="@Url.Action("Detail", "FinancialTracking", new { area = "Finance",Id=Model.CustomerId })" class="btn btn-lg btn-secondary">Geri Dön</a>
+
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+
+</div>
+<script>
+    let itemIndex = @initialItemCount;
+
+    const productsOptionsHtml = `@Html.Raw(productsHtml)`;
+    const servicesOptionsHtml = `@Html.Raw(servicesHtml)`;
+
+    $('#btn-add-item').click(function () {
+        let index = itemIndex;
+
+        let template = '' +
+            '<tr class="order-item">' +
+                '<td>' +
+                    '<select name="OrderItems[' + index + '].ItemType" class="form-select item-type-select">' +
+                        '<option value="">Tip Seçin</option>' +
+                        '<option value="Product">Ürün</option>' +
+                        '<option value="Service">Servis</option>' +
+                    '</select>' +
+                '</td>' +
+                '<td>' +
+                    '<select name="OrderItems[' + index + '].ItemId" class="form-select product-select">' +
+                        productsOptionsHtml +
+                    '</select>' +
+                    '<select name="OrderItems[' + index + '].ItemId" class="form-select service-select d-none">' +
+                        servicesOptionsHtml +
+                    '</select>' +
+                '</td>' +
+                '<td>' +
+                    '<input type="number" name="OrderItems[' + index + '].UnitPrice" class="form-control" placeholder="Fiyat" />' +
+                '</td>' +
+                   '<td>' +
+        '<input type="number" name="OrderItems[' + index + '].Quantity" class="form-control" value="1" placeholder="Miktar" />' +
+    '</td>'+
+                 '<td>' +
+                    '<input type="text" name="OrderItems[' + index + '].Note" class="form-control" placeholder="Not" />' +
+                '</td>' +
+                '<td>' +
+                    '<button type="button" class="btn btn-danger btn-remove-item">Sil</button>' +
+                '</td>' +
+            '</tr>';
+
+        // Prepend yeni satırı tabloya ekle
+        $('#order-items-container').prepend(template);
+        itemIndex++;
+    });
+
+    $(document).on('click', '.btn-remove-item', function () {
+        $(this).closest('tr.order-item').remove();
+    });
+
+    $(document).on('change', '.item-type-select', function () {
+        let container = $(this).closest('tr.order-item');
+        let selectedType = $(this).val();
+        container.find('.product-select').toggleClass('d-none', selectedType !== 'Product');
+        container.find('.service-select').toggleClass('d-none', selectedType !== 'Service');
+    });
+</script>
+
+

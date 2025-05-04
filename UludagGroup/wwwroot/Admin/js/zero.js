@@ -124,3 +124,26 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
+document.addEventListener('DOMContentLoaded', function () {
+    const searchInput = document.getElementById('xSearchInput2');
+    const table = document.getElementById('xTable2');
+
+    if (searchInput && table) {
+        searchInput.addEventListener('keyup', function () {
+            const filter = this.value.toLowerCase();
+            const rows = table.querySelectorAll('tbody tr');
+            let visibleCount = 0;
+
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                if (text.includes(filter) && visibleCount < 10) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    }
+});
+

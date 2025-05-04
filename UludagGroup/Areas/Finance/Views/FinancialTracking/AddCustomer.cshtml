@@ -1,0 +1,58 @@
+﻿@model CreateCustomerViewModel
+@{
+    ViewData["Title"] = "AddCustomer";
+    Layout = "~/Areas/Finance/Views/FinanceLayout/Index.cshtml";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-body">
+                <h1 class="mb-4 card-title">Müşteri Bilgilerini Güncelleyebilirsiniz.</h1>
+                @using (Html.BeginForm(
+                actionName: "SaveAddCustomer",
+                controllerName: "FinancialTracking",
+                routeValues: new { area = "Finance" },
+                method: FormMethod.Post,
+                antiforgery: false,
+                htmlAttributes: new { @class = "", enctype = "multipart/form-data" }))
+                {
+                    <div class="row mb-3">
+                        <label for="Name" class="col-sm-2 col-form-label">Firma Adı</label>
+                        <div class="col-sm-10">
+                            @Html.TextBoxFor(model => model.Name, new { @class = "form-control", type = "text", placeholder = "Firma Adı" })
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="Name" class="col-sm-2 col-form-label">Email</label>
+                        <div class="col-sm-10">
+                            @Html.TextBoxFor(model => model.Email, new { @class = "form-control", type = "email", placeholder = "Email" })
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="Name" class="col-sm-2 col-form-label">Telefon</label>
+                        <div class="col-sm-10">
+                            @Html.TextBoxFor(model => model.Phone, new { @class = "form-control", type = "text", placeholder = "Telefon" })
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="Name" class="col-sm-2 col-form-label">Adres</label>
+                        <div class="col-sm-10">
+                            @Html.TextBoxFor(model => model.Address, new { @class = "form-control", type = "text", placeholder = "Adres" })
+                        </div>
+                    </div>
+                    <div class="row mb-3 mt-4">
+                        <div class="col-12 text-center">
+                            <button type="submit" class="btn btn-lg btn-primary me-2">Kaydet</button>
+                            <a href="@Url.Action("Index", "FinancialTracking", new { area = "Finance"})" class="btn btn-lg btn-secondary">Geri Dön</a>
+
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+
+</div>
+

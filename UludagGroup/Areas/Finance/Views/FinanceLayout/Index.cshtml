@@ -10,11 +10,11 @@
             <div class="container-fluid">
             </div>
             <div class="col-12" style="padding-left:2%;padding-right:2%;">
+                @await Component.InvokeAsync("_Script_FinanceLayout_ComponentPartial")
                 @RenderBody()
                 @await Component.InvokeAsync("_Footer_FinanceLayout_ComponentPartial")
             </div>
         </div>
-        @await Component.InvokeAsync("_Script_FinanceLayout_ComponentPartial")
     </div>
 
 </body>

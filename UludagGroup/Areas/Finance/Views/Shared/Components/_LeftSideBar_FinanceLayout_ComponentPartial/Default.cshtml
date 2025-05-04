@@ -38,17 +38,23 @@
                     <span class="hide-menu">Ayarlar</span>
                 </li>
                 <li class="sidebar-item">
-                    <a class="sidebar-link" href="@Url.Action("Index", "Customer", new { area = "Finance" })" aria-expanded="false">
+                    <a class="sidebar-link" href="@Url.Action("Index", "Product", new { area = "Finance" })" aria-expanded="false">
                         <span>
-                            <i class="bi bi-person"></i>
+                            <i class="bi bi-box-seam"></i>
                         </span>
-                        <span class="hide-menu">Müşteriler</span>
+                        <span class="hide-menu">Ürünler</span>
                     </a>
                 </li>
 
-               
+                <li class="sidebar-item">
+                    <a class="sidebar-link" href="@Url.Action("Index", "Service", new { area = "Finance" })" aria-expanded="false">
+                        <span>
+                            <i class="bi bi-tools"></i>
+                        </span>
+                        <span class="hide-menu">Servisler</span>
+                    </a>
+                </li>
             </ul>
-
         </nav>
         <!-- End Sidebar navigation -->
     </div>
