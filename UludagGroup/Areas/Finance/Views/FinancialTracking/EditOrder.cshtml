@@ -67,7 +67,6 @@
                                 new { Text = "Ürün", Value = "Product" },
                                 new { Text = "Servis", Value = "Service" }
                                 }, "Value", "Text", Model.OrderItems[i].ItemType),
-                                                 "Tip Seçin",
                                                  new { @class = "form-select item-type-select" }
                                                  )
 
@@ -130,7 +129,6 @@
             '<tr class="order-item">' +
                 '<td>' +
                     '<select name="OrderItems[' + index + '].ItemType" class="form-select item-type-select">' +
-                        '<option value="">Tip Seçin</option>' +
                         '<option value="Product">Ürün</option>' +
                         '<option value="Service">Servis</option>' +
                     '</select>' +
