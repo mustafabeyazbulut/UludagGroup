@@ -20,57 +20,30 @@
                        class="display table table-striped table-hover text-center justify-content-center ">
                     <thead>
                         <tr>
-                            <th>Id</th>
+                            <th style="width: 15%">İşlemler</th>
                             <th>Adı</th>
                             <th>Fiyatı</th>
                             <th>Fotoğraf</th>
                             <th>Kategori</th>
                             <th>Öne Çıkanlarda Mı?</th>
                             <th>Aktif Mi?</th>
-                            <th style="width: 15%">İşlemler</th>
                         </tr>
                     </thead>
                     <tfoot>
                         <tr>
-                            <th>Id</th>
+                            <th style="display:none;">İşlemler</th>
                             <th>Adı</th>
                             <th>Fiyatı</th>
                             <th>Fotoğraf</th>
                             <th>Grup</th>
                             <th>Öne Çıkanlarda Mı?</th>
                             <th>Aktif Mi?</th>
-                            <th style="display:none;">İşlemler</th>
                         </tr>
                     </tfoot>
                     <tbody>
                         @foreach (var item in Model)
                         {
                             <tr>
-                                <td>@item.Id</td>
-                                <td>@item.Name</td>
-                                <td>@item.Price</td>
-                                <td>@item.ImageUrl</td>
-                                <td>@item.PGroupText</td>
-                                <td>
-                                    @if (item.IsFeatured)
-                                    {
-                                        <i class="fa fa-check"></i> <!-- "tick" simgesi -->
-                                    }
-                                    else
-                                    {
-                                        <i class="fa fa-times"></i> <!-- "x" simgesi -->
-                                    }
-                                </td>
-                                <td>
-                                    @if (item.IsActive)
-                                    {
-                                        <i class="fa fa-check"></i> <!-- "tick" simgesi -->
-                                    }
-                                    else
-                                    {
-                                        <i class="fa fa-times"></i> <!-- "x" simgesi -->
-                                    }
-                                </td>
                                 <td>
                                     <div class="d-flex justify-content-center">
                                         <div class="dropdown justify-content-center" style="z-index:9999;">
@@ -105,6 +78,30 @@
                                             </ul>
                                         </div>
                                     </div>
+                                </td>
+                                <td>@item.Name</td>
+                                <td>@item.Price</td>
+                                <td>@item.ImageUrl</td>
+                                <td>@item.PGroupText</td>
+                                <td>
+                                    @if (item.IsFeatured)
+                                    {
+                                        <i class="fa fa-check"></i> <!-- "tick" simgesi -->
+                                    }
+                                    else
+                                    {
+                                        <i class="fa fa-times"></i> <!-- "x" simgesi -->
+                                    }
+                                </td>
+                                <td>
+                                    @if (item.IsActive)
+                                    {
+                                        <i class="fa fa-check"></i> <!-- "tick" simgesi -->
+                                    }
+                                    else
+                                    {
+                                        <i class="fa fa-times"></i> <!-- "x" simgesi -->
+                                    }
                                 </td>
                             </tr>
                         }

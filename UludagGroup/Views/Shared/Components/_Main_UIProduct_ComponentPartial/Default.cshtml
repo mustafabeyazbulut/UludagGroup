@@ -5,11 +5,12 @@
 <!-- Store Start -->
 <div class="container-xxl py-5">
     <div class="container">
-       
+
         <div class="row g-4">
             @foreach (var product in Model)
             {
-                var delay = (index * 0.1).ToString("0.0") + "s";
+                @* var delay = (index * 0.1).ToString("0.0") + "s"; *@
+                var delay = (1 * 0.1).ToString("0.0") + "s";
                 index = index + 2;
                 <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="@delay.Replace(",", ".")">
                     <div class="store-item position-relative text-center">

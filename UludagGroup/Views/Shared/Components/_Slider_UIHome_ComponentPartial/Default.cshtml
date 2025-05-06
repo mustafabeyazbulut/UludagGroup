@@ -1,5 +1,8 @@
 ﻿@model List<SliderViewModel>
-<!-- Carousel Start -->
+@{
+    var hasFirst = Model.Any(m => m.IsFirst);
+    var firstItem = Model.FirstOrDefault();
+}
 
 <div class="container-fluid px-0 mb-5">
     @if (Model.Count > 0)
@@ -8,7 +11,8 @@
             <div class="carousel-inner">
                 @foreach (var item in Model)
                 {
-                    <div class="carousel-item @(item.IsFirst ? "active" : "")">
+                    var isActive = item.IsFirst || (!hasFirst && item == firstItem);
+                    <div class="carousel-item @(isActive ? "active" : "")">
                         <img class="w-100" src="~/Photos/Sliders/@item.ImageUrl" alt="Image" style="height:100VH;">
                         <div class="carousel-caption">
                             <div class="container">

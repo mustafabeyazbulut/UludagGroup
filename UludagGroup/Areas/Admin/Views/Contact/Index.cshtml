@@ -20,42 +20,26 @@
                        class="display table table-striped table-hover text-center justify-content-center ">
                     <thead>
                         <tr>
-                            <th>Id</th>
+                            <th style="width: 15%">İşlemler</th>
                             <th>İçerik</th>
                             <th>Birincil E-posta</th>
                             <th>İkincil E-posta</th>
                             <th>Aktif Mi?</th>
-                            <th style="width: 15%">İşlemler</th>
                         </tr>
                     </thead>
                     <tfoot>
                         <tr>
-                            <th>Id</th>
+                            <th style="display:none;">İşlemler</th>
                             <th>İçerik</th>
                             <th>Birincil E-posta</th>
                             <th>İkincil E-posta</th>
                             <th>Aktif Mi?</th>
-                            <th style="display:none;">İşlemler</th>
                         </tr>
                     </tfoot>
                     <tbody>
                         @foreach (var item in Model)
                         {
                             <tr>
-                                <td>@item.Id</td>
-                                <td>@item.ContentBody</td>
-                                <td>@item.PrimaryEmail</td>
-                                <td>@item.SecondaryEmail</td>
-                                <td>
-                                    @if (item.IsActive)
-                                    {
-                                        <i class="fa fa-check"></i> <!-- "tick" simgesi -->
-                                    }
-                                    else
-                                    {
-                                        <i class="fa fa-times"></i> <!-- "x" simgesi -->
-                                    }
-                                </td>
                                 <td>
                                     <div class="d-flex justify-content-center">
                                         <div class="dropdown justify-content-center" style="z-index:9999;">
@@ -83,6 +67,19 @@
                                             </ul>
                                         </div>
                                     </div>
+                                </td>
+                                <td>@item.ContentBody</td>
+                                <td>@item.PrimaryEmail</td>
+                                <td>@item.SecondaryEmail</td>
+                                <td>
+                                    @if (item.IsActive)
+                                    {
+                                        <i class="fa fa-check"></i> <!-- "tick" simgesi -->
+                                    }
+                                    else
+                                    {
+                                        <i class="fa fa-times"></i> <!-- "x" simgesi -->
+                                    }
                                 </td>
                             </tr>
                         }
