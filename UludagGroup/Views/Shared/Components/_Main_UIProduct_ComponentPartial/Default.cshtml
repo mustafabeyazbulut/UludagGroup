@@ -43,7 +43,7 @@
 
                             <p>@(string.IsNullOrWhiteSpace(product.ShortDescription) ? Html.Raw("</br>") : product.ShortDescription)</p>
                             <h4 class="text-primary">
-                                @(product.Price == 0 ? "Fiyat için arayın" : product.Price.ToString("C"))
+                                @(product.Price == 0 ? "" : product.Price.ToString("C"))
                             </h4>
                         </div>
                         <div class="store-overlay">

@@ -45,7 +45,7 @@
                         }
                     </div>
                     <div class="product__details__price h4 mb-3">
-                        @(Model.Price == 0 ? "Fiyat için arayın" : Model.Price.ToString("C"))
+                        @(Model.Price == 0 ? "" : Model.Price.ToString("C"))
                     </div>
                     <p>@(string.IsNullOrWhiteSpace(Model.ShortDescription) ? Html.Raw("&nbsp;") : Model.ShortDescription)</p>
                     <ul class="list-unstyled">

@@ -4,9 +4,19 @@
     Layout = "~/Views/UILayout/Index.cshtml";
 }
 @await Component.InvokeAsync("_Slider_UIHome_ComponentPartial")
-@await Component.InvokeAsync("_Main_UIAbout_ComponentPartial")
-@await Component.InvokeAsync("_Main_UIOurService_ComponentPartial")
-@await Component.InvokeAsync("_Main_UIReference_ComponentPartial")
-@await Component.InvokeAsync("_Featured_UIProduct_ComponentPartial")
+<div class="container-xxl contact py-5">
+	<div class="section-title text-center mx-auto wow fadeInUp" data-wow-delay="0.1s" style="max-width: 500px;">
+		<p class="fs-5 fw-medium fst-italic text-primary">Ürünlerimiz</p>
+	</div>
+	<div class="row">
+		<div class="col-sm-3">
+			@await Component.InvokeAsync("_Category_UIProduct_ComponentPartial", new { model = new SearchProductViewModel() })
+		</div>
+
+		<div class="col-sm-9 padding-right">
+			@await Component.InvokeAsync("_Main_UIProduct_ComponentPartial", new { model = new SearchProductViewModel() })
+		</div>
+	</div>
+</div>
 @await Component.InvokeAsync("_Main_UIContact_ComponentPartial")
 
