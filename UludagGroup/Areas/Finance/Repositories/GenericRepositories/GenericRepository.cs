@@ -109,31 +109,34 @@ namespace UludagGroup.Areas.Finance.Repositories.GenericRepositories
             return response;
         }
         // Veriyi ekle
-        public async Task<ResponseViewModel<bool>> AddAsync(TCreateModel model)
+        public async Task<ResponseViewModel<int>> AddAsync(TCreateModel model)
         {
-            var response = new ResponseViewModel<bool>();
+            var response = new ResponseViewModel<int>();
 
             try
             {
-                // Modelin tüm özelliklerini al
                 var properties = typeof(TCreateModel).GetProperties()
-                    .Where(p => p.CanRead) // Sadece okunabilir özellikleri al
+                    .Where(p => p.CanRead && p.Name.ToLower() != "id") // ID'yi dışla
                     .ToList();
 
-                // Kolonları ve değerleri oluştur
                 var columns = string.Join(", ", properties.Select(p => p.Name));
                 var values = string.Join(", ", properties.Select(p => "@" + p.Name));
 
-                // SQL sorgusunu oluştur
-                string query = $"INSERT INTO z{typeof(TCreateModel).Name.Replace("Create","").Replace("ViewModel", "")} ({columns}) VALUES ({values})";
+                string tableName = $"z{typeof(TCreateModel).Name.Replace("Create", "").Replace("ViewModel", "")}";
+
+                // Kimliği döndüren sorgu
+                string query = $@"
+            INSERT INTO {tableName} ({columns}) 
+            VALUES ({values}); 
+            SELECT CAST(SCOPE_IDENTITY() as int);";
 
                 using (var connection = _context.CreateConnection())
                 {
-                    var result = await connection.ExecuteAsync(query, model);
-                    response.Status = result > 0;
+                    var insertedId = await connection.ExecuteScalarAsync<int>(query, model);
+                    response.Status = insertedId > 0;
                     response.Title = "Başarılı";
-                    response.Message = result > 0 ? "Veri başarıyla eklendi." : "Veri eklenemedi.";
-                    response.Data = result > 0;
+                    response.Message = insertedId > 0 ? "Veri başarıyla eklendi." : "Veri eklenemedi.";
+                    response.Data = insertedId;
                 }
             }
             catch (Exception ex)
@@ -141,11 +144,12 @@ namespace UludagGroup.Areas.Finance.Repositories.GenericRepositories
                 response.Status = false;
                 response.Title = "Hata";
                 response.Message = ex.Message;
-                response.Data = false;
+                response.Data = 0;
             }
 
             return response;
         }
+
         // Veriyi güncelle
         public async Task<ResponseViewModel<bool>> UpdateAsync(TUpdateModel model)
         {

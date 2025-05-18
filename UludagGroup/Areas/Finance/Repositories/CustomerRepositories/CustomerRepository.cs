@@ -20,19 +20,31 @@ namespace UludagGroup.Areas.Finance.Repositories.CustomerRepositories
             try
             {
                 string query = @"
-                        SELECT c.Id, c.Name, c.Address, c.Phone, c.Email, c.Address,
-                            -- Toplam borç      
-                            COALESCE(SUM(oi.LineTotal), 0) AS TotalDebt,
-                            -- Ödenen tutar
-                            COALESCE(SUM(p.Amount), 0) AS TotalPaid,
-                            -- Kalan borç (Toplam borç - Ödenen tutar)
-                            COALESCE(SUM(oi.LineTotal), 0) - COALESCE(SUM(p.Amount), 0) AS RemainingBalance
+                        SELECT 
+                            c.Id, 
+                            c.Name, 
+                            c.Address, 
+                            c.Phone, 
+                            c.Email,
+                            COALESCE(oi.TotalOrderAmount, 0) AS TotalDebt,
+                            COALESCE(p.TotalPaidAmount, 0) AS TotalPaid,
+                            COALESCE(oi.TotalOrderAmount, 0) - COALESCE(p.TotalPaidAmount, 0) AS RemainingBalance
                         FROM zCustomer c
-                        LEFT JOIN zOrder o ON o.CustomerId = c.Id AND o.IsActive = 1 -- Siparişlerin sadece aktif olanlarını al
-                        LEFT JOIN zOrderItem oi ON oi.OrderId = o.Id AND oi.IsActive = 1 -- Sipariş kalemlerinin sadece aktif olanlarını al
-                        LEFT JOIN zPayment p ON p.CustomerId = c.Id AND p.IsActive = 1 -- Ödemelerin sadece aktif olanlarını al
-                        WHERE c.IsActive = 1 -- Müşterilerin sadece aktif olanlarını al
-                        GROUP BY c.Id, c.Name, c.Address, c.Phone, c.Email, c.Address;";
+                        LEFT JOIN (
+                            SELECT o.CustomerId, SUM(oi.LineTotal) AS TotalOrderAmount
+                            FROM zOrder o
+                            INNER JOIN zOrderItem oi ON oi.OrderId = o.Id AND oi.IsActive = 1
+                            WHERE o.IsActive = 1
+                            GROUP BY o.CustomerId
+                        ) oi ON oi.CustomerId = c.Id
+                        LEFT JOIN (
+                            SELECT p.CustomerId, SUM(p.Amount) AS TotalPaidAmount
+                            FROM zPayment p
+                            WHERE p.IsActive = 1
+                            GROUP BY p.CustomerId
+                        ) p ON p.CustomerId = c.Id
+                        WHERE c.IsActive = 1;
+                        ";
                 using (var connection = _context.CreateConnection())
                 {
                     var values = await connection.QueryAsync<CustomerDebtViewModel>(query);

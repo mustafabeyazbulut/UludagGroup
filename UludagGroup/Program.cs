@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Localization;
+using System.Globalization;
 using System.Reflection;
 using UludagGroup.Areas.Finance.Repositories.GenericRepositories;
 using UludagGroup.Commons;
@@ -94,7 +96,14 @@ builder.Services.AddSession(options =>
 });
 var app = builder.Build();
 
+var supportedCultures = new[] { new CultureInfo("en-US") };
 
+app.UseRequestLocalization(new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new RequestCulture("en-US"),
+    SupportedCultures = supportedCultures,
+    SupportedUICultures = supportedCultures
+});
 IWebHostEnvironment environment = app.Environment;
 environment.ContentRootPath = AppDomain.CurrentDomain.BaseDirectory;
 // Configure the HTTP request pipeline.

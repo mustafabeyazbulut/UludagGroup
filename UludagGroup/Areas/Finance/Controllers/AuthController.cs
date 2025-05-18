@@ -18,7 +18,7 @@ namespace UludagGroup.Areas.Finance.Controllers
             // Kullanıcı oturum açmışsa Dashboard'a yönlendir
             if (User.Identity != null && User.Identity.IsAuthenticated)
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "FinancialTracking");
             }
             return View(); 
         }
@@ -31,7 +31,7 @@ namespace UludagGroup.Areas.Finance.Controllers
                 ViewBag.ErrorMessage = response.Message;
                 return View();
             }
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "FinancialTracking");
         }
         [HttpPost]
         public async Task<IActionResult> Logout()

@@ -53,59 +53,26 @@
        data-page-list="[10, 25, 50, 100, all]">
     <thead class="table-dark">
         <tr>
-            <th data-align="center" data-halign="center" data-width="100" scope="col" data-field="actions">İşlemler</th>
             <th data-align="center" data-halign="center" scope="col" data-field="Name" data-footer-formatter="total">Firma Adı</th>
-            <th data-align="center" data-halign="center" scope="col" data-field="TotalDebt" data-visible="false">Toplam Borç</th>
+            <th data-align="center" data-halign="center" scope="col" data-field="Phone" data-visible="true">Phone</th>
+            <th data-align="center" data-halign="center" scope="col" data-field="TotalDebt" data-visible="true">Toplam Borç</th>
             <th data-align="center" data-halign="center" scope="col" data-field="TotalPaid" data-visible="false">Ödenen Tutar</th>
             <th data-align="center" data-halign="center" scope="col" data-field="RemainingBalance" data-footer-formatter="sumFormatter">Kalan Bakiye</th>
             <th data-align="center" data-halign="center" scope="col" data-field="Address" data-visible="false">Address</th>
-            <th data-align="center" data-halign="center" scope="col" data-field="Phone" data-visible="false">Phone</th>
             <th data-align="center" data-halign="center" scope="col" data-field="Email" data-visible="false">Email</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var customer in Model)
         {
-            <tr>
-                <td class="text-center" >
-                    
-                    <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Seç
-                    </button>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a class="dropdown-item" href="@Url.Action("AddOrder", "FinancialTracking", new { area = "finance", customerid = customer.Id })">
-                                <i class="fa fa-plus"></i> Yeni Sipariş
-                            </a>
-                        </li>
-
-                        <li>
-                            <a class="dropdown-item" href="@Url.Action("Detail", "FinancialTracking", new { area="finance", id = customer.Id })">
-                                <i class="fa fa-eye"></i> Sipariş Detayları
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="@Url.Action("EditCustomer", "FinancialTracking", new { area="finance", id = customer.Id })">
-                                <i class="fa fa-edit"></i> Müşteriyi Düzenle
-                            </a>
-                        </li>
-                        <li>
-                            @if (customer.RemainingBalance<1)
-                            {
-                                <a class="dropdown-item text-danger" href="@Url.Action("RemoveCustomer", "FinancialTracking", new {area="finance", id = customer.Id })" onclick="return confirm('Bu müşteriyi silmek istediğinizden emin misiniz?')">
-                                    <i class="fa fa-trash"></i> Sil
-                                </a>
-                            }
-                        </li>
-                    </ul>
-                </td>
-                <td >@customer.Name</td>
-                <td >@customer.TotalDebt ₺</td>
-                <td >@customer.TotalPaid ₺</td>
-                <td >@customer.RemainingBalance ₺</td>
-                <td >@customer.Address</td>
-                <td >@customer.Phone</td>
-                <td >@customer.Email</td>
+            <tr class="clickable-row" data-href="@Url.Action("Detail", "FinancialTracking", new { area = "finance", id = customer.Id })">
+                <td>@customer.Name</td>
+                <td>@customer.Phone</td>
+                <td>@customer.TotalDebt ₺</td>
+                <td>@customer.TotalPaid ₺</td>
+                <td>@customer.RemainingBalance ₺</td>
+                <td>@customer.Address</td>
+                <td>@customer.Email</td>
             </tr>
         }
     </tbody>
@@ -134,5 +101,7 @@
          function total() {
         return "Toplam";
     }
+       
+   
 
 </script>

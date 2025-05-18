@@ -1,0 +1,70 @@
+﻿@model PaymentDetailViewModel
+
+@{
+    ViewData["Title"] = "AddPayment";
+    Layout = "~/Areas/Finance/Views/FinanceLayout/Index.cshtml";
+}
+
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-body">
+                <h1 class="mb-4 card-title">Yeni Ödeme Oluşturabilirsiniz</h1>
+                @using (Html.BeginForm(
+                actionName: "SaveAddPayment",
+                controllerName: "FinancialTracking",
+                routeValues: new { area = "Finance" },
+                method: FormMethod.Post,
+                antiforgery: false,
+                htmlAttributes: new { @class = "", enctype = "multipart/form-data" }))
+                {
+                    <div class="row mb-3">
+                        @* <label for="Name" class="col-sm-2 col-form-label">Id</label> *@
+                        <div class="col-sm-10">
+                            <input type="hidden" asp-for="Id" />
+                            <input type="hidden" asp-for="CustomerId" />
+                            <input type="hidden" asp-for="CustomerName" />
+                            @* <label class="form-control" id="Id" asp-for="Id">@Model.Id </label> *@
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="Name" class="col-sm-2 col-form-label">Firma Adı</label>
+                        <div class="col-sm-10">
+                            <label class="form-control" for="CustomerName">@Model.CustomerName</label>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="Name" class="col-sm-2 col-form-label">Ödenen Miktar</label>
+                        <div class="col-sm-10">
+                            @Html.TextBoxFor(model => model.Amount, new { @class = "form-control", type = "number", placeholder = "Ödenen Miktar" })
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="Name" class="col-sm-2 col-form-label">Ödeme Yöntemi</label>
+                        <div class="col-sm-10">
+                            @Html.TextBoxFor(model => model.Method, new { @class = "form-control", type = "text", placeholder = "Ödeme Yöntemi" })
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="Name" class="col-sm-2 col-form-label">Not</label>
+                        <div class="col-sm-10">
+                            @Html.TextBoxFor(model => model.Notes, new { @class = "form-control", type = "text", placeholder = "Not" })
+                        </div>
+                    </div>
+                    <div class="row mb-3 mt-4">
+                        <div class="col-12 text-center">
+                            <button type="submit" class="btn btn-lg btn-primary me-2">Kaydet</button>
+                            <a href="@Url.Action("Detail", "FinancialTracking", new { area = "Finance",Id=Model.CustomerId })" class="btn btn-lg btn-secondary">Geri Dön</a>
+
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+

@@ -4,10 +4,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using UludagGroup.Areas.Finance.Repositories.CustomerRepositories;
 using UludagGroup.Areas.Finance.Repositories.OrderItemRepositories;
 using UludagGroup.Areas.Finance.Repositories.OrderRepositories;
+using UludagGroup.Areas.Finance.Repositories.PaymentRepositories;
 using UludagGroup.Areas.Finance.Repositories.ProductRepositories;
 using UludagGroup.Areas.Finance.Repositories.ServiceRepositories;
 using UludagGroup.Areas.Finance.ViewModels.CustomerViewModels;
 using UludagGroup.Areas.Finance.ViewModels.OrderViewModels;
+using UludagGroup.Areas.Finance.ViewModels.PaymentViewModels;
 
 namespace UludagGroup.Areas.Finance.Controllers
 {
@@ -19,14 +21,16 @@ namespace UludagGroup.Areas.Finance.Controllers
         private readonly IOrderItemRepository _orderItemRepo;
         private readonly IProductRepository _productRepo;
         private readonly IServiceRepository _serviceRepo;
+        private readonly IPaymentRepository _paymentRepo;
 
-        public FinancialTrackingController(ICustomerRepository customerRepo, IOrderRepository orderRepo, IOrderItemRepository orderItemRepo, IProductRepository productRepo, IServiceRepository serviceRepo)
+        public FinancialTrackingController(ICustomerRepository customerRepo, IOrderRepository orderRepo, IOrderItemRepository orderItemRepo, IProductRepository productRepo, IServiceRepository serviceRepo, IPaymentRepository paymentRepo)
         {
             _customerRepo = customerRepo;
             _orderRepo = orderRepo;
             this._orderItemRepo = orderItemRepo;
             _productRepo = productRepo;
             _serviceRepo = serviceRepo;
+            _paymentRepo = paymentRepo;
         }
 
         public async Task<IActionResult> Index()
@@ -54,7 +58,7 @@ namespace UludagGroup.Areas.Finance.Controllers
             {
                 TempData["SuccessMessage"] = $"{response.Message}";
             }
-            return RedirectToAction("Index", "FinancialTracking");
+            return RedirectToAction("Detail", "FinancialTracking", new { id = response.Data });
         }
         public async Task<IActionResult> EditCustomer(int id)
         {
@@ -67,8 +71,8 @@ namespace UludagGroup.Areas.Finance.Controllers
             return View(new UpdateCustomerViewModel
             {
                 Id = response.Data.Id,
-                Name=response.Data.Name,
-                Email=response.Data.Email,
+                Name = response.Data.Name,
+                Email = response.Data.Email,
                 Address = response.Data.Address,
                 Phone = response.Data.Phone
             });
@@ -85,7 +89,7 @@ namespace UludagGroup.Areas.Finance.Controllers
             {
                 TempData["SuccessMessage"] = $"{response.Message}";
             }
-            return RedirectToAction("Index", "FinancialTracking");
+            return RedirectToAction("Detail", "FinancialTracking", new { id = model.Id });
         }
         public async Task<IActionResult> RemoveCustomer(int id)
         {
@@ -96,8 +100,7 @@ namespace UludagGroup.Areas.Finance.Controllers
             }
             return RedirectToAction("Index", "FinancialTracking");
         }
-       
-        public async Task<IActionResult> Detail(int id )
+        public async Task<IActionResult> Detail(int id)
         {
             var customer = await _customerRepo.GetAsync(id);
             if (!customer.Status)
@@ -105,14 +108,7 @@ namespace UludagGroup.Areas.Finance.Controllers
                 TempData["ErrorMessage"] = customer.Message;
                 return RedirectToAction("Index", "FinancialTracking");
             }
-            ViewBag.CustomerName = customer.Data.Name;
-            ViewBag.CustomerId = customer.Data.Id;
-            var response = await _orderRepo.GetAllByCustomerIdWithDetailsAsync(id);
-            if (!response.Status)
-            {
-                TempData["ErrorMessage2"] = response.Message;
-            }
-            return View(response.Data);
+            return View(customer.Data);
         }
         public async Task<IActionResult> AddOrder(int customerid)
         {
@@ -121,7 +117,7 @@ namespace UludagGroup.Areas.Finance.Controllers
             if (!response.Status)
             {
                 TempData["ErrorMessage"] = $"{response.Message}";
-                return RedirectToAction("Index", "FinancialTracking", new { id = customerid });
+                return RedirectToAction("Detail", "FinancialTracking", new { id = customerid });
             }
             var valuesProduct = await _productRepo.GetAllActiveAsync();
             List<SelectListItem> products = (from x in valuesProduct.Data
@@ -171,13 +167,13 @@ namespace UludagGroup.Areas.Finance.Controllers
             //}
             return RedirectToAction("Detail", "FinancialTracking", new { id = model.CustomerId });
         }
-        public async Task<IActionResult> EditOrder(int id,int customerId)
+        public async Task<IActionResult> EditOrder(int id, int customerId)
         {
             var response = await _orderRepo.GetAllByOrderIdWithDetailsAsync(id);
             if (!response.Status)
             {
                 TempData["ErrorMessage"] = $"{response.Message}";
-                return RedirectToAction("Index", "FinancialTracking", new { id = customerId });
+                return RedirectToAction("Detail", "FinancialTracking", new { id = customerId });
             }
             var valuesProduct = await _productRepo.GetAllActiveAsync();
             List<SelectListItem> products = (from x in valuesProduct.Data
@@ -208,8 +204,8 @@ namespace UludagGroup.Areas.Finance.Controllers
             return View(new OrderDetailViewModel
             {
                 Id = response.Data.Id,
-                CustomerId=response.Data.CustomerId,
-                CustomerName=response.Data.CustomerName,
+                CustomerId = response.Data.CustomerId,
+                CustomerName = response.Data.CustomerName,
                 Notes = response.Data.Notes,
                 OrderDate = response.Data.OrderDate,
                 OrderItems = response.Data.OrderItems
@@ -245,7 +241,7 @@ namespace UludagGroup.Areas.Finance.Controllers
         }
         public async Task<IActionResult> RemoveOrderItem(int id, int customerId)
         {
-            var response = await _orderItemRepo.SetActiveStatusAsync(id,false);
+            var response = await _orderItemRepo.SetActiveStatusAsync(id, false);
             if (!response.Status)
             {
                 TempData["ErrorMessage"] = $"{response.Message}";
@@ -253,5 +249,85 @@ namespace UludagGroup.Areas.Finance.Controllers
 
             return RedirectToAction("Detail", "FinancialTracking", new { id = customerId });
         }
+
+        public async Task<IActionResult> AddPayment(int customerid)
+        {
+            var response = await _customerRepo.GetAsync(customerid);
+            if (!response.Status)
+            {
+                TempData["ErrorMessage"] = $"{response.Message}";
+                return RedirectToAction("Detail", "FinancialTracking", new { id = customerid });
+            }
+            return View(new PaymentDetailViewModel
+            {
+                Id = 0,
+                CustomerId = response.Data.Id,
+                CustomerName = response.Data.Name,
+            });
+        }
+        public async Task<IActionResult> SaveAddPayment(PaymentDetailViewModel model)
+        {
+            var response = await _paymentRepo.AddAsync(new CreatePaymentViewModel
+            {
+                Amount=model.Amount,
+                CustomerId=model.CustomerId,
+                Method=model.Method,
+                Notes=model.Notes,
+                PaymentDate=DateTime.Now
+            });
+            if (!response.Status)
+            {
+                TempData["ErrorMessage"] = $"{response.Message}";
+                return View("AddPayment", model);
+            }
+            else
+            {
+                TempData["SuccessMessage"] = $"{response.Message}";
+            }
+            return RedirectToAction("Detail", "FinancialTracking", new { id = model.CustomerId });
+        }
+        public async Task<IActionResult> EditPayment(int id, int customerId)
+        {
+            var response = await _paymentRepo.GetByIdWithDetailsAsync(id);
+            if (!response.Status)
+            {
+                TempData["ErrorMessage"] = $"{response.Message}";
+                return RedirectToAction("Index", "FinancialTracking", new { id = customerId });
+            }
+            return View(response.Data);
+        }
+        public async Task<IActionResult> SaveEditPayment(PaymentDetailViewModel model)
+        {
+            var response = await _paymentRepo.UpdateAsync(new UpdatePaymentViewModel
+            {
+                Amount=model.Amount,
+                CustomerId=model.CustomerId,
+                Id=model.Id,
+                Method= model.Method,
+                Notes = model.Notes,
+                PaymentDate = model.PaymentDate
+            });
+            if (!response.Status)
+            {
+                TempData["ErrorMessage"] = $"{response.Message}";
+                return View("EditPayment", model);
+            }
+            else
+            {
+                TempData["SuccessMessage"] = $"{response.Message}";
+            }
+            return RedirectToAction("Detail", "FinancialTracking", new { id = model.CustomerId });
+        }
+        public async Task<IActionResult> RemovePayment(int id, int customerId)
+        {
+            var response = await _paymentRepo.SetActiveStatusAsync(id, false);
+            if (!response.Status)
+            {
+                TempData["ErrorMessage"] = $"{response.Message}";
+            }
+
+            return RedirectToAction("Detail", "FinancialTracking", new { id = customerId });
+        }
+
     }
 }

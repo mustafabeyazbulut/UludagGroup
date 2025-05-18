@@ -45,7 +45,7 @@
                     <div class="row mb-3 mt-4">
                         <div class="col-12 text-center">
                             <button type="submit" class="btn btn-lg btn-primary me-2">Kaydet</button>
-                            <a href="@Url.Action("Index", "FinancialTracking", new { area = "Finance" })" class="btn btn-lg btn-secondary">Geri Dön</a>
+                            <a href="@Url.Action("Detail", "FinancialTracking", new { area = "Finance",id=Model.Id })" class="btn btn-lg btn-secondary">Geri Dön</a>
 
                         </div>
                     </div>

@@ -26,7 +26,8 @@ namespace UludagGroup.Areas.Finance.Repositories.OrderRepositories
                                 SELECT o.Id, o.CustomerId, o.OrderDate, o.Notes, c.Name AS CustomerName
                                 FROM zOrder o
                                 JOIN zCustomer c ON o.CustomerId = c.Id
-                                WHERE o.CustomerId = @CustomerId AND o.IsActive = 1";
+                                WHERE o.CustomerId = @CustomerId AND o.IsActive = 1 
+                                Order By o.ID Desc";
 
                     var orders = (await connection.QueryAsync<OrderDetailViewModel>(ordersQuery, new { CustomerId = customerId })).ToList();
 

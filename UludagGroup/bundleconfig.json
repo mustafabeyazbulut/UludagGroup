@@ -21,11 +21,15 @@
     "minify": { "enabled": true }
   },
   {
-    "outputFileName": "wwwroot/admin/css/style.min.css",
+    "outputFileName": "wwwroot/admin/css/styles.min.css",
     "inputFiles": [
-      "wwwroot/admin/css/style.css"
+      "wwwroot/admin/css/styles.css"
     ],
-    "minify": { "enabled": true }
+    "minify": {
+      "enabled": true,
+      "renameLocals": true
+    },
+    "sourceMap": false
   },
   {
     "outputFileName": "wwwroot/js/main.min.js",
