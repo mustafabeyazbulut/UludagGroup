@@ -8,6 +8,7 @@ namespace UludagGroup.Areas.Finance.Repositories.CustomerRepositories
         :  IGenericRepository<CustomerViewModel, CreateCustomerViewModel, UpdateCustomerViewModel, CustomerViewModel>
     {
         Task<ResponseViewModel<List<CustomerDebtViewModel>>> GetCustomerDebtInfoAsync();
+        Task<ResponseViewModel<CustomerDebtViewModel>> GetCustomerDebtInfoByIdAsync(int customerId);
     }
 
 }

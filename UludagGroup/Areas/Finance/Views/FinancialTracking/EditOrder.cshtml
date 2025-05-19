@@ -25,6 +25,7 @@
                         <div class="col-sm-10">
                             <input type="hidden" asp-for="Id" />
                             <input type="hidden" asp-for="CustomerId" />
+                            <input type="hidden" asp-for="CustomerName" />
                             @* <label class="form-control" id="Id" asp-for="Id">@Model.Id </label> *@
                         </div>
                     </div>
@@ -56,9 +57,11 @@
                         <tbody id="order-items-container">
                             @for (int i = 0; i < Model.OrderItems.Count; i++)
                             {
-                                <tr class="order-item">
+                                <tr class="order-item" @(Model.OrderItems[i].IsVisible ? "" : "style=display:none")>
                                     <td>
+
                                         <input type="hidden" asp-for="OrderItems[i].Id" />
+                                        <input type="hidden" name="OrderItems[@i].IsVisible" value="true" class="is-visible-field" />
 
                                         @Html.DropDownList(
                                                  $"OrderItems[{i}].ItemType",
@@ -75,14 +78,12 @@
                                         @if (Model.OrderItems[i].ItemType == "Product")
                                         {
                                             @Html.DropDownListFor(m => m.OrderItems[i].ItemId,
-                                                     new SelectList(ViewBag.Products, "Value", "Text", Model.OrderItems[i].ItemId),
-                                                     "Ürün Seçin", new { @class = "form-select product-select" })
+                                                     new SelectList(ViewBag.Products, "Value", "Text", Model.OrderItems[i].ItemId), new { @class = "form-select product-select" })
                                         }
                                         else
                                         {
                                             @Html.DropDownListFor(m => m.OrderItems[i].ItemId,
-                                                     new SelectList(ViewBag.Services, "Value", "Text", Model.OrderItems[i].ItemId),
-                                                     "Ürün Seçin", new { @class = "form-select product-select" })
+                                                     new SelectList(ViewBag.Services, "Value", "Text", Model.OrderItems[i].ItemId), new { @class = "form-select product-select" })
                                         }
                                     </td>
                                     <td>
@@ -105,10 +106,21 @@
                     <div class="row mb-3 mt-4">
                         <div class="col-12 text-center">
                             <button type="submit" class="btn btn-lg btn-primary me-2">Kaydet</button>
-                            <a href="@Url.Action("Detail", "FinancialTracking", new { area = "Finance",Id=Model.CustomerId })" class="btn btn-lg btn-secondary">Geri Dön</a>
 
+                            <a href="@Url.Action("Detail", "FinancialTracking", new { area = "Finance", Id = Model.CustomerId })"
+                               class="btn btn-lg btn-secondary me-2">Geri Dön</a>
+
+                            @if (Model.Id != 0)  // ID varsa (yeni ekleme değil düzenleme ise) silme butonu göster
+                            {
+                                <a href="@Url.Action("RemoveOrder", "FinancialTracking", new { area = "Finance", id = Model.Id, customerId = Model.CustomerId })"
+                                   class="btn btn-lg btn-danger"
+                                   onclick="return confirm('Bu siparişi silmek istediğinizden emin misiniz?')">
+                                    Sil
+                                </a>
+                            }
                         </div>
                     </div>
+
                 }
             </div>
         </div>
@@ -128,6 +140,8 @@
         let template = '' +
             '<tr class="order-item">' +
                 '<td>' +
+                '<input type="hidden" name="OrderItems[' + index + '].IsVisible" value="true" class="is-visible-field" />' +
+
                     '<select name="OrderItems[' + index + '].ItemType" class="form-select item-type-select">' +
                         '<option value="Product">Ürün</option>' +
                         '<option value="Service">Servis</option>' +
@@ -160,9 +174,12 @@
         itemIndex++;
     });
 
-    $(document).on('click', '.btn-remove-item', function () {
-        $(this).closest('tr.order-item').remove();
+        $(document).on('click', '.btn-remove-item', function () {
+        const row = $(this).closest('tr.order-item');
+        row.hide(); // Görünmez yap
+        row.find('.is-visible-field').val('false'); // IsVisible = false
     });
+
 
     $(document).on('change', '.item-type-select', function () {
         let container = $(this).closest('tr.order-item');

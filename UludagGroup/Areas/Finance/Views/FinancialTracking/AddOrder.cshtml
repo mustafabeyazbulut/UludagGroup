@@ -27,6 +27,7 @@
                         <div class="col-sm-10">
                             <input type="hidden" asp-for="Id" />
                             <input type="hidden" asp-for="CustomerId" />
+                            <input type="hidden" asp-for="CustomerName" />
                             @* <label class="form-control" id="Id" asp-for="Id">@Model.Id </label> *@
                         </div>
                     </div>
@@ -58,9 +59,10 @@
                         <tbody id="order-items-container">
                             @for (int i = 0; i < Model.OrderItems.Count; i++)
                             {
-                                <tr class="order-item">
+                                <tr class="order-item" @(Model.OrderItems[i].IsVisible ? "" : "style=display:none")>
                                     <td>
                                         <input type="hidden" asp-for="OrderItems[i].Id" />
+                                        <input type="hidden" name="OrderItems[@i].IsVisible" value="true" class="is-visible-field" />
 
                                         @Html.DropDownList(
                                                  $"OrderItems[{i}].ItemType",
@@ -130,6 +132,7 @@
         let template = '' +
             '<tr class="order-item">' +
                 '<td>' +
+                '<input type="hidden" name="OrderItems[' + index + '].IsVisible" value="true" class="is-visible-field" />' +
                     '<select name="OrderItems[' + index + '].ItemType" class="form-select item-type-select">' +
                         '<option value="Product">Ürün</option>' +
                         '<option value="Service">Servis</option>' +
@@ -162,8 +165,10 @@
         itemIndex++;
     });
 
-    $(document).on('click', '.btn-remove-item', function () {
-        $(this).closest('tr.order-item').remove();
+     $(document).on('click', '.btn-remove-item', function () {
+        const row = $(this).closest('tr.order-item');
+        row.hide(); // Görünmez yap
+        row.find('.is-visible-field').val('false'); // IsVisible = false
     });
 
     $(document).on('change', '.item-type-select', function () {

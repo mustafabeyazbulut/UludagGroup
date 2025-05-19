@@ -11,5 +11,6 @@
         public decimal UnitPrice { get; set; }
         public int Quantity { get; set; }
         public decimal LineTotal { get; set; }
+        public bool IsVisible { get; set; } = true;
     }
 }

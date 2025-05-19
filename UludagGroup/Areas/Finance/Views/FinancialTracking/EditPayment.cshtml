@@ -58,7 +58,14 @@
                         <div class="col-12 text-center">
                             <button type="submit" class="btn btn-lg btn-primary me-2">Kaydet</button>
                             <a href="@Url.Action("Detail", "FinancialTracking", new { area = "Finance",Id=Model.CustomerId })" class="btn btn-lg btn-secondary">Geri Dön</a>
-
+                            @if (Model.Id != 0)  // ID varsa (yeni ekleme değil düzenleme ise) silme butonu göster
+                            {
+                                <a href="@Url.Action("RemovePayment", "FinancialTracking", new {area="finance", id = Model.Id,customerId=Model.CustomerId })"
+                                   class="btn btn-lg btn-danger"
+                                   onclick="return confirm('Bu Ödemeyi silmek istediğinizden emin misiniz?')">
+                                    Sil
+                                </a>
+                            }
                         </div>
                     </div>
                 }

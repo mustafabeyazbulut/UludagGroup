@@ -148,7 +148,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 jQuery(document).ready(function ($) {
-    $('#xTable').on('click', '.clickable-row', function () {
+    $(document).on('click', '.clickable-row', function () {
         window.location = $(this).data("href");
     });
 });
