@@ -1,0 +1,44 @@
+﻿@model PaymentDetailViewModel
+
+<div class="modal-header bg-primary text-white">
+    <h5 class="modal-title"><i class="fa fa-money-bill-wave me-2"></i>Yeni Ödeme</h5>
+    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Kapat"></button>
+</div>
+
+<div class="modal-body">
+    @using (Html.BeginForm("SaveAddPayment", "FinancialTracking", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(x => x.CustomerId)
+        @Html.HiddenFor(x => x.CustomerName)
+
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Firma Adı</label>
+            <div class="form-control bg-light text-dark">
+                @Model.CustomerName
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Ödenen Miktar <span class="text-danger">*</span></label>
+            <div class="input-group">
+                <span class="input-group-text">₺</span>
+                @Html.TextBoxFor(x => x.Amount, new { @class = "form-control", placeholder = "0.00", type = "number", step = "0.01", min = "0" })
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-semibold">Not</label>
+            @Html.TextAreaFor(x => x.Notes, 3, 50, new { @class = "form-control", placeholder = "İsteğe bağlı açıklama..." })
+        </div>
+
+        <div class="modal-footer">
+            <button type="submit" class="btn btn-success">
+                <i class="fa fa-save me-1"></i> Kaydet
+            </button>
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                <i class="fa fa-times me-1"></i> Kapat
+            </button>
+        </div>
+    }
+</div>

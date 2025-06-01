@@ -24,21 +24,62 @@
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <label for="Name" class="col-sm-2 col-form-label">Email</label>
+                        <label for="Name" class="col-sm-2 col-form-label">Müşteri Adı</label>
                         <div class="col-sm-10">
-                            @Html.TextBoxFor(model => model.Email, new { @class = "form-control", type = "email", placeholder = "Email" })
+                            @Html.TextBoxFor(model => model.CName, new { @class = "form-control", type = "text", placeholder = "Müşteri Adı" })
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <label for="Name" class="col-sm-2 col-form-label">Telefon</label>
+                        <label for="Name" class="col-sm-2 col-form-label">Müşteri Soyadı</label>
                         <div class="col-sm-10">
-                            @Html.TextBoxFor(model => model.Phone, new { @class = "form-control", type = "text", placeholder = "Telefon" })
+                            @Html.TextBoxFor(model => model.CSurname, new { @class = "form-control", type = "text", placeholder = "Müşteri Soyadı" })
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="Email" class="col-sm-2 col-form-label">Email</label>
+                        <div class="col-sm-10">
+                            @Html.TextBoxFor(model => model.Email, new { @class = "form-control", type = "email", placeholder = "Email" })
+                            @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label for="Name" class="col-sm-2 col-form-label">Telefon 1</label>
+                        <div class="col-sm-10">
+                            @Html.TextBoxFor(model => model.Phone1, new { @class = "form-control", type = "text", placeholder = "0 (5__) ___ __ __" })
+                            @Html.ValidationMessageFor(model => model.Phone1, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="Name" class="col-sm-2 col-form-label">Telefon 2</label>
+                        <div class="col-sm-10">
+                            @Html.TextBoxFor(model => model.Phone2, new { @class = "form-control", type = "text", placeholder = "0 (5__) ___ __ __" })
+                            @Html.ValidationMessageFor(model => model.Phone2, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="City" class="col-sm-2 col-form-label">Şehir</label>
+                        <div class="col-sm-4">
+                            @Html.DropDownList("City", ViewBag.Locations as List<SelectListItem>, new { @class = "form-control", id = "citySelect" })
+                        </div>
+
+                        <label for="District" class="col-sm-2 col-form-label">İlçe</label>
+                        <div class="col-sm-4">
+                            <select id="districtSelect" name="District" class="form-control">
+                                <option value="">İlçe Seçin</option>
+                            </select>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <label for="Name" class="col-sm-2 col-form-label">Adres</label>
                         <div class="col-sm-10">
                             @Html.TextBoxFor(model => model.Address, new { @class = "form-control", type = "text", placeholder = "Adres" })
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="Name" class="col-sm-2 col-form-label">Not</label>
+                        <div class="col-sm-10">
+                            @Html.TextBoxFor(model => model.Note, new { @class = "form-control", type = "text", placeholder = "Not" })
                         </div>
                     </div>
                     <div class="row mb-3 mt-4">
@@ -55,4 +96,40 @@
 
 
 </div>
+<script>
+    $(document).ready(function () {
+        $('input[name="Phone1"]').inputmask("0 (999) 999 99 99", {
+            placeholder: "0 (5__) ___ __ __",
+            showMaskOnHover: false,
+            showMaskOnFocus: true
+        });
+         $('input[name="Phone2"]').inputmask("0 (999) 999 99 99", {
+             placeholder: "0 (5__) ___ __ __",
+            showMaskOnHover: false,
+            showMaskOnFocus: true
+        });
+    });
 
+    $('#citySelect').on('change', function () {
+        var selectedCity = $(this).val();
+        $('#districtSelect').empty().append($('<option>', {
+            value: '',
+            text: 'İlçe Seçin'
+        }));
+
+        if (selectedCity && selectedCity !== "0") {
+            $.ajax({
+                url: '/Finance/FinancialTracking/GetDistrictsByCity?city=' + encodeURIComponent(selectedCity),
+                type: 'GET',
+                success: function (data) {
+                    $.each(data, function (index, district) {
+                        $('#districtSelect').append($('<option>', {
+                            value: district,
+                            text: district
+                        }));
+                    });
+                }
+            });
+        }
+    });
+</script>

@@ -2,6 +2,8 @@
 
 namespace UludagGroup.Controllers
 {
+    [Route("Finans")]
+    [Route("Finance")]
     public class FinanceController : Controller
     {
         public IActionResult Index()

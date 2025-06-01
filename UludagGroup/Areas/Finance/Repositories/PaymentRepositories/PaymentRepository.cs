@@ -26,7 +26,6 @@ namespace UludagGroup.Areas.Finance.Repositories.PaymentRepositories
                 p.CustomerId,
                 p.Amount,
                 p.PaymentDate,
-                p.Method,
                 p.Notes,
                 c.Name AS CustomerName
             FROM zPayment p
@@ -74,7 +73,6 @@ namespace UludagGroup.Areas.Finance.Repositories.PaymentRepositories
                         p.CustomerId,
                         p.Amount,
                         p.PaymentDate,
-                        p.Method,
                         p.Notes,
                         c.Name AS CustomerName
                     FROM zPayment p

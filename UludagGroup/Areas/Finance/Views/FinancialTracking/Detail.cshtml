@@ -3,62 +3,86 @@
     ViewData["Title"] = "Detail";
     Layout = "~/Areas/Finance/Views/FinanceLayout/Index.cshtml";
 }
-<div class="card shadow-sm mb-4">
-    <div class="card-body position-relative">
-        <div class="d-flex justify-content-between align-items-start">
-            <div class="card shadow-sm border-0 p-4">
-                <div class="card-body">
-                    <h4 class="card-title mb-3 text-dark d-flex align-items-center">
-                        <i class="fa fa-user text-primary me-2"></i> @Model.Name
-                    </h4>
+<style>
+    .text-dark-yellow {
+        color: #b58900 !important;
+    }
 
-                    <ul class="list-group list-group-flush mb-3">
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <span><i class="fa fa-coins text-warning me-2"></i>Toplam Borç</span>
-                            <span class="fw-bold text-danger">@Model.TotalDebt ₺</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <span><i class="fa fa-credit-card text-success me-2"></i>Toplam Ödenen</span>
-                            <span class="fw-bold text-success">@Model.TotalPaid ₺</span>
-                        </li>
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <span><i class="fa fa-wallet text-info me-2"></i>Kalan Bakiye</span>
-                            <span class="fw-bold text-primary">@Model.RemainingBalance ₺</span>
-                        </li>
-                    </ul>
+    .text-dark-green {
+        color: #228B22 !important;
+    }
 
-                    <p class="card-text text-muted mt-3">
-                        <i class="fa fa-info-circle me-1"></i>Detayları aşağıda inceleyebilirsiniz.
-                    </p>
-                </div>
-            </div>
+    .text-dark-red {
+        color: #8B0000 !important;
+    }
 
-            <div class="d-flex flex-wrap mt-4">
-                <a href="@Url.Action("Index", "FinancialTracking", new { area = "finance" })"
-                   class="btn btn-secondary btn-lg me-2">
-                    <i class="fa fa-arrow-left"></i> Geri Dön
-                </a>
+    .card-title,
+    .list-group-item span,
+    .card-text {
+        font-size: 1.2rem;
+    }
 
-                <a href="@Url.Action("EditCustomer", "FinancialTracking", new { area = "finance", id = Model.Id })"
-                   class="btn btn-outline-primary btn-lg me-2">
-                    <i class="fa fa-edit"></i> Düzenle
-                </a>
+    .fw-bold {
+        font-size: 1.25rem;
+    }
+</style>
 
-                <a href="@Url.Action("RemoveCustomer", "FinancialTracking", new { area = "finance", id = Model.Id })"
-                   class="btn btn-outline-danger btn-lg"
-                   onclick="return confirm('Bu müşteriyi silmek istediğinize emin misiniz?');">
-                    <i class="fa fa-trash"></i> Sil
-                </a>
-            </div>
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-start">
+    <div class="card shadow-sm border-0 p-4 mb-3 mb-md-0 me-md-3">
+        <div class="card-body">
+            <h4 class="card-title mb-3 text-dark-yellow d-flex align-items-center">
+                <i class="fa fa-user text-primary me-2"></i> @Model.Name
+            </h4>
+            <h5 class="card-title mb-3 text-dark-yellow d-flex align-items-center">
+                <i class="fa fa-id-card text-primary me-2"></i> @Model.CName @Model.CSurname
+            </h5>
+          
+            <ul class="list-group list-group-flush mb-3">
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span class="text-dark-yellow"><i class="fa fa-coins me-2"></i>Toplam Borç</span>
+                    <span class="fw-bold text-dark-yellow">@Model.TotalDebt ₺</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span class="text-dark-green"><i class="fa fa-credit-card me-2"></i>Toplam Ödenen</span>
+                    <span class="fw-bold text-dark-green">@Model.TotalPaid ₺</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <span class="text-dark-red"><i class="fa fa-wallet me-2"></i>Kalan Bakiye</span>
+                    <span class="fw-bold text-dark-red">@Model.RemainingBalance ₺</span>
+                </li>
+            </ul>
 
+            <p class="card-text text-muted mt-3">
+                <i class="fa fa-info-circle me-1"></i>Detayları aşağıda inceleyebilirsiniz.
+            </p>
         </div>
     </div>
+
+    <div class="d-flex flex-wrap mt-3 mt-md-4">
+        <a href="@Url.Action("Index", "FinancialTracking", new { area = "finance" })"
+           class="btn btn-secondary btn-lg me-2 mb-2">
+            <i class="fa fa-arrow-left"></i> Geri Dön
+        </a>
+
+        <a href="@Url.Action("EditCustomer", "FinancialTracking", new { area = "finance", id = Model.Id })"
+           class="btn btn-outline-primary btn-lg me-2 mb-2">
+            <i class="fa fa-edit"></i> Düzenle
+        </a>
+
+        <a href="@Url.Action("RemoveCustomer", "FinancialTracking", new { area = "finance", id = Model.Id })"
+           class="btn btn-outline-danger btn-lg mb-2"
+           onclick="return confirm('Bu müşteriyi silmek istediğinize emin misiniz?');">
+            <i class="fa fa-trash"></i> Sil
+        </a>
+    </div>
 </div>
+
+
 <hr />
 
 <div id="ToolbarOrderDetail">
     <a href="@Url.Action("AddOrder", "FinancialTracking", new { area = "finance", customerid = Model.Id })" class="btn btn-success">
-        <i class="fa fa-plus"></i> Yeni Sipariş
+        <i class="fa fa-plus"></i> Yeni SATIŞ/SERVİS
     </a>
 
 </div>
@@ -67,11 +91,39 @@
 
 <hr />
 <div id="ToolbarPaymentDetail">
-    <a href="@Url.Action("AddPayment", "FinancialTracking", new { area = "finance", customerid = Model.Id })" class="btn btn-success">
+    <a href="@Url.Action("AddPayment", "FinancialTracking", new { area = "finance", customerid = Model.Id })"
+       class="btn btn-success"
+       data-url="@Url.Action("AddPayment", "FinancialTracking", new { area = "finance", customerid = Model.Id })"
+       id="btnAddPayment">
         <i class="fa fa-plus"></i> Yeni Ödeme
     </a>
+
 
 </div>
 @await Component.InvokeAsync("_PaymentDetail_ComponentPartial", new { id = Model.Id })
 
+<div class="modal fade" id="modalAddPayment" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <!-- İçerik buraya AJAX ile gelecek -->
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modalAddPayment" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <!-- İçerik buraya AJAX ile gelecek -->
+        </div>
+    </div>
+</div>
 
+<script>
+    $(document).on("click", "#btnAddPayment", function (e) {
+        e.preventDefault();
+        var url = $(this).data("url");
+        $.get(url, function (data) {
+            $("#modalAddPayment .modal-content").html(data);
+            $("#modalAddPayment").modal("show");
+        });
+    });
+</script>

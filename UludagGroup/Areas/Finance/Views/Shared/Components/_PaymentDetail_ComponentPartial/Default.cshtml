@@ -46,7 +46,6 @@
         <tr class="text-center">
             <th data-width="120" data-align="center" data-field="PaymentDate">Tarih</th>
             <th data-align="center" data-field="Amount" data-visible="true">Ödenen Miktar</th>
-            <th data-align="center" data-field="Method" data-visible="true">Ödeme Şekli</th>
             <th data-align="center" data-field="Notes" data-visible="true">Not</th>
         </tr>
     </thead>
@@ -56,7 +55,6 @@
             <tr class="clickable-row" data-href="@Url.Action("EditPayment", "FinancialTracking", new { area = "finance", id = payment.Id, customerId = payment.CustomerId })">
                 <td>@payment.PaymentDate.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</td>
                 <td>@payment.Amount.ToString("C", new System.Globalization.CultureInfo("tr-TR"))</td>
-                <td>@payment.Method</td>
                 <td>@payment.Notes</td>
             </tr>
         }

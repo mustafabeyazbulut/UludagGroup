@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
-using System.Threading.Tasks;
 using UludagGroup.Areas.Finance.Repositories.CustomerRepositories;
+using UludagGroup.Areas.Finance.Repositories.LocationRepostiories;
 using UludagGroup.Areas.Finance.Repositories.OrderItemRepositories;
 using UludagGroup.Areas.Finance.Repositories.OrderRepositories;
 using UludagGroup.Areas.Finance.Repositories.PaymentRepositories;
@@ -25,8 +24,9 @@ namespace UludagGroup.Areas.Finance.Controllers
         private readonly IProductRepository _productRepo;
         private readonly IServiceRepository _serviceRepo;
         private readonly IPaymentRepository _paymentRepo;
+        private readonly ILocationRepostiory _locationRepo;
 
-        public FinancialTrackingController(ICustomerRepository customerRepo, IOrderRepository orderRepo, IOrderItemRepository orderItemRepo, IProductRepository productRepo, IServiceRepository serviceRepo, IPaymentRepository paymentRepo)
+        public FinancialTrackingController(ICustomerRepository customerRepo, IOrderRepository orderRepo, IOrderItemRepository orderItemRepo, IProductRepository productRepo, IServiceRepository serviceRepo, IPaymentRepository paymentRepo, ILocationRepostiory locationRepo)
         {
             _customerRepo = customerRepo;
             _orderRepo = orderRepo;
@@ -34,6 +34,7 @@ namespace UludagGroup.Areas.Finance.Controllers
             _productRepo = productRepo;
             _serviceRepo = serviceRepo;
             _paymentRepo = paymentRepo;
+            _locationRepo = locationRepo;
         }
         #region Customer
         public async Task<IActionResult> Index()
@@ -45,12 +46,69 @@ namespace UludagGroup.Areas.Finance.Controllers
             }
             return View(response.Data);
         }
+        private async Task GetLocations()
+        {
+            var valuesLocation = await _locationRepo.GetAllAsync();
+
+            List<SelectListItem> locations = valuesLocation.Data
+                                             .GroupBy(x => x.City) // Şehre göre grupla
+                                             .Select(g => new SelectListItem
+                                             {
+                                                 Text = g.Key,     // g.Key = City
+                                                 Value = g.Key
+                                             })
+                                             .OrderBy(x => x.Text) // (İsteğe bağlı) alfabetik sırala
+                                             .ToList();
+            locations.Insert(0, new SelectListItem
+            {
+                Text = "Şehir Seçebilirsiniz",
+                Value = "0"
+            });
+            ViewBag.Locations = locations;
+        }
+        private async Task GetLocationsEditCustomer(string city)
+        {
+            var allLocations = await _locationRepo.GetAllAsync();
+            List<SelectListItem> districts = allLocations.Data
+        .Where(x => x.City == city)
+        .Select(x => x.District)
+        .Distinct()
+        .Select(d => new SelectListItem
+        {
+            Text = d,
+            Value = d
+        })
+        .ToList();
+
+            ViewBag.Districts = districts;
+            ViewBag.AllDistricts = allLocations.Data;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetDistrictsByCity(string city)
+        {
+            var result = await _locationRepo.GetAllAsync();
+            var districts = result.Data
+                .Where(x => x.City == city)
+                .Select(x => x.District)
+                .Distinct()
+                .ToList();
+            return Json(districts);
+        }
+
         public async Task<IActionResult> AddCustomer()
         {
+            await GetLocations();
             return View();
         }
         public async Task<IActionResult> SaveAddCustomer(CreateCustomerViewModel model)
         {
+            await GetLocations();
+            if (!ModelState.IsValid)
+            {
+                // Form geçersiz, view'a geri dön
+                return View(model);
+            }
             var response = await _customerRepo.AddAsync(model);
             if (!response.Status)
             {
@@ -65,23 +123,35 @@ namespace UludagGroup.Areas.Finance.Controllers
         }
         public async Task<IActionResult> EditCustomer(int id)
         {
+            await GetLocations();
             var response = await _customerRepo.GetAsync(id);
             if (!response.Status)
             {
                 TempData["ErrorMessage"] = $"{response.Message}";
                 return RedirectToAction("Index", "FinancialTracking");
             }
+            if (!string.IsNullOrEmpty(response.Data.City))
+            {
+                await GetLocationsEditCustomer(response.Data.City);
+            }
             return View(new UpdateCustomerViewModel
             {
                 Id = response.Data.Id,
                 Name = response.Data.Name,
+                CName = response.Data.CName,
+                CSurname = response.Data.CSurname,
                 Email = response.Data.Email,
+                City = response.Data.City,
+                District = response.Data.District,
                 Address = response.Data.Address,
-                Phone = response.Data.Phone
+                Phone1 = response.Data.Phone1,
+                Phone2 = response.Data.Phone2,
+                Note = response.Data.Note
             });
         }
         public async Task<IActionResult> SaveEditCustomer(UpdateCustomerViewModel model)
         {
+            await GetLocations();
             var response = await _customerRepo.UpdateAsync(model);
             if (!response.Status)
             {
@@ -158,6 +228,8 @@ namespace UludagGroup.Areas.Finance.Controllers
                 Id = 0,
                 CustomerId = response.Data.Id,
                 CustomerName = response.Data.Name,
+                CName=response.Data.CName,
+                CSurname=response.Data.CSurname,
                 Notes = "",
                 OrderItems = new List<ViewModels.OrderItemViewModels.OrderItemDetailViewModel>()
             });
@@ -233,6 +305,8 @@ namespace UludagGroup.Areas.Finance.Controllers
                 Id = response.Data.Id,
                 CustomerId = response.Data.CustomerId,
                 CustomerName = response.Data.CustomerName,
+                CName=response.Data.CName,
+                CSurname=response.Data.CSurname,
                 Notes = response.Data.Notes,
                 OrderDate = response.Data.OrderDate,
                 OrderItems = response.Data.OrderItems
@@ -343,7 +417,7 @@ namespace UludagGroup.Areas.Finance.Controllers
                 TempData["ErrorMessage"] = $"{response.Message}";
                 return RedirectToAction("Detail", "FinancialTracking", new { id = customerid });
             }
-            return View(new PaymentDetailViewModel
+            return PartialView("AddPaymentPartial",new PaymentDetailViewModel
             {
                 Id = 0,
                 CustomerId = response.Data.Id,
@@ -356,7 +430,6 @@ namespace UludagGroup.Areas.Finance.Controllers
             {
                 Amount = model.Amount,
                 CustomerId = model.CustomerId,
-                Method = model.Method,
                 Notes = model.Notes,
                 PaymentDate = DateTime.Now
             });
@@ -388,7 +461,6 @@ namespace UludagGroup.Areas.Finance.Controllers
                 Amount = model.Amount,
                 CustomerId = model.CustomerId,
                 Id = model.Id,
-                Method = model.Method,
                 Notes = model.Notes,
                 PaymentDate = model.PaymentDate
             });

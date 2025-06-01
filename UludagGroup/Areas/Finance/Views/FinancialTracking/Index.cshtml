@@ -54,25 +54,59 @@
     <thead class="table-dark">
         <tr>
             <th data-align="center" data-halign="center" scope="col" data-field="Name" data-footer-formatter="total">Firma Adı</th>
-            <th data-align="center" data-halign="center" scope="col" data-field="Phone" data-visible="true">Phone</th>
-            <th data-align="center" data-halign="center" scope="col" data-field="TotalDebt" data-visible="true">Toplam Borç</th>
-            <th data-align="center" data-halign="center" scope="col" data-field="TotalPaid" data-visible="false">Ödenen Tutar</th>
-            <th data-align="center" data-halign="center" scope="col" data-field="RemainingBalance" data-footer-formatter="sumFormatter">Kalan Bakiye</th>
-            <th data-align="center" data-halign="center" scope="col" data-field="Address" data-visible="false">Address</th>
+            <th data-align="center" data-halign="center" scope="col" data-field="CName" data-footer-formatter="total">Müşteri Adı</th>
+            <th data-align="center" data-halign="center" scope="col" data-field="CSurname" data-footer-formatter="total">Müşteri Soyad</th>
+            <th data-align="center" data-halign="center" scope="col" data-field="Phone1" data-visible="true">Telefon 1</th>
+            <th data-align="center" data-halign="center" scope="col" data-field="Phone2" data-visible="true">Telefon 2</th>
             <th data-align="center" data-halign="center" scope="col" data-field="Email" data-visible="false">Email</th>
+            <th data-align="center" data-halign="center" scope="col" data-field="TotalDebt" data-visible="true">Toplam Borç</th>
+            <th data-align="center" data-halign="center" scope="col" data-field="TotalPaid" data-visible="true">Ödenen Tutar</th>
+            <th data-align="center" data-halign="center" scope="col" data-field="RemainingBalance" data-footer-formatter="sumFormatter">Kalan Bakiye</th>
+            <th data-align="center" data-halign="center" scope="col" data-field="City" data-visible="true">Şehir</th>
+            <th data-align="center" data-halign="center" scope="col" data-field="District" data-visible="true">İlçe</th>
+            <th data-align="center" data-halign="center" scope="col" data-field="Address" data-visible="true">Address</th>
+            <th data-align="center" data-halign="center" scope="col" data-field="Note" data-visible="false">Not</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var customer in Model)
         {
+            string rawPhone1 = customer.Phone1;
+            string formattedPhone1 = rawPhone1?.Length == 11
+            ? string.Format("0 ({0}) {1} {2} {3}",
+            rawPhone1.Substring(1, 3),
+            rawPhone1.Substring(4, 3),
+            rawPhone1.Substring(7, 2),
+            rawPhone1.Substring(9, 2))
+            : rawPhone1;
+
+            string rawPhone2 = customer.Phone2;
+            string formattedPhone2 = rawPhone2?.Length == 11
+            ? string.Format("0 ({0}) {1} {2} {3}",
+            rawPhone2.Substring(1, 3),
+            rawPhone2.Substring(4, 3),
+            rawPhone2.Substring(7, 2),
+            rawPhone2.Substring(9, 2))
+            : rawPhone2;
+
             <tr class="clickable-row" data-href="@Url.Action("Detail", "FinancialTracking", new { area = "finance", id = customer.Id })">
                 <td>@customer.Name</td>
-                <td>@customer.Phone</td>
+                <td>@customer.CName</td>
+                <td>@customer.CSurname</td>
+                <td>
+                    <a href="tel:@rawPhone1" class="text-decoration-none text-primary">@formattedPhone1</a>
+                </td>
+                <td>
+                    <a href="tel:@rawPhone2" class="text-decoration-none text-primary">@formattedPhone2</a>
+                </td>
+                <td>@customer.Email</td>
                 <td>@customer.TotalDebt ₺</td>
                 <td>@customer.TotalPaid ₺</td>
                 <td>@customer.RemainingBalance ₺</td>
+                <td>@customer.City</td>
+                <td>@customer.District</td>
                 <td>@customer.Address</td>
-                <td>@customer.Email</td>
+                <td>@customer.Note</td>
             </tr>
         }
     </tbody>
@@ -81,8 +115,12 @@
         function detailFormatter(index, row) {
         var html = [];
         html.push('<p><strong>Adı:</strong> ' + row.Name + '</p>');
+        html.push('<p><strong>Şehir:</strong> ' + row.City + '</p>');
+        html.push('<p><strong>İlçe:</strong> ' + row.District + '</p>');
         html.push('<p><strong>Adres:</strong> ' + row.Address + '</p>');
-        html.push('<p><strong>Telefon:</strong> ' + row.Phone + '</p>');
+        html.push('<p><strong>Not:</strong> ' + row.Note + '</p>');
+        html.push('<p><strong>Telefon:</strong> ' + row.Phone1 + '</p>');
+        html.push('<p><strong>Telefon:</strong> ' + row.Phone2 + '</p>');
         html.push('<p><strong>Email:</strong> ' + row.Email + '</p>');
         html.push('<p><strong>Toplam Borç:</strong> ' + row.TotalDebt + '</p>');
         html.push('<p><strong>Ödenen Tutar:</strong> ' + row.TotalPaid + '</p>');
