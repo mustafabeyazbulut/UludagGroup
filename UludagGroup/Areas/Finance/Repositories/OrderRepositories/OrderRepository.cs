@@ -23,7 +23,7 @@ namespace UludagGroup.Areas.Finance.Repositories.OrderRepositories
                 {
                     // Önce CustomerId ile aktif siparişleri çekelim
                     string ordersQuery = @"
-                                SELECT o.Id, o.CustomerId, o.OrderDate, o.Notes, c.Name AS CustomerName
+                                SELECT o.Id, o.CustomerId, o.OrderDate, o.Notes,o.ImageUrl, c.Name AS CustomerName
                                 FROM zOrder o
                                 JOIN zCustomer c ON o.CustomerId = c.Id
                                 WHERE o.CustomerId = @CustomerId AND o.IsActive = 1 
@@ -89,7 +89,7 @@ namespace UludagGroup.Areas.Finance.Repositories.OrderRepositories
                 {
                     // Orders + Customers JOIN
                     string orderQuery = @"
-                                        SELECT o.Id, o.CustomerId, o.OrderDate, o.Notes, c.Name AS CustomerName
+                                        SELECT o.Id, o.CustomerId, o.OrderDate, o.Notes,o.ImageUrl, c.Name AS CustomerName
                                         FROM zOrder o
                                         JOIN zCustomer c ON o.CustomerId = c.Id
                                         WHERE o.Id = @Id and o.IsActive=1";

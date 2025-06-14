@@ -12,6 +12,7 @@ using UludagGroup.Areas.Finance.ViewModels.CustomerViewModels;
 using UludagGroup.Areas.Finance.ViewModels.OrderItemViewModels;
 using UludagGroup.Areas.Finance.ViewModels.OrderViewModels;
 using UludagGroup.Areas.Finance.ViewModels.PaymentViewModels;
+using UludagGroup.Commons;
 
 namespace UludagGroup.Areas.Finance.Controllers
 {
@@ -25,8 +26,10 @@ namespace UludagGroup.Areas.Finance.Controllers
         private readonly IServiceRepository _serviceRepo;
         private readonly IPaymentRepository _paymentRepo;
         private readonly ILocationRepostiory _locationRepo;
+        private readonly ImageOperations _imageOperations;
 
-        public FinancialTrackingController(ICustomerRepository customerRepo, IOrderRepository orderRepo, IOrderItemRepository orderItemRepo, IProductRepository productRepo, IServiceRepository serviceRepo, IPaymentRepository paymentRepo, ILocationRepostiory locationRepo)
+
+        public FinancialTrackingController(ICustomerRepository customerRepo, IOrderRepository orderRepo, IOrderItemRepository orderItemRepo, IProductRepository productRepo, IServiceRepository serviceRepo, IPaymentRepository paymentRepo, ILocationRepostiory locationRepo, ImageOperations imageOperations)
         {
             _customerRepo = customerRepo;
             _orderRepo = orderRepo;
@@ -35,6 +38,7 @@ namespace UludagGroup.Areas.Finance.Controllers
             _serviceRepo = serviceRepo;
             _paymentRepo = paymentRepo;
             _locationRepo = locationRepo;
+            _imageOperations = imageOperations;
         }
         #region Customer
         public async Task<IActionResult> Index()
@@ -104,11 +108,7 @@ namespace UludagGroup.Areas.Finance.Controllers
         public async Task<IActionResult> SaveAddCustomer(CreateCustomerViewModel model)
         {
             await GetLocations();
-            if (!ModelState.IsValid)
-            {
-                // Form geçersiz, view'a geri dön
-                return View(model);
-            }
+            
             var response = await _customerRepo.AddAsync(model);
             if (!response.Status)
             {
@@ -216,13 +216,13 @@ namespace UludagGroup.Areas.Finance.Controllers
         }
         public async Task<IActionResult> AddOrder(int customerid)
         {
+            await GetSelectList();
             var response = await _customerRepo.GetAsync(customerid);
             if (!response.Status)
             {
                 TempData["ErrorMessage"] = $"{response.Message}";
                 return RedirectToAction("Detail", "FinancialTracking", new { id = customerid });
             }
-            await GetSelectList();
             return View(new OrderDetailViewModel
             {
                 Id = 0,
@@ -237,12 +237,18 @@ namespace UludagGroup.Areas.Finance.Controllers
         public async Task<IActionResult> SaveAddOrder(OrderDetailViewModel model)
         {
             await GetSelectList();
+            _imageOperations.FilePath = "Photos/Documents";
+            if (model.ImageFile != null && model.ImageFile.Length > 0)
+            {
+                model.ImageUrl = await _imageOperations.UploadImageAsync(model.ImageFile);
+            }
             if (model.Id < 1)
             {
                 var orderResponse = await _orderRepo.AddAsync(new CreateOrderViewModel
                 {
                     CustomerId = model.CustomerId,
-                    Notes = model.Notes
+                    Notes = model.Notes,
+                    ImageUrl=model.ImageUrl
                 });
                 if (!orderResponse.Status)
                 {
@@ -309,18 +315,40 @@ namespace UludagGroup.Areas.Finance.Controllers
                 CSurname=response.Data.CSurname,
                 Notes = response.Data.Notes,
                 OrderDate = response.Data.OrderDate,
-                OrderItems = response.Data.OrderItems
+                OrderItems = response.Data.OrderItems,
+                ImageUrl=response.Data.ImageUrl
             });
         }
         public async Task<IActionResult> SaveEditOrder(OrderDetailViewModel model)
         {
             await GetSelectList();
 
+
+            _imageOperations.FilePath = "Photos/Documents";
+            var current = await _orderRepo.GetAsync(model.Id);
+            if (!current.Status)
+            {
+                TempData["ErrorMessage"] = $"{current.Message}";
+                return View("Edit", model);
+            }
+            if (model.ImageFile != null && model.ImageFile.Length > 0)
+            {
+                if (!string.IsNullOrEmpty(current.Data.ImageUrl))
+                    await _imageOperations.DeleteIconAsync(current.Data.ImageUrl);
+                model.ImageUrl = await _imageOperations.UploadImageAsync(model.ImageFile);
+            }
+            else
+            {
+                model.ImageUrl = current.Data.ImageUrl;
+            }
+
+
             var update = await _orderRepo.UpdateAsync(new UpdateOrderViewModel
             {
                 Id = model.Id,
                 CustomerId = model.CustomerId,
-                Notes = model.Notes
+                Notes = model.Notes,
+                ImageUrl=model.ImageUrl
             });
             if (!update.Status)
             {

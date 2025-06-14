@@ -54,7 +54,7 @@
                     <div class="row mb-3">
                         <label for="Name" class="col-sm-2 col-form-label">Telefon 2</label>
                         <div class="col-sm-10">
-                            @Html.TextBoxFor(model => model.Phone2, new { @class = "form-control", type = "text", placeholder = "0 (5__) ___ __ __" })
+                            @Html.TextBoxFor(model => model.Phone2, new { @class = "form-control", type = "text", placeholder = "0 (5__) ___ __ __", data_val = "false" })
                             @Html.ValidationMessageFor(model => model.Phone2, "", new { @class = "text-danger" })
                         </div>
                     </div>
@@ -72,13 +72,13 @@
                     <div class="row mb-3">
                         <label for="Name" class="col-sm-2 col-form-label">Adres</label>
                         <div class="col-sm-10">
-                            @Html.TextBoxFor(model => model.Address, new { @class = "form-control", type = "text", placeholder = "Adres" })
+                            @Html.TextBoxFor(model => model.Address, new { @class = "form-control", type = "text", placeholder = "Adres", data_val = "false" })
                         </div>
                     </div>
                     <div class="row mb-3">
                         <label for="Name" class="col-sm-2 col-form-label">Not</label>
                         <div class="col-sm-10">
-                            @Html.TextBoxFor(model => model.Note, new { @class = "form-control", type = "text", placeholder = "Not" })
+                            @Html.TextBoxFor(model => model.Note, new { @class = "form-control", type = "text", placeholder = "Not", data_val = "false" })
                         </div>
                     </div>
                     <div class="row mb-3 mt-4">

@@ -11,6 +11,8 @@ namespace UludagGroup.Areas.Finance.ViewModels.OrderViewModels
         public string CSurname { get; set; }
         public DateTime OrderDate { get; set; }
         public string Notes { get; set; }
+        public string ImageUrl { get; set; }
+        public IFormFile ImageFile { get; set; }
         public List<OrderItemDetailViewModel> OrderItems { get; set; }=new List<OrderItemDetailViewModel>();
     }
 }

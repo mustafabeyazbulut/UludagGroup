@@ -40,7 +40,19 @@
                     <div class="row mb-3">
                         <label for="Name" class="col-sm-2 col-form-label">Not</label>
                         <div class="col-sm-10">
-                            @Html.TextBoxFor(model => model.Notes, new { @class = "form-control", type = "text", placeholder = "Not" })
+                            @Html.TextBoxFor(model => model.Notes, new { @class = "form-control", type = "text", placeholder = "Not", data_val = "false" })
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="Name" class="col-sm-2 col-form-label">Senet Fotosunu Seç</label>
+                        <div class="col-sm-10">
+                            <input type="file" class="form-control" id="ImageFile" asp-for="ImageFile" accept=".jpg, .jpeg, .png" onchange="previewImage(this, 'ImageUrl')" data-val="false">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="Name" class="col-sm-2 col-form-label">Sayfa Logosu</label>
+                        <div class="col-sm-10">
+                            <img id="ImageUrl" class="form-control" style="width:200px;height:200px">
                         </div>
                     </div>
                     <button type="button" class="btn btn-success mb-3" id="btn-add-item">+ Yeni Ürün/Hizmet Ekle</button>
@@ -79,14 +91,12 @@
                                         @if (Model.OrderItems[i].ItemType == "Product")
                                         {
                                             @Html.DropDownListFor(m => m.OrderItems[i].ItemId,
-                                                     new SelectList(ViewBag.Products, "Value", "Text", Model.OrderItems[i].ItemId),
-                                                     "Ürün Seçin", new { @class = "form-select product-select" })
+                                                     new SelectList(ViewBag.Products, "Value", "Text", Model.OrderItems[i].ItemId), new { @class = "form-select product-select" })
                                         }
                                         else
                                         {
                                             @Html.DropDownListFor(m => m.OrderItems[i].ItemId,
-                                                     new SelectList(ViewBag.Services, "Value", "Text", Model.OrderItems[i].ItemId),
-                                                     "Ürün Seçin", new { @class = "form-select product-select" })
+                                                     new SelectList(ViewBag.Services, "Value", "Text", Model.OrderItems[i].ItemId), new { @class = "form-select product-select" })
                                         }
                                     </td>
                                     <td>
@@ -126,56 +136,59 @@
     const productsOptionsHtml = `@Html.Raw(productsHtml)`;
     const servicesOptionsHtml = `@Html.Raw(servicesHtml)`;
 
-    $('#btn-add-item').click(function () {
+              $('#btn-add-item').click(function () {
         let index = itemIndex;
 
-        let template = '' +
-            '<tr class="order-item">' +
-                '<td>' +
-                '<input type="hidden" name="OrderItems[' + index + '].IsVisible" value="true" class="is-visible-field" />' +
-                    '<select name="OrderItems[' + index + '].ItemType" class="form-select item-type-select">' +
-                        '<option value="Product">Ürün</option>' +
-                        '<option value="Service">Servis</option>' +
-                    '</select>' +
-                '</td>' +
-                '<td>' +
-                    '<select name="OrderItems[' + index + '].ItemId" class="form-select product-select">' +
-                        productsOptionsHtml +
-                    '</select>' +
-                    '<select name="OrderItems[' + index + '].ItemId" class="form-select service-select d-none">' +
-                        servicesOptionsHtml +
-                    '</select>' +
-                '</td>' +
-                '<td>' +
-                    '<input type="number" name="OrderItems[' + index + '].UnitPrice" class="form-control" placeholder="Fiyat" />' +
-                '</td>' +
-                   '<td>' +
-        '<input type="number" name="OrderItems[' + index + '].Quantity" class="form-control" value="1" placeholder="Miktar" />' +
-    '</td>'+
-                 '<td>' +
-                    '<input type="text" name="OrderItems[' + index + '].Note" class="form-control" placeholder="Not" />' +
-                '</td>' +
-                '<td>' +
-                    '<button type="button" class="btn btn-danger btn-remove-item">Sil</button>' +
-                '</td>' +
-            '</tr>';
+        let template = `
+    <tr class="order-item">
+        <td>
+            <input type="hidden" name="OrderItems[${index}].IsVisible" value="true" class="is-visible-field" />
+            <select name="OrderItems[${index}].ItemType" class="form-select item-type-select">
+                <option value="Product">Ürün</option>
+                <option value="Service">Servis</option>
+            </select>
+        </td>
+        <td>
+            <select name="OrderItems[${index}].ItemId" class="form-select item-id-select">
+                ${productsOptionsHtml}
+            </select>
+        </td>
+        <td>
+            <input type="number" name="OrderItems[${index}].UnitPrice" class="form-control" placeholder="Fiyat" />
+        </td>
+        <td>
+            <input type="number" name="OrderItems[${index}].Quantity" class="form-control" value="1" placeholder="Miktar" />
+        </td>
+        <td>
+            <input type="text" name="OrderItems[${index}].Note" class="form-control" placeholder="Not" />
+        </td>
+        <td>
+            <button type="button" class="btn btn-danger btn-remove-item">Sil</button>
+        </td>
+    </tr>`;
 
-        // Prepend yeni satırı tabloya ekle
         $('#order-items-container').prepend(template);
         itemIndex++;
     });
 
-     $(document).on('click', '.btn-remove-item', function () {
+           $(document).on('click', '.btn-remove-item', function () {
         const row = $(this).closest('tr.order-item');
-        row.hide(); // Görünmez yap
-        row.find('.is-visible-field').val('false'); // IsVisible = false
-    });
+        row.hide(); // görünmez yap
+        row.find('.is-visible-field').val('false'); // modelde IsVisible=false olur
+        });
 
-    $(document).on('change', '.item-type-select', function () {
+
+
+        $(document).on('change', '.item-type-select', function () {
         let container = $(this).closest('tr.order-item');
         let selectedType = $(this).val();
-        container.find('.product-select').toggleClass('d-none', selectedType !== 'Product');
-        container.find('.service-select').toggleClass('d-none', selectedType !== 'Service');
+        let itemIdSelect = container.find('.item-id-select');
+
+        if (selectedType === 'Product') {
+            itemIdSelect.html(productsOptionsHtml);
+        } else {
+            itemIdSelect.html(servicesOptionsHtml);
+        }
     });
 </script>
 

@@ -116,8 +116,10 @@ namespace UludagGroup.Areas.Finance.Repositories.GenericRepositories
             try
             {
                 var properties = typeof(TCreateModel).GetProperties()
-                    .Where(p => p.CanRead && p.Name.ToLower() != "id") // ID'yi dışla
-                    .ToList();
+                        .Where(p => p.CanRead &&
+                                    p.Name.ToLower() != "id" &&
+                                    p.Name.ToLower() != "imagefile") // ImageFile'ı dışla
+                        .ToList();
 
                 var columns = string.Join(", ", properties.Select(p => p.Name));
                 var values = string.Join(", ", properties.Select(p => "@" + p.Name));
@@ -158,9 +160,11 @@ namespace UludagGroup.Areas.Finance.Repositories.GenericRepositories
             try
             {
                 // Modelin tüm özelliklerini al
-                var properties = typeof(TUpdateModel).GetProperties()
-                    .Where(p => p.CanRead && p.Name != "Id") // "Id" özelliğini hariç tutuyoruz
-                    .ToList();
+                var properties = typeof(TCreateModel).GetProperties()
+                        .Where(p => p.CanRead &&
+                                    p.Name.ToLower() != "id" &&
+                                    p.Name.ToLower() != "imagefile") // ImageFile'ı dışla
+                        .ToList();
 
                 // SET kısmındaki kolonları ve değerleri oluştur
                 var setClause = string.Join(", ", properties.Select(p => $"{p.Name} = @{p.Name}"));
