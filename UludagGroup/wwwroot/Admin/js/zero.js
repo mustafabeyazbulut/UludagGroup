@@ -68,26 +68,7 @@ WebFont.load({
 //        });
 //    });
 //});
-$(document).ready(function () {
-    // Sayfa yüklendiğinde, ve her sayfa geçişinde aşağıdaki kod çalışacak
-    $(document).on("click", ".confirm-btn", function (e) {
-        console.log("selam2");
-        e.preventDefault();
-        var url = $(this).data("url");  // jQuery ile data-url'yi alıyoruz
 
-        swal({
-            title: "Emin misiniz?",
-            text: "Bu işlemi geri alamazsınız!",
-            icon: "warning",
-            buttons: ["İptal", "Evet, devam et"],
-            dangerMode: true
-        }).then(function (willDelete) {
-            if (willDelete) {
-                window.location.href = url;  // Kullanıcı silmeyi onaylarsa yönlendirme yapıyoruz
-            }
-        });
-    });
-});
 window.previewImage = function (input, imageUrlPreview) {
     console.log("previewImage fonksiyonu çağrıldı.");
     var previewElement = "#" + imageUrlPreview; // '#' ekliyoruz
@@ -148,7 +129,35 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 jQuery(document).ready(function ($) {
-    $(document).on('click', '.clickable-row', function () {
-        window.location = $(this).data("href");
+    // Satır tıklaması
+    document.querySelectorAll(".clickable-row").forEach(function (row) {
+        row.addEventListener("click", function () {
+            const href = row.getAttribute("data-href");
+            if (href) {
+                window.location.href = href;
+            }
+        });
+    });
+
+    // Buton tıklaması satırı etkilemesin
+    document.querySelectorAll(".confirm-btn").forEach(function (btn) {
+        btn.addEventListener("click", function (event) {
+            event.stopPropagation(); // Satır tıklamasını engeller
+            const url = btn.getAttribute("data-url");
+            if (url) {
+                // Örnek: Ajax çağrısı yapılabilir veya yönlendirme
+                swal({
+                    title: "Emin misiniz?",
+                    text: "Bu işlemi geri alamazsınız!",
+                    icon: "warning",
+                    buttons: ["İptal", "Evet, devam et"],
+                    dangerMode: true
+                }).then(function (willDelete) {
+                    if (willDelete) {
+                        window.location.href = url;  // Kullanıcı silmeyi onaylarsa yönlendirme yapıyoruz
+                    }
+                });
+            }
+        });
     });
 });

@@ -1,6 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using PdfSharpCore.Drawing;
+using PdfSharpCore.Drawing.Layout;
+using PdfSharpCore.Pdf;
+using System.Globalization;
 using UludagGroup.Areas.Finance.Repositories.CustomerRepositories;
 using UludagGroup.Areas.Finance.Repositories.LocationRepostiories;
 using UludagGroup.Areas.Finance.Repositories.OrderItemRepositories;
@@ -13,6 +17,8 @@ using UludagGroup.Areas.Finance.ViewModels.OrderItemViewModels;
 using UludagGroup.Areas.Finance.ViewModels.OrderViewModels;
 using UludagGroup.Areas.Finance.ViewModels.PaymentViewModels;
 using UludagGroup.Commons;
+using UludagGroup.Repositories.ContactRepositories;
+using UludagGroup.Repositories.LogoRepositories;
 
 namespace UludagGroup.Areas.Finance.Controllers
 {
@@ -27,9 +33,11 @@ namespace UludagGroup.Areas.Finance.Controllers
         private readonly IPaymentRepository _paymentRepo;
         private readonly ILocationRepostiory _locationRepo;
         private readonly ImageOperations _imageOperations;
+        private readonly ILogoRepository _logoRepo;
+        private readonly IContactRepository _contactRepository;
 
 
-        public FinancialTrackingController(ICustomerRepository customerRepo, IOrderRepository orderRepo, IOrderItemRepository orderItemRepo, IProductRepository productRepo, IServiceRepository serviceRepo, IPaymentRepository paymentRepo, ILocationRepostiory locationRepo, ImageOperations imageOperations)
+        public FinancialTrackingController(ICustomerRepository customerRepo, IOrderRepository orderRepo, IOrderItemRepository orderItemRepo, IProductRepository productRepo, IServiceRepository serviceRepo, IPaymentRepository paymentRepo, ILocationRepostiory locationRepo, ImageOperations imageOperations, ILogoRepository logoRepo, IContactRepository contactRepository)
         {
             _customerRepo = customerRepo;
             _orderRepo = orderRepo;
@@ -39,6 +47,8 @@ namespace UludagGroup.Areas.Finance.Controllers
             _paymentRepo = paymentRepo;
             _locationRepo = locationRepo;
             _imageOperations = imageOperations;
+            _logoRepo = logoRepo;
+            _contactRepository = contactRepository;
         }
         #region Customer
         public async Task<IActionResult> Index()
@@ -409,7 +419,6 @@ namespace UludagGroup.Areas.Finance.Controllers
             TempData["SuccessMessage"] = "Sipariş başarıyla güncellendi.";
             return RedirectToAction("Detail", "FinancialTracking", new { id = model.CustomerId });
         }
-
         public async Task<IActionResult> RemoveOrder(int id, int customerId)
         {
             var orderItemsReponse = await _orderItemRepo.GetAllItemIdsByOrderIdAsync(id);
@@ -434,6 +443,230 @@ namespace UludagGroup.Areas.Finance.Controllers
             }
 
             return RedirectToAction("Detail", "FinancialTracking", new { id = customerId });
+        }
+        public async Task<IActionResult> SendDocument(int orderId, int customerId)
+        {
+            // create a new order item for sending document
+            var order = await _orderRepo.GetAllByOrderIdWithDetailsAsync(orderId);
+            if (!order.Status)
+            {
+                TempData["ErrorMessage"] = $"{order.Message}";
+                return RedirectToAction("Detail", "FinancialTracking", new { id = customerId });
+            }
+
+
+            // create new Service Form  PDF
+            using var ms = new MemoryStream();
+            var document = new PdfDocument();
+            var page = document.AddPage();
+            var gfx = XGraphics.FromPdfPage(page);
+            var fontRegular = new XFont("Arial", 10, (XFontStyle)0);
+            var fontBold = new XFont("Arial", 12, (XFontStyle)1);
+
+
+            // LOGO
+            var responseLogo = await _logoRepo.GetActiveAsync();
+            if (responseLogo.Status)
+            {
+                var logoPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Photos", "Logos", responseLogo.Data.ImageUrl);
+                if (System.IO.File.Exists(logoPath))
+                {
+                    var image = XImage.FromFile(logoPath);
+                    gfx.DrawImage(image, 30, 30, 80, 80);
+                }
+            }
+
+
+            var response = await _contactRepository.GetActiveAsync();
+            if (response.Status)
+            {
+                // Firma Bilgileri
+                gfx.DrawString("Uludağ Group Çay Kazanları", fontBold, XBrushes.Black, new XPoint(120, 40));
+                gfx.DrawString(response.Data.PrimaryAddress, fontRegular, XBrushes.Black, new XPoint(120, 60));
+                gfx.DrawString(response.Data.SecondaryAddress, fontRegular, XBrushes.Black, new XPoint(120, 80));
+                gfx.DrawString("Telefon:"+response.Data.PrimaryPhone, fontRegular, XBrushes.Black, new XPoint(120, 100));
+                gfx.DrawString(response.Data.PrimaryEmail, fontRegular, XBrushes.Black, new XPoint(120, 120));
+            }
+
+            // Sağ Üst Bilgiler
+            gfx.DrawString("Servis Hizmet Formu", fontBold, XBrushes.Black, new XPoint(page.Width - 180, 40));
+            gfx.DrawString($"Tarih: {DateTime.Now:dd.MM.yyyy}", fontRegular, XBrushes.Black, new XPoint(page.Width - 180, 60));
+            gfx.DrawString($"Saat: {DateTime.Now:HH:mm}", fontRegular, XBrushes.Black, new XPoint(page.Width - 180, 80));
+
+            // Müşteri Bilgileri Başlığı
+            gfx.DrawLine(XPens.Black, 30, 140, page.Width - 30, 140);
+            gfx.DrawString("Müşteri Bilgileri", fontBold, XBrushes.Black, new XPoint(30, 160));
+
+            var customer = await _customerRepo.GetAsync(customerId);
+            if (customer.Status)
+            {
+                // Müşteri Bilgileri
+                gfx.DrawString($"Firma", fontRegular, XBrushes.Black, new XPoint(30, 180));
+                gfx.DrawString($":", fontRegular, XBrushes.Black, new XPoint(80, 180));
+                gfx.DrawString($"{customer.Data.Name}", fontRegular, XBrushes.Black, new XPoint(85, 180));
+
+                gfx.DrawString($"Yetkili", fontRegular, XBrushes.Black, new XPoint(30, 200));
+                gfx.DrawString($":", fontRegular, XBrushes.Black, new XPoint(80, 200));
+                gfx.DrawString($"{customer.Data.CName+" "+customer.Data.CSurname}", fontRegular, XBrushes.Black, new XPoint(85, 200));
+
+                gfx.DrawString($"Telefon", fontRegular, XBrushes.Black, new XPoint(30, 220));
+                gfx.DrawString($":", fontRegular, XBrushes.Black, new XPoint(80, 220));
+                gfx.DrawString($"{customer.Data.Phone1}", fontRegular, XBrushes.Black, new XPoint(85, 220));
+
+
+                gfx.DrawString($"Adres", fontRegular, XBrushes.Black, new XRect(30, 230, page.Width - 60, 40), XStringFormats.TopLeft);
+                gfx.DrawString($":", fontRegular, XBrushes.Black, new XRect(80, 230, page.Width - 60, 40), XStringFormats.TopLeft);
+                gfx.DrawString($"{customer.Data.Address}", fontRegular, XBrushes.Black, new XRect(85, 230, page.Width - 60, 40), XStringFormats.TopLeft);
+            }
+            gfx.DrawLine(XPens.Black, 30, 250, page.Width - 30, 250);
+            gfx.DrawString("Hizmetler", fontBold, XBrushes.Black, new XPoint(30, 280));
+            
+            // Tablo başlıkları
+            int tableX = 30;
+            int tableY = 290;
+            int rowHeight = 25;
+            int tableWidth = (int)page.Width - 60;
+            int totalRatio = 8 + 2 + 3 + 3;
+
+            int col1Width = tableWidth * 8/ totalRatio;
+            int col2Width = tableWidth * 2 / totalRatio;
+            int col3Width = tableWidth * 3 / totalRatio;
+            int col4Width = tableWidth - (col1Width + col2Width + col3Width); // kalan, yuvarlama hatasını önler
+
+            // Başlık satırı
+            gfx.DrawRectangle(XPens.Black, tableX, tableY, tableWidth, rowHeight);
+            gfx.DrawString("Adı", fontRegular, XBrushes.Black, new XRect(tableX+5, tableY, col1Width, rowHeight), XStringFormats.CenterLeft);
+            gfx.DrawString("Adet", fontRegular, XBrushes.Black, new XRect(tableX + col1Width, tableY, col2Width, rowHeight), XStringFormats.CenterLeft);
+            gfx.DrawString("Birim Fiyat", fontRegular, XBrushes.Black, new XRect(tableX + col1Width + col2Width, tableY, col3Width, rowHeight), XStringFormats.CenterLeft);
+            gfx.DrawString("Tutar", fontRegular, XBrushes.Black, new XRect(tableX + col1Width + col2Width + col3Width, tableY, col4Width, rowHeight), XStringFormats.CenterLeft);
+
+            tableY += rowHeight;
+
+            // Hizmetler
+            var hizmetler = order.Data.OrderItems.Where(x => x.ItemType == "Service").ToList();
+            int maxRows = 5;
+            for (int i = 0; i < maxRows; i++)
+            {
+                var item = i < hizmetler.Count ? hizmetler[i] : null;
+
+                gfx.DrawRectangle(XPens.Gray, tableX, tableY, tableWidth, rowHeight);
+
+                if (item != null)
+                {
+                    gfx.DrawString(item.ItemName, fontRegular, XBrushes.Black, new XRect(tableX+5, tableY, col1Width, rowHeight), XStringFormats.CenterLeft);
+                    gfx.DrawString(item.Quantity.ToString(), fontRegular, XBrushes.Black, new XRect(tableX + col1Width, tableY, col2Width, rowHeight), XStringFormats.CenterLeft);
+                    gfx.DrawString(item.UnitPrice.ToString("C", new CultureInfo("tr-TR")), fontRegular, XBrushes.Black, new XRect(tableX + col1Width + col2Width, tableY, col3Width, rowHeight), XStringFormats.CenterLeft);
+                    gfx.DrawString(item.LineTotal.ToString("C", new CultureInfo("tr-TR")), fontRegular, XBrushes.Black, new XRect(tableX + col1Width + col2Width + col3Width, tableY, col4Width, rowHeight), XStringFormats.CenterLeft);
+                }
+
+                tableY += rowHeight;
+            }
+
+            // Genel Toplam
+            double pageWidth = gfx.PageSize.Width;
+            double margin = 30;
+            double totalWidth = pageWidth - 2 * margin;
+            double toplamY = tableY + 1;
+
+            // Arka plan (isteğe bağlı)
+            gfx.DrawRectangle(XBrushes.LightGray, margin, toplamY, totalWidth, rowHeight-10);
+
+            // Yazılar
+            gfx.DrawString("Genel Toplam:", fontBold, XBrushes.Black, new XRect(margin, toplamY, totalWidth - 100, rowHeight-10), XStringFormats.CenterLeft);
+            gfx.DrawString(order.Data.OrderItems.Where(x=>x.ItemType== "Service").Sum(x => x.LineTotal).ToString("C", new CultureInfo("tr-TR")), fontBold, XBrushes.Black, new XRect(margin, toplamY, tableX + col1Width + col2Width + col3Width, rowHeight - 10), XStringFormats.CenterRight);
+
+
+
+            // Hizmet Notları Başlığı
+            toplamY += rowHeight; // bir satır aşağı
+            gfx.DrawLine(XPens.Black, margin, toplamY, pageWidth - margin, toplamY); // ayraç çizgi
+            toplamY += 18;
+            gfx.DrawString("Hizmet Notları", fontBold, XBrushes.Black, new XPoint(margin, toplamY));
+            toplamY += 10;
+
+            // En az 5 satır olacak şekilde hizmet notları
+            int minNoteRows = 5;
+            for (int i = 0; i < minNoteRows; i++)
+            {
+                string noteText = i < hizmetler.Count ? hizmetler[i]?.Note ?? "" : "";
+
+                gfx.DrawRectangle(XPens.LightGray, margin, toplamY, totalWidth, rowHeight);
+                gfx.DrawString($"- {noteText}", fontRegular, XBrushes.Black, new XRect(margin + 5, toplamY + 5, totalWidth - 10, rowHeight), XStringFormats.TopLeft);
+
+                toplamY += rowHeight;
+            }
+
+            // Genel Not Başlığı
+            toplamY += rowHeight;
+            gfx.DrawLine(XPens.Black, margin, toplamY, pageWidth - margin, toplamY);
+            toplamY += 18;
+            gfx.DrawString("Genel Not", fontBold, XBrushes.Black, new XPoint(margin, toplamY));
+            toplamY += 5;
+
+            // Genel Not İçeriği için yaklaşık yükseklik hesaplama
+            string genelNot = order.Data.Notes ?? "";
+            double maxWidth = totalWidth;
+            double lineHeight = fontRegular.GetHeight();
+            int approxCharPerLine = (int)(maxWidth / fontRegular.Size * 1.8);
+            int lineCount = (int)Math.Ceiling((double)genelNot.Length / approxCharPerLine);
+            double neededHeight = lineHeight * lineCount + 10; // biraz padding
+
+            // Genel Not kutusunun çerçevesi
+            gfx.DrawRectangle(XPens.Black, margin, toplamY, totalWidth, neededHeight);
+
+            // Metni çizme
+            var tf = new XTextFormatter(gfx);
+            XRect noteRect = new XRect(margin + 5, toplamY + 5, totalWidth - 10, neededHeight - 10); // iç boşluk için kenarlardan 5 px içeri
+            tf.Alignment = XParagraphAlignment.Left;
+            tf.DrawString(genelNot, fontRegular, XBrushes.Black, noteRect);
+
+            toplamY += neededHeight + 10;
+
+            // En alt imza alanı için pozisyon ayarları
+            double footerMargin = 30;
+            double footerY = toplamY ; // Genel Nottan biraz aşağı
+
+            pageWidth = gfx.PageSize.Width;
+            double footerWidth = pageWidth - 2 * footerMargin;
+            double colWidth = footerWidth / 2;
+
+            // Fontlar (istersen farklı font ve boyut kullanabilirsin)
+            XFont fontSignTitle = new XFont("Arial", 10, XFontStyle.Bold);
+            XFont fontSignName = new XFont("Arial", 10, XFontStyle.Regular);
+
+            // "TEKNİSYEN" ve "MÜŞTERİ" başlıkları
+            gfx.DrawString("TEKNİSYEN", fontSignTitle, XBrushes.Black, new XRect(footerMargin, footerY, colWidth, 20), XStringFormats.TopLeft);
+            gfx.DrawString("MÜŞTERİ", fontSignTitle, XBrushes.Black, new XRect(footerMargin + colWidth, footerY, colWidth, 20), XStringFormats.TopLeft);
+
+            footerY += 25;
+
+            // "AD SOYAD      İMZA" satırı için alanlar
+            double nameWidth = colWidth * 0.6;
+            double signWidth = colWidth * 0.4;
+
+            // Teknisyen bilgileri (örnek, istersen değiştir)
+            string teknisyenAdSoyad = "AD SOYAD";
+            string teknisyenImza = "İMZA";
+
+            // Müşteri bilgileri (örnek, istersen değiştir)
+            string musteriAdSoyad = "AD SOYAD";
+            string musteriImza = "İMZA";
+
+            // Teknisyen adı
+            gfx.DrawString(teknisyenAdSoyad, fontSignName, XBrushes.Black, new XRect(footerMargin, footerY, nameWidth, 20), XStringFormats.TopLeft);
+            // Teknisyen imza
+            gfx.DrawString(teknisyenImza, fontSignName, XBrushes.Black, new XRect(footerMargin + nameWidth, footerY, signWidth, 20), XStringFormats.TopLeft);
+
+            // Müşteri adı
+            gfx.DrawString(musteriAdSoyad, fontSignName, XBrushes.Black, new XRect(footerMargin + colWidth, footerY, nameWidth, 20), XStringFormats.TopLeft);
+            // Müşteri imza
+            gfx.DrawString(musteriImza, fontSignName, XBrushes.Black, new XRect(footerMargin + colWidth + nameWidth, footerY, signWidth, 20), XStringFormats.TopLeft);
+
+            // PDF’i döndür
+            document.Save(ms, false);
+            ms.Position = 0;
+
+            return File(ms.ToArray(), "application/pdf", $"ServisFormu_{orderId}.pdf");
         }
         #endregion
         #region Payment

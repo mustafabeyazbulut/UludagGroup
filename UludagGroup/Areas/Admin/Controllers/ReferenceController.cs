@@ -25,7 +25,7 @@ namespace UludagGroup.Areas.Admin.Controllers
             }
             return View(response.Data);
         }
-        public async Task<IActionResult> Add()
+        public IActionResult Add()
         {
             return View();
         }

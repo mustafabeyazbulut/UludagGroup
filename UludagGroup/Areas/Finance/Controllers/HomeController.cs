@@ -15,7 +15,7 @@ namespace UludagGroup.Areas.Finance.Controllers
             this._customerRepo = customerRepo;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             return View();
         }
