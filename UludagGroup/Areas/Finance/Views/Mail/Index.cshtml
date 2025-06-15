@@ -1,0 +1,62 @@
+﻿@model List<MailViewModel>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Areas/Finance/Views/FinanceLayout/Index.cshtml";
+}
+<div class="col-md-12">
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex align-items-center">
+                <h4 class="card-title">Mail Gönderici Listesi</h4>
+                <button class="btn btn-primary btn-round ms-auto" onclick="window.location.href='/finance/Mail/Add';">
+                    <i class="fa fa-plus"></i>
+                    Yeni Mail Gönderici
+                </button>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="multi-filter-select"
+                       class="display table table-striped table-hover text-center justify-content-center ">
+                    <thead>
+                        <tr>
+                            <th style="width: 15%">İşlemler</th>
+                            <th>Mail</th>
+                        </tr>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th style="display:none;">İşlemler</th>
+                            <th style="display:none;">Mail</th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="d-flex justify-content-center">
+                                        <div class="dropdown justify-content-center" style="z-index:9999;">
+                                            <button class="btn btn-link text-dark p-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="fa fa-ellipsis-v"></i>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end">
+                                                <li>
+                                                    <a class="dropdown-item" href="@Url.Content("~/finance/Mail/Edit/" + item.Id)">
+                                                        <i class="fa fa-edit text-primary me-2"></i> Düzenle
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>@item.Mail</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+

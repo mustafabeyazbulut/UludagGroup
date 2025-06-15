@@ -7,6 +7,7 @@ using PdfSharpCore.Pdf;
 using System.Globalization;
 using UludagGroup.Areas.Finance.Repositories.CustomerRepositories;
 using UludagGroup.Areas.Finance.Repositories.LocationRepostiories;
+using UludagGroup.Areas.Finance.Repositories.MailRepositories;
 using UludagGroup.Areas.Finance.Repositories.OrderItemRepositories;
 using UludagGroup.Areas.Finance.Repositories.OrderRepositories;
 using UludagGroup.Areas.Finance.Repositories.PaymentRepositories;
@@ -35,9 +36,9 @@ namespace UludagGroup.Areas.Finance.Controllers
         private readonly ImageOperations _imageOperations;
         private readonly ILogoRepository _logoRepo;
         private readonly IContactRepository _contactRepository;
+        private readonly IMailRepository _mailRepo;
 
-
-        public FinancialTrackingController(ICustomerRepository customerRepo, IOrderRepository orderRepo, IOrderItemRepository orderItemRepo, IProductRepository productRepo, IServiceRepository serviceRepo, IPaymentRepository paymentRepo, ILocationRepostiory locationRepo, ImageOperations imageOperations, ILogoRepository logoRepo, IContactRepository contactRepository)
+        public FinancialTrackingController(ICustomerRepository customerRepo, IOrderRepository orderRepo, IOrderItemRepository orderItemRepo, IProductRepository productRepo, IServiceRepository serviceRepo, IPaymentRepository paymentRepo, ILocationRepostiory locationRepo, ImageOperations imageOperations, ILogoRepository logoRepo, IContactRepository contactRepository, IMailRepository mailRepo)
         {
             _customerRepo = customerRepo;
             _orderRepo = orderRepo;
@@ -49,6 +50,7 @@ namespace UludagGroup.Areas.Finance.Controllers
             _imageOperations = imageOperations;
             _logoRepo = logoRepo;
             _contactRepository = contactRepository;
+            _mailRepo = mailRepo;
         }
         #region Customer
         public async Task<IActionResult> Index()
@@ -109,7 +111,6 @@ namespace UludagGroup.Areas.Finance.Controllers
                 .ToList();
             return Json(districts);
         }
-
         public async Task<IActionResult> AddCustomer()
         {
             await GetLocations();
@@ -661,10 +662,63 @@ namespace UludagGroup.Areas.Finance.Controllers
             gfx.DrawString(musteriAdSoyad, fontSignName, XBrushes.Black, new XRect(footerMargin + colWidth, footerY, nameWidth, 20), XStringFormats.TopLeft);
             // Müşteri imza
             gfx.DrawString(musteriImza, fontSignName, XBrushes.Black, new XRect(footerMargin + colWidth + nameWidth, footerY, signWidth, 20), XStringFormats.TopLeft);
-
             // PDF’i döndür
             document.Save(ms, false);
             ms.Position = 0;
+            var pdfBytes = ms.ToArray();
+
+            // Mail gönderme
+            var mail = await _mailRepo.GetAllAsync();
+            if (mail.Status && mail.Data.Count()>0)
+            {
+                var first = mail.Data.FirstOrDefault()!;
+                var mailHelper = new MailHelper(first.Mail, first.Password);
+
+                string htmlBody = @"
+                    <html>
+                      <body style='font-family: ""Segoe UI"", Tahoma, Geneva, Verdana, sans-serif; background-color: #f9fafb; padding: 30px;'>
+                        <div style='max-width: 600px; margin: auto; background-color: #ffffff; border-radius: 10px; padding: 30px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);'>
+                          <h1 style='color: #2a3f54; font-weight: 700; margin-bottom: 15px;'>Uludağ Çay Kazanları</h1>
+                          <h2 style='color: #4a90e2; font-weight: 600;'>Servis Formunuz Hazırlandı!</h2>
+      
+                          <p style='font-size: 17px; color: #333333; line-height: 1.6;'>
+                            Sayın <strong>Değerli Müşterimiz,</strong><br/><br/>
+                            Servis talebiniz başarıyla tamamlanmıştır. İlgili servis formu ekte yer almakta olup, incelemeniz için size gönderilmiştir.
+                          </p>
+      
+                          <p style='font-size: 16px; color: #555555; line-height: 1.5;'>
+                            Form içeriğinde servis detayları ve yapılan işlemler açıkça belirtilmiştir.<br/>
+                            Herhangi bir sorunuz veya ek talebiniz olması durumunda, bizimle iletişime geçmekten çekinmeyiniz.
+                          </p>
+
+                          <div style='margin: 25px 0; padding: 15px; background-color: #e9f1fc; border-left: 4px solid #4a90e2;'>
+                            <strong style='color: #2a3f54;'>İletişim:</strong><br/>
+                            Telefon: <a href='tel:[tel]' style='color: #4a90e2; text-decoration: none;'>+90 XXX XXX XX XX</a><br/>
+                            E-posta: <a href='mailto:[mail]' style='color: #4a90e2; text-decoration: none;'>[mail]</a><br/>
+                            Web: <a href='https://www.uludagcaykazanlari.com/' style='color: #4a90e2; text-decoration: none;'>www.uludagcaykazanlari.com</a>
+                          </div>
+
+                          <p style='font-size: 14px; color: #999999; margin-top: 40px;'>
+                            <em>Bu e-posta otomatik olarak gönderilmiştir, lütfen yanıtlamayınız.</em>
+                          </p>
+
+                          <p style='font-size: 15px; color: #444444; margin-top: 10px;'>
+                            <strong>Uludağ Çay Kazanları Servis Ekibi</strong>
+                          </p>
+                        </div>
+                      </body>
+                    </html>
+                    ";
+                htmlBody = htmlBody.Replace("[tel]", response.Data.PrimaryPhone);
+                htmlBody = htmlBody.Replace("[mail]", response.Data.PrimaryEmail);
+                bool result = await mailHelper.SendMailWithAttachmentAsync(
+                            customer.Data.Email,
+                            "Uludağ Çay Kazanları - Servis Formu",
+                            htmlBody,
+                            pdfBytes,
+                            $"ServisFormu_{orderId}.pdf"
+                        );
+            }
 
             return File(ms.ToArray(), "application/pdf", $"ServisFormu_{orderId}.pdf");
         }
