@@ -27,57 +27,62 @@
     }
 </style>
 
-<div class="d-flex flex-column flex-md-row justify-content-between align-items-start">
-    <div class="card shadow-sm border-0 p-4 mb-3 mb-md-0 me-md-3">
-        <div class="card-body">
-            <h4 class="card-title mb-3 text-dark-yellow d-flex align-items-center">
-                <i class="fa fa-user text-primary me-2"></i> @Model.Name
-            </h4>
-            <h5 class="card-title mb-3 text-dark-yellow d-flex align-items-center">
-                <i class="fa fa-id-card text-primary me-2"></i> @Model.CName @Model.CSurname
-            </h5>
-          
-            <ul class="list-group list-group-flush mb-3">
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span class="text-dark-yellow"><i class="fa fa-coins me-2"></i>Toplam Borç</span>
-                    <span class="fw-bold text-dark-yellow">@Model.TotalDebt ₺</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span class="text-dark-green"><i class="fa fa-credit-card me-2"></i>Toplam Ödenen</span>
-                    <span class="fw-bold text-dark-green">@Model.TotalPaid ₺</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <span class="text-dark-red"><i class="fa fa-wallet me-2"></i>Kalan Bakiye</span>
-                    <span class="fw-bold text-dark-red">@Model.RemainingBalance ₺</span>
-                </li>
-            </ul>
+<div class="container py-1">
+    <div class="row g-4">
+        <!-- Sol Bilgi Alanı -->
+        <div class="col-lg-6">
+            <div class="p-4 rounded-4 shadow-lg bg-light border-start border-5 border-primary">
+                <h2 class="mb-3 text-primary fw-bold">
+                    <i class="fa fa-user me-2"></i>@Model.Name
+                </h2>
 
-            <p class="card-text text-muted mt-3">
-                <i class="fa fa-info-circle me-1"></i>Detayları aşağıda inceleyebilirsiniz.
-            </p>
+                <h5 class="mb-4 text-secondary">
+                    <i class="fa fa-id-card me-2"></i>@Model.CName @Model.CSurname
+                </h5>
+
+                <div class="mb-3 d-flex justify-content-between border-bottom pb-2">
+                    <span class="text-dark"><i class="fa fa-coins text-warning me-2"></i>Toplam Borç</span>
+                    <span class="fw-bold text-warning">@Model.TotalDebt.ToString("N2", new CultureInfo("tr-TR")) ₺</span>
+                </div>
+
+                <div class="mb-3 d-flex justify-content-between border-bottom pb-2">
+                    <span class="text-dark"><i class="fa fa-credit-card text-success me-2"></i>Toplam Ödenen</span>
+                    <span class="fw-bold text-success">@Model.TotalPaid.ToString("N2", new CultureInfo("tr-TR")) ₺</span>
+                </div>
+
+                <div class="mb-3 d-flex justify-content-between border-bottom pb-2">
+                    <span class="text-dark"><i class="fa fa-wallet text-danger me-2"></i>Kalan Bakiye</span>
+                    <span class="fw-bold text-danger">@Model.RemainingBalance.ToString("N2", new CultureInfo("tr-TR")) ₺</span>
+                </div>
+
+                <p class="text-muted mt-4 small">
+                    <i class="fa fa-info-circle me-1"></i> Detayları aşağıda inceleyebilirsiniz.
+                </p>
+            </div>
+        </div>
+
+        <!-- Sağ Butonlar -->
+        <div class="col-lg-6 d-flex flex-column justify-content-center">
+            <div class="d-grid gap-3">
+                <a href="@Url.Action("Index", "FinancialTracking", new { area = "finance" })"
+                   class="btn btn-dark btn-lg">
+                    <i class="fa fa-arrow-left me-2"></i> Geri Dön
+                </a>
+
+                <a href="@Url.Action("EditCustomer", "FinancialTracking", new { area = "finance", id = Model.Id })"
+                   class="btn btn-outline-primary btn-lg">
+                    <i class="fa fa-edit me-2"></i> Düzenle
+                </a>
+
+                <a href="@Url.Action("RemoveCustomer", "FinancialTracking", new { area = "finance", id = Model.Id })"
+                   class="btn btn-outline-danger btn-lg"
+                   onclick="return confirm('Bu müşteriyi silmek istediğinize emin misiniz?');">
+                    <i class="fa fa-trash me-2"></i> Sil
+                </a>
+            </div>
         </div>
     </div>
-
-    <div class="d-flex flex-wrap mt-3 mt-md-4">
-        <a href="@Url.Action("Index", "FinancialTracking", new { area = "finance" })"
-           class="btn btn-secondary btn-lg me-2 mb-2">
-            <i class="fa fa-arrow-left"></i> Geri Dön
-        </a>
-
-        <a href="@Url.Action("EditCustomer", "FinancialTracking", new { area = "finance", id = Model.Id })"
-           class="btn btn-outline-primary btn-lg me-2 mb-2">
-            <i class="fa fa-edit"></i> Düzenle
-        </a>
-
-        <a href="@Url.Action("RemoveCustomer", "FinancialTracking", new { area = "finance", id = Model.Id })"
-           class="btn btn-outline-danger btn-lg mb-2"
-           onclick="return confirm('Bu müşteriyi silmek istediğinize emin misiniz?');">
-            <i class="fa fa-trash"></i> Sil
-        </a>
-    </div>
 </div>
-
-
 <hr />
 
 <div id="ToolbarOrderDetail">

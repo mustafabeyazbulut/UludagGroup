@@ -82,6 +82,13 @@
                             @Html.TextBoxFor(model => model.Note, new { @class = "form-control", type = "text", placeholder = "Not", data_val = "false" })
                         </div>
                     </div>
+                    <div class="row mb-3">
+                        <label for="Name" class="col-sm-2 col-form-label">Telefon 3</label>
+                        <div class="col-sm-10">
+                            @Html.TextBoxFor(model => model.Phone3, new { @class = "form-control", type = "text", placeholder = "0 (5__) ___ __ __", data_val = "false" })
+                            @Html.ValidationMessageFor(model => model.Phone3, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
                     <div class="row mb-3 mt-4">
                         <div class="col-12 text-center">
                             <button type="submit" class="btn btn-lg btn-primary me-2">Kaydet</button>
@@ -93,8 +100,6 @@
             </div>
         </div>
     </div>
-
-
 </div>
 <script>
     $(document).ready(function () {
@@ -104,6 +109,11 @@
             showMaskOnFocus: true
         });
          $('input[name="Phone2"]').inputmask("0 (999) 999 99 99", {
+             placeholder: "0 (5__) ___ __ __",
+            showMaskOnHover: false,
+            showMaskOnFocus: true
+        });
+         $('input[name="Phone3"]').inputmask("0 (999) 999 99 99", {
              placeholder: "0 (5__) ___ __ __",
             showMaskOnHover: false,
             showMaskOnFocus: true

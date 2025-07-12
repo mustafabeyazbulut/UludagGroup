@@ -16,8 +16,4 @@
     <PackageReference Include="PdfSharpCore" Version="1.3.67" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="wwwroot\Photos\Documents\" />
-  </ItemGroup>
-
 </Project>

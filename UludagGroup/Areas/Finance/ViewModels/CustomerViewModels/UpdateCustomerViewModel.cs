@@ -29,6 +29,9 @@ namespace UludagGroup.Areas.Finance.ViewModels.CustomerViewModels
 
         [RegularExpression(@"^$|^0 \(\d{3}\) \d{3} \d{2} \d{2}$", ErrorMessage = "Telefon formatı geçersiz.")]
         public string Phone2 { get; set; }
+        
+        [RegularExpression(@"^$|^0 \(\d{3}\) \d{3} \d{2} \d{2}$", ErrorMessage = "Telefon formatı geçersiz.")]
+        public string Phone3 { get; set; }
 
 
         [Required(ErrorMessage = "Email alanı zorunludur.")]

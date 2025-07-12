@@ -1,4 +1,5 @@
 ﻿@model List<CustomerDebtViewModel>
+
 @{
     ViewData["Title"] = "Müşteri Listesi";
     Layout = "~/Areas/Finance/Views/FinanceLayout/Index.cshtml";
@@ -66,6 +67,7 @@
             <th data-align="center" data-halign="center" scope="col" data-field="District" data-visible="true">İlçe</th>
             <th data-align="center" data-halign="center" scope="col" data-field="Address" data-visible="true">Address</th>
             <th data-align="center" data-halign="center" scope="col" data-field="Note" data-visible="false">Not</th>
+            <th data-align="center" data-halign="center" scope="col" data-field="Phone3" data-visible="false">Telefon 3</th>
         </tr>
     </thead>
     <tbody>
@@ -89,6 +91,14 @@
             rawPhone2.Substring(9, 2))
             : rawPhone2;
 
+            string rawPhone3 = customer.Phone3;
+            string formattedPhone3 = rawPhone3?.Length == 11
+            ? string.Format("0 ({0}) {1} {2} {3}",
+            rawPhone3.Substring(1, 3),
+            rawPhone3.Substring(4, 3),
+            rawPhone3.Substring(7, 2),
+            rawPhone3.Substring(9, 2))
+            : rawPhone3;
             <tr class="clickable-row" data-href="@Url.Action("Detail", "FinancialTracking", new { area = "finance", id = customer.Id })">
                 <td>@customer.Name</td>
                 <td>@customer.CName</td>
@@ -100,13 +110,16 @@
                     <a href="tel:@rawPhone2" class="text-decoration-none text-primary">@formattedPhone2</a>
                 </td>
                 <td>@customer.Email</td>
-                <td>@customer.TotalDebt ₺</td>
-                <td>@customer.TotalPaid ₺</td>
-                <td>@customer.RemainingBalance ₺</td>
+                <td>@customer.TotalDebt.ToString("N2", new CultureInfo("tr-TR")) ₺</td>
+                <td>@customer.TotalPaid.ToString("N2", new CultureInfo("tr-TR")) ₺</td>
+                <td>@customer.RemainingBalance.ToString("N2", new CultureInfo("tr-TR")) ₺</td>
                 <td>@customer.City</td>
                 <td>@customer.District</td>
                 <td>@customer.Address</td>
                 <td>@customer.Note</td>
+                <td>
+                    <a href="tel:@rawPhone1" class="text-decoration-none text-primary">@formattedPhone3</a>
+                </td>
             </tr>
         }
     </tbody>
@@ -119,8 +132,9 @@
         html.push('<p><strong>İlçe:</strong> ' + row.District + '</p>');
         html.push('<p><strong>Adres:</strong> ' + row.Address + '</p>');
         html.push('<p><strong>Not:</strong> ' + row.Note + '</p>');
-        html.push('<p><strong>Telefon:</strong> ' + row.Phone1 + '</p>');
-        html.push('<p><strong>Telefon:</strong> ' + row.Phone2 + '</p>');
+        html.push('<p><strong>Telefon1:</strong> ' + row.Phone1 + '</p>');
+        html.push('<p><strong>Telefon2:</strong> ' + row.Phone2 + '</p>');
+        html.push('<p><strong>Telefon3:</strong> ' + row.Phone3 + '</p>');
         html.push('<p><strong>Email:</strong> ' + row.Email + '</p>');
         html.push('<p><strong>Toplam Borç:</strong> ' + row.TotalDebt + '</p>');
         html.push('<p><strong>Ödenen Tutar:</strong> ' + row.TotalPaid + '</p>');
