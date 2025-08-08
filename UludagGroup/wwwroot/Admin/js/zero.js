@@ -130,13 +130,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
 jQuery(document).ready(function ($) {
     // Satır tıklaması
-    document.querySelectorAll(".clickable-row").forEach(function (row) {
-        row.addEventListener("click", function () {
-            const href = row.getAttribute("data-href");
-            if (href) {
-                window.location.href = href;
-            }
-        });
+    $(document).on('click', '.clickable-row', function () {
+        var href = $(this).data('href');
+        if (href) {
+            window.location.href = href;
+        }
     });
 
     // Buton tıklaması satırı etkilemesin
